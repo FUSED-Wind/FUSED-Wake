@@ -32,15 +32,20 @@ class WindTurbine:
         self.R = R
 
         refCurvesArray=np.loadtxt(refCurvesFile,delimiter=', ',skiprows=5)
+
         self.refCurvesArray = refCurvesArray
-        self.ref_u = refCurvesArray[:,0]
-        self.ref_P = refCurvesArray[:,1]
-        self.ref_CT = refCurvesArray[:,2]
-        self.P_rated = np.max(self.ref_P)
-        self.u_cutin = self.ref_u[0]
-        self.u_cutout = self.ref_u[-1]
 
         self.CT_idle = CT_idle
+
+        self.wt_init()
+
+    def wt_init(self):
+        self.ref_u = self.refCurvesArray[:,0]
+        self.ref_P = self.refCurvesArray[:,1]
+        self.ref_CT = self.refCurvesArray[:,2]
+        self.u_cutin = self.ref_u[0]
+        self.u_cutout = self.ref_u[-1]
+        self.P_rated = np.max(self.ref_P)
 
         self.PCI = interpolate.PchipInterpolator(self.ref_u, self.ref_P)
         self.CTCI = interpolate.PchipInterpolator(self.ref_u, self.ref_CT)

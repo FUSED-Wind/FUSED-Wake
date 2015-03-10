@@ -19,7 +19,7 @@ import numpy as np
 # source ducumentation.
 
 class FWindTurbine(WindTurbine):
-    def __init__(self, name, wt_desc):
+    def __init__(self, name, wt_desc, CT_idle=0.053):
         """Initializes a WindTurbine instance from a GenericWindTurbinePowerCurveVT
         instance
 
@@ -33,18 +33,23 @@ class FWindTurbine(WindTurbine):
         self.name = name
         self.H = wt_desc.hub_height
         self.R = wt_desc.rotor_diameter / 2.0
+        self.CT_idle = CT_idle
 
         #refCurvesArray=np.loadtxt(refCurvesFile,delimiter=', ',skiprows=5)
         #self.refCurvesArray = refCurvesArray
         # sanity check on the power curve and c_t_curve resamblance
         np.testing.assert_almost_equal(wt_desc.power_curve[:,0], wt_desc.c_t_curve[:,0])
-        self.ref_u = wt_desc.power_curve[:,0]
-        self.ref_P = wt_desc.power_curve[:,1]
-        self.ref_CT = wt_desc.c_t_curve[:,1]
         self.refCurvesArray = np.vstack([wt_desc.power_curve[:,0], wt_desc.power_curve[:,1], wt_desc.c_t_curve[:,1]]).T
-        self.P_rated = np.max(self.ref_P)
-        self.u_cutin = wt_desc.cut_in_wind_speed
-        self.u_cutout = wt_desc.cut_out_wind_speed
+
+        self.wt_init()
+
+        #self.ref_u = wt_desc.power_curve[:,0]
+        #self.ref_P = wt_desc.power_curve[:,1]
+        #self.ref_CT = wt_desc.c_t_curve[:,1]
+
+        #self.P_rated = np.max(self.ref_P)
+        #self.u_cutin = wt_desc.cut_in_wind_speed
+        #self.u_cutout = wt_desc.cut_out_wind_speed
 
 def generate_GenericWindTurbinePowerCurveVT(WT):
     """Generate a GenericWindTurbinePowerCurveVT instance from a WindTurbine
@@ -144,10 +149,10 @@ def generate_GenericWindFarmTurbineLayout(WF):
 
 # Rosetta stone to convert pure python inputs into FUSED-Wind wrapper inputs
 rosetta = {
-    'U0' : 'wind_speed',
+    'WS' : 'wind_speed',
     'z0' : 'roughness',
     'TI' : 'TI',
-    'cWD' : 'wind_direction',
+    'WD' : 'wind_direction',
     'NG' : 'NG',
     'sup' : 'sup',
     'pars' : 'pars'}
@@ -204,17 +209,16 @@ class FGCLarsen(Component):
         WF = FWindFarm(self.windfarm_name, self.wt_layout)
 
         # Run the wind case
-        self.wt_power, self.wt_wind_speed, wt_CT  = gcl.GCLarsen_v2(
-            U0 = self.wind_speed,
+        self.wt_power, self.wt_wind_speed, wt_CT  = gcl.GCLarsen(
+            WF = WF,
+            WS = self.wind_speed,
             z0 = self.roughness,
             TI = self.TI,
-            cWD = self.wind_direction,
-            WF = WF,
+            WD = self.wind_direction,
             NG = self.NG,
             sup = self.sup,
             pars = self.pars)
 
-        #TODO: add the thrust as an output of GCL!
         self.wt_thrust = wt_CT * 0.5 * 1.225 * self.wt_wind_speed**2.0 * np.pi * WF.WT.R**2.
 
         self.power = self.wt_power.sum()

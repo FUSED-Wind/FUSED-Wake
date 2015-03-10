@@ -25,6 +25,15 @@ class WTDescFromWTG(Component):
     wt_desc = VarTree(GenericWindTurbinePowerCurveVT(), iotype='out',
         desc='The wind turbine power curve')
 
+
+    def __init__(self, filename=None):
+        super(WTDescFromWTG, self).__init__()
+
+        if filename is not None:
+            self.filename = filename
+            self.execute()
+
+
     def execute(self):
         # Reading the .wtg file
         wtg = WTG(self.filename)
@@ -35,6 +44,8 @@ class WTDescFromWTG(Component):
         self.wt_desc.cut_in_wind_speed = wtg.data[0, 0]
         self.wt_desc.cut_out_wind_speed = wtg.data[-1, 0]
         self.wt_desc.air_density = wtg.density
+        self.wt_desc.rotor_diameter = wtg.rotor_diameter
+        self.wt_desc.hub_height = wtg.hub_height
         self.wt_desc.test_consistency()
 
 
