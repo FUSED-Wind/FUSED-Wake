@@ -240,15 +240,23 @@ def GCLarsen_v0(WF,WS,WD,TI,z0,NG=4,sup='lin',
 
     Inputs
     ----------
+    WF (WindFarm): Windfarm instance
     WS (float): Undisturbed wind speed at hub height [m/s]
+    WD (float): Undisturbed wind direction at hub height [deg].
+                Meteorological axis. North = 0 [deg], clockwise.
+    TI (float): Ambient turbulence intensity [-]
     z0 (float): Roughness height [m]
-    TI (float): Ambient turbulence intensity
-    WD (float): Undisturbed wind direction [deg]
+    NG (int):   Number of points in Gaussian Quadrature for equivalent wind
+                speed integration over rotor distFlowCoord
+    sup (str):  Wake velocity deficit superposition method:
+                'lin': Linear superposition
+                'quad' Quadratic superposition
 
     Outputs
     ----------
     P_WT: Power production of the wind turbines (nWT,1) [W]
-        U_WT: Wind speed at hub height (nWT,1) [m/s]
+    U_WT: Wind speed at hub height (nWT,1) [m/s]
+    Ct:   Thrust coefficients for each wind turbine (nWT,1) [-]
     """
     (Dist,id0) = WF.turbineDistance(WD)
 
@@ -324,16 +332,28 @@ def GCLarsen(
 
     Inputs
     ----------
+    WF (WindFarm): Windfarm instance
     WS (float): Undisturbed wind speed at hub height [m/s]
-    WD (float): Undisturbed wind direction [deg]
-    TI (float): Ambient turbulence intensity []
-    alpha (float): Shear Coefficient []
+    WD (float): Undisturbed wind direction at hub height [deg].
+                Meteorological axis. North = 0 [deg], clockwise.
+    TI (float): Ambient turbulence intensity [-]
     z0 (float): Roughness height [m]
+    alpha (float): Shear coefficient [-]
+                   Only used for power-law undisturbed inflow.
+    inflow (Str):  Undisturbed inflow vertical profile:
+                   'log': Logarithmic law (neutral case); uses z0
+                   'pow': Power law profile; uses alpha
+    NG (int):   Number of points in Gaussian Quadrature for equivalent wind
+                speed integration over rotor distFlowCoord
+    sup (str):  Wake velocity deficit superposition method:
+                'lin': Linear superposition
+                'quad' Quadratic superposition
 
     Outputs
     ----------
     P_WT: Power production of the wind turbines (nWT,1) [W]
     U_WT: Wind speed at hub height (nWT,1) [m/s]
+    Ct:   Thrust coefficients for each wind turbine (nWT,1) [-]
     """
     (distFlowCoord,id0) = WF.turbineDistance(WD)
 

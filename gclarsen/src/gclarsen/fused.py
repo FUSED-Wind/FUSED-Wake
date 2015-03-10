@@ -144,10 +144,12 @@ def generate_GenericWindFarmTurbineLayout(WF):
 
 # Rosetta stone to convert pure python inputs into FUSED-Wind wrapper inputs
 rosetta = {
-    'U0' : 'wind_speed',
-    'z0' : 'roughness',
+    'WS' : 'wind_speed',
+    'WD' : 'wind_direction',
     'TI' : 'TI',
-    'cWD' : 'wind_direction',
+    'z0' : 'roughness',
+    'alpha':'alpha',
+    'inflow':'inflow',
     'NG' : 'NG',
     'sup' : 'sup',
     'pars' : 'pars'}
@@ -185,6 +187,10 @@ class FGCLarsen(Component):
         desc='Ambient turbulence intensity')
     roughness = Float(0.0001, iotype='in', units='m', low='0.0', high='1.0',
         desc='The roughness height')
+    alpha = Float(0.101, iotype='in', low='-0.5', high='1.0',
+        desc='Shear Coefficient')
+    inflow = Enum('log', ['log', 'pow'], iotype='in',
+        desc='Undisturbed flow model logarithmic/power-law')
     NG = Int(4, low=4, high=6, iotype='in',
         desc='number of points in the Gauss integration')
     sup = Enum('lin', ['lin', 'quad'], iotype='in',
@@ -204,12 +210,14 @@ class FGCLarsen(Component):
         WF = FWindFarm(self.windfarm_name, self.wt_layout)
 
         # Run the wind case
-        self.wt_power, self.wt_wind_speed, wt_CT  = gcl.GCLarsen_v2(
-            U0 = self.wind_speed,
-            z0 = self.roughness,
-            TI = self.TI,
-            cWD = self.wind_direction,
+        self.wt_power, self.wt_wind_speed, wt_CT  = gcl.GCLarsen(
             WF = WF,
+            WS = self.wind_speed,
+            WD = self.wind_direction,
+            TI = self.TI,
+            z0 = self.roughness,
+            alpha = self.alpha,
+            inflow = self.inflow,
             NG = self.NG,
             sup = self.sup,
             pars = self.pars)
