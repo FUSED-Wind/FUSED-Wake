@@ -1,4 +1,4 @@
-from numpy import hstack
+from numpy import hstack, vstack
 from openmdao.main.component import Component
 from openmdao.main.datatypes.array import Array
 from openmdao.main.datatypes.str import Str
@@ -40,11 +40,12 @@ class WTDescFromWTG(Component):
 
         # Filling up the VT
         self.wt_desc.power_curve = wtg.data[:, :2]
-        self.wt_desc.c_t_curve = hstack([wtg.data[:, 0], wtg.data[:, 2]])
+        self.wt_desc.c_t_curve = vstack([wtg.data[:, 0], wtg.data[:, 2]]).T
         self.wt_desc.cut_in_wind_speed = wtg.data[0, 0]
         self.wt_desc.cut_out_wind_speed = wtg.data[-1, 0]
         self.wt_desc.air_density = wtg.density
         self.wt_desc.rotor_diameter = wtg.rotor_diameter
+        self.wt_desc.power_rating = self.wt_desc.power_curve[:,1].max()
         self.wt_desc.hub_height = wtg.hub_height
         self.wt_desc.test_consistency()
 
