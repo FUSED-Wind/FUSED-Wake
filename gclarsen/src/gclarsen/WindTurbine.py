@@ -5,7 +5,8 @@
 """
 import numpy as np
 import scipy as sp
-import scipy.interpolate as interpolate
+from scipy.interpolate import interp1d as interpolator
+# from scipy.interpolate import pchipInterpolator as interpolator
 
 class WindTurbine:
     """Wind Turbine instance
@@ -47,11 +48,11 @@ class WindTurbine:
         self.u_cutout = self.ref_u[-1]
         self.P_rated = np.max(self.ref_P)
 
-        self.PCI = interpolate.PchipInterpolator(self.ref_u, self.ref_P)
-        self.CTCI = interpolate.PchipInterpolator(self.ref_u, self.ref_CT)
+        self.PCI = interpolator(self.ref_u, self.ref_P)
+        self.CTCI = interpolator(self.ref_u, self.ref_CT)
 
         index = np.nonzero(self.ref_P==self.P_rated)[0][0]
-        self.PCI_u = interpolate.PchipInterpolator(
+        self.PCI_u = interpolator(
                      self.ref_P[:index+1],self.ref_u[:index+1])
 
         self.u_rated = np.float(self.PCI_u(self.P_rated))
