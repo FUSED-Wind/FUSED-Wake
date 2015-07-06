@@ -1,4 +1,4 @@
-from numpy import hstack, vstack
+from numpy import hstack, vstack, max
 from openmdao.main.component import Component
 from openmdao.main.datatypes.array import Array
 from openmdao.main.datatypes.str import Str
@@ -120,6 +120,7 @@ class PlantFromWWH(Component):
                 position=data['position'][:2],
                 wind_rose=GenericWindRoseVT(weibull_array=data['wind_rose']),
                 power_curve = turbine['data'][:, :2],
+                power_rating = max(turbine['data'][:, 1]),
                 c_t_curve = turbine['data'][:, [0, 2]],
                 cut_in_wind_speed = turbine['data'][0, 0],
                 cut_out_wind_speed = turbine['data'][-1, 0],

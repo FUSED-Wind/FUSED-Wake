@@ -280,8 +280,13 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
       end do
       ! Calculates the power and thrust
       do k=1,n
-        call interp_l(P_c(k,:,1),P_c(k,:,2),nP,U(k),P(k))
-        call interp_l(CT_c(k,:,1),CT_c(k,:,2),nCT,U(k),CT)
+        if ((U(k) >= WS_CI(k)).and.(U(k) <= WS_CO(k))) then
+          call interp_l(P_c(k,:,1),P_c(k,:,2),nP,U(k),P(k))
+          call interp_l(CT_c(k,:,1),CT_c(k,:,2),nCT,U(k),CT)
+        else
+          P(k)=0.0d0
+          CT = CT_idle(k)
+        end if
         T(k) = CT*0.5d0*rho*U(k)*U(k)*pi*DT(k)*DT(k)/4.0d0
       end do
 
