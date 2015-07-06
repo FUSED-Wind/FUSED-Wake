@@ -218,11 +218,8 @@ class MultipleFusedFGCL(TopfarmComponent):
 
     def execute(self):
 
-        #nWS = len(self.wind_speeds)
-        #nWD = len(self.wind_directions)
-        #WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
-        WS = array(self.wind_speeds)#WS.flatten()
-        WD = array(self.wind_directions)#WD.flatten()
+        WS = array(self.wind_speeds)
+        WD = array(self.wind_directions)
         TI = array(self.turbulence_intensities)
 
         # get T2T distance in global coordinates
@@ -254,8 +251,8 @@ class MultipleFusedFGCL(TopfarmComponent):
         power = self.wt_power.sum(axis=1)
         thrust = self.wt_thrust.sum(axis=1)
 
-        self.power  = power#.reshape(nWD,nWS)
-        self.thrust  = thrust#.reshape(nWD,nWS)
+        self.power  = power
+        self.thrust  = thrust
 
 class MultipleFusedFNOJ(TopfarmComponent):
 
@@ -287,11 +284,8 @@ class MultipleFusedFNOJ(TopfarmComponent):
 
     def execute(self):
 
-        #nWS = len(self.wind_speeds)
-        #nWD = len(self.wind_directions)
-        #WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
-        WS = array(self.wind_speeds)#WS.flatten()
-        WD = array(self.wind_directions)#WD.flatten()
+        WS = array(self.wind_speeds)
+        WD = array(self.wind_directions)
 
         # get T2T distance in global coordinates
         wt_layout = self.wt_layout
@@ -315,8 +309,8 @@ class MultipleFusedFNOJ(TopfarmComponent):
         power = self.wt_power.sum(axis=1)
         thrust = self.wt_thrust.sum(axis=1)
 
-        self.power  = power#.reshape(nWD,nWS)
-        self.thrust  = thrust#.reshape(nWD,nWS)
+        self.power  = power
+        self.thrust  = thrust
 
 class AEP_f(TopfarmComponent):
 
