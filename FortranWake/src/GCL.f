@@ -28,12 +28,12 @@ c
       implicit none
       real(kind=8) D,CT,TI,a1,a2,a3,a4,b1,b2,R96
 cf2py real(kind=8) intent(in) :: D, CT, TI
-cf2py real(kind=8) optional,intent(in) :: a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in) :: a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in) :: a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in) :: a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in) :: b1 = 15.6298
-cf2py real(kind=8) optional,intent(in) :: b2 = 1.0
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py real(kind=8) intent(out) :: R96
 
       R96=a1*(EXP(a2*CT*CT+a3*CT+a4))*(b1*TI+b2)*D
@@ -67,12 +67,12 @@ c c1(float): Integration constant
 cf2py integer intent(hide),depend(x) :: n=len(x)
 cf2py real(kind=8) intent(in),dimension(n) :: x
 cf2py real(kind=8) intent(in) :: D,CT,TI
-cf2py real(kind=8) optional,intent(in) :: a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in) :: a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in) :: a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in) :: a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in) :: b1 = 15.6298
-cf2py real(kind=8) optional,intent(in) :: b2 = 1.0
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
 cf2py real(kind=8) intent(out) :: xT_st, c1
       ! internal variables
@@ -134,12 +134,12 @@ cf2py integer intent(hide),depend(x) :: n=len(x)
 cf2py real(kind=8) intent(in),dimension(n) :: x
 cf2py real(kind=8) intent(in),depend(n),dimension(n) :: r
 cf2py real(kind=8) intent(in) :: D,CT,TI
-cf2py real(kind=8) optional,intent(in) :: a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in) :: a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in) :: a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in) :: a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in) :: b1 = 15.6298
-cf2py real(kind=8) optional,intent(in) :: b2 = 1.0
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dU
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0
@@ -203,12 +203,12 @@ cf2py integer intent(hide),depend(x) :: n = len(x)
 cf2py real(kind=8) intent(in),dimension(n) :: x
 cf2py real(kind=8) intent(in),depend(n),dimension(n) :: y,z,DT
 cf2py real(kind=8) intent(in) :: D,CT,TI
-cf2py real(kind=8) optional,intent(in) :: a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in) :: a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in) :: a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in) :: a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in) :: b1 = 15.6298
-cf2py real(kind=8) optional,intent(in) :: b2 = 1.0
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dUeq
       ! internal variables
@@ -374,17 +374,17 @@ cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
 cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
 cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
 cf2py real(kind=8) intent(in) :: WS,WD,TI
-cf2py real(kind=8) optional,intent(in) :: a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in) :: a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in) :: a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in) :: a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in) :: b1 = 15.6298
-cf2py real(kind=8) optional,intent(in) :: b2 = 1.0
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py integer optional intent(in) :: Ng = 4
-cf2py real(kind=8) optional,intent(in) :: rho = 1.225
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI = 4.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO = 25.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle = 0.053
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
 cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0
@@ -423,8 +423,13 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
       end do
       ! Calculates the power and thrust
       do k=1,n
-        call interp_l(P_c(k,:,1),P_c(k,:,2),nP,U(k),P(k))
-        call interp_l(CT_c(k,:,1),CT_c(k,:,2),nCT,U(k),CT)
+        if ((U(k) >= WS_CI(k)).and.(U(k) <= WS_CO(k))) then
+          call interp_l(P_c(k,:,1),P_c(k,:,2),nP,U(k),P(k))
+          call interp_l(CT_c(k,:,1),CT_c(k,:,2),nCT,U(k),CT)
+        else
+          P(k)=0.0d0
+          CT = CT_idle(k)
+        end if
         T(k) = CT*0.5d0*rho*U(k)*U(k)*pi*DT(k)*DT(k)/4.0d0
       end do
 
@@ -481,17 +486,17 @@ cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
 cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
 cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
 cf2py real(kind=8) intent(in),dimension(nF) :: WS,WD,TI
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b1 = 15.6298
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b2 = 1.0
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
 cf2py integer optional intent(in) :: Ng = 4
-cf2py real(kind=8) optional,intent(in) :: rho = 1.225
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI = 4.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO = 25.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle = 0.053
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
 cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       ! internal variables
       integer :: i
@@ -558,17 +563,17 @@ cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
 cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
 cf2py real(kind=8) intent(in),dimension(nF) :: WS,TI,WD,STD_WD
 cf2py integer optional,intent(in) :: Nga = 4
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b1 = 15.6298
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b2 = 1.0
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
 cf2py integer optional intent(in) :: Ng = 4
-cf2py real(kind=8) optional,intent(in) :: rho = 1.225
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI = 4.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO = 25.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle = 0.053
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
 cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0
@@ -724,17 +729,17 @@ cf2py real(kind=8) intent(in),dimension(nF) :: WS,TI
 cf2py real(kind=8) intent(in),dimension(nF,n) :: WD
 cf2py real(kind=8) optional,intent(in),dimension(nF,n) :: STD_WD = 0.0
 cf2py integer optional intent(in) :: Nga = 1
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a1 = 0.435449861
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a2 = 0.797853685
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a3 = -0.124807893
-cf2py real(kind=8) optional,intent(in),dimension(nF)::a4 = 0.136821858
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b1 = 15.6298
-cf2py real(kind=8) optional,intent(in),dimension(nF)::b2 = 1.0
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
 cf2py integer optional intent(in) :: Ng = 4
-cf2py real(kind=8) optional,intent(in) :: rho = 1.225
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI = 4.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO = 25.0
-cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle = 0.053
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
 cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       ! internal variables
       integer :: i,j

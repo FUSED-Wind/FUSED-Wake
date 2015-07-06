@@ -188,19 +188,17 @@ class MultipleFusedFGCL(TopfarmComponent):
 
     # Inputs
     wind_speeds = List([], iotype='in', units='m/s',
-        desc='The different wind speeds to run [nWS]')
-
+        desc='The different wind speeds to run [n]')
     wind_directions = List([], iotype='in', units='deg',
-        desc='The different wind directions to run [nWD]')
-
+        desc='The different wind directions to run [n]')
     wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
         desc='Wind turbine properties and layout')
 
     # Specific Inputs:
     pars = List([0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0],
         iotype='in', desc='GCLarsen model parameters')
-    turbulence_intensity = Float(0.05, iotype='in', low='0.0', high='1.0',
-        desc='Ambient turbulence intensity')
+    turbulence_intensities = List([], iotype='in',
+        desc='Ambient turbulence intensity to run [n]')
     n_quad_points = Int(4, low=4, high=6, iotype='in',
         desc='Number of points in the Gauss integration')
 
@@ -220,12 +218,12 @@ class MultipleFusedFGCL(TopfarmComponent):
 
     def execute(self):
 
-        nWS = len(self.wind_speeds)
-        nWD = len(self.wind_directions)
-        WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
-        WS = WS.flatten()
-        WD = WD.flatten()
-
+        #nWS = len(self.wind_speeds)
+        #nWD = len(self.wind_directions)
+        #WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
+        WS = array(self.wind_speeds)#WS.flatten()
+        WD = array(self.wind_directions)#WD.flatten()
+        TI = array(self.turbulence_intensities)
 
         # get T2T distance in global coordinates
         wt_layout = self.wt_layout
@@ -240,7 +238,7 @@ class MultipleFusedFGCL(TopfarmComponent):
             ct_c = wt_layout.wt_array(attr='c_t_curve'),
             ws = WS,
             wd = WD,
-            ti = self.turbulence_intensity*ones_like(WS),
+            ti = TI,#self.turbulence_intensity*ones_like(WS),
             a1 = self.pars[0]*ones_like(WS),
             a2 = self.pars[1]*ones_like(WS),
             a3 = self.pars[2]*ones_like(WS),
@@ -256,18 +254,16 @@ class MultipleFusedFGCL(TopfarmComponent):
         power = self.wt_power.sum(axis=1)
         thrust = self.wt_thrust.sum(axis=1)
 
-        self.power  = power.reshape(nWD,nWS)
-        self.thrust  = thrust.reshape(nWD,nWS)
+        self.power  = power#.reshape(nWD,nWS)
+        self.thrust  = thrust#.reshape(nWD,nWS)
 
 class MultipleFusedFNOJ(TopfarmComponent):
 
     # Inputs
     wind_speeds = List([], iotype='in', units='m/s',
         desc='The different wind speeds to run [nWS]')
-
     wind_directions = List([], iotype='in', units='deg',
         desc='The different wind directions to run [nWD]')
-
     wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
         desc='Wind turbine properties and layout')
 
@@ -291,12 +287,11 @@ class MultipleFusedFNOJ(TopfarmComponent):
 
     def execute(self):
 
-        nWS = len(self.wind_speeds)
-        nWD = len(self.wind_directions)
-        WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
-        WS = WS.flatten()
-        WD = WD.flatten()
-
+        #nWS = len(self.wind_speeds)
+        #nWD = len(self.wind_directions)
+        #WS,WD = meshgrid(array(self.wind_speeds),array(self.wind_directions))
+        WS = array(self.wind_speeds)#WS.flatten()
+        WD = array(self.wind_directions)#WD.flatten()
 
         # get T2T distance in global coordinates
         wt_layout = self.wt_layout
@@ -320,8 +315,8 @@ class MultipleFusedFNOJ(TopfarmComponent):
         power = self.wt_power.sum(axis=1)
         thrust = self.wt_thrust.sum(axis=1)
 
-        self.power  = power.reshape(nWD,nWS)
-        self.thrust  = thrust.reshape(nWD,nWS)
+        self.power  = power#.reshape(nWD,nWS)
+        self.thrust  = thrust#.reshape(nWD,nWS)
 
 class AEP_f(TopfarmComponent):
 
