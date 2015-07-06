@@ -9,7 +9,7 @@ from fusedwind.plant_flow.vt import GenericWindFarmTurbineLayout, WTPC
 from openmdao.main.api import Component
 from openmdao.lib.datatypes.api import Float, VarTree, Array, List, Int, Enum, Str
 
-from topfarm.tlib import TopfarmComponent
+# from topfarm.tlib import TopfarmComponent
 
 import NOJ as f_noj #fortran implementation of NOJ
 import GCL as f_gcl #fortran implementation of GCL
@@ -184,7 +184,7 @@ class FusedFNOJ(Component):
         self.thrust = self.wt_thrust.sum()
 
 
-class MultipleFusedFGCL(TopfarmComponent):
+class MultipleFusedFGCL(Component):
 
     # Inputs
     wind_speeds = List([], iotype='in', units='m/s',
@@ -254,7 +254,7 @@ class MultipleFusedFGCL(TopfarmComponent):
         self.power  = power
         self.thrust  = thrust
 
-class MultipleFusedFNOJ(TopfarmComponent):
+class MultipleFusedFNOJ(Component):
 
     # Inputs
     wind_speeds = List([], iotype='in', units='m/s',
@@ -312,7 +312,7 @@ class MultipleFusedFNOJ(TopfarmComponent):
         self.power  = power
         self.thrust  = thrust
 
-class AEP_f(TopfarmComponent):
+class AEP_f(Component):
 
     # Inputs
     wind_speeds = List([], iotype='in', units='m/s',
@@ -343,7 +343,7 @@ class AEP_f(TopfarmComponent):
         """
         :param wt_layout: GenericWindFarmTurbineLayout()
         :param wind_rose: WeibullWindRoseVT()
-        :param wf: TopfarmComponent() #MultipleFused
+        :param wf: MultipleFused wake model
         :param scaling: float [default = 1.0]
                         The scaling used to calculate the net_aep. If it is set to 0.0, the scaling
                         will be set to the net_aep the first time the simulation is run.
