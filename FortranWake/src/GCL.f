@@ -510,6 +510,92 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       end subroutine gcl
 
 c ----------------------------------------------------------------------
+c gcl_av(x,y,z,DT,P_c,CT_c,WS,WD,TI,AV)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES with wt available
+c Computes the WindFarm flow and Power using G. C. Larsen model:
+c Larsen, G. C., and P. E. Réthoré. A simple stationary semi-analytical
+c wake model. Technical Report Risø, 2009.
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c TI (array): Ambient turbulence intensity [-]
+c AV (array): Wind turbine available per flow [nF,n]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+      subroutine gcl_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,AV,
+     &a1,a2,a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+
+      implicit none
+      integer :: n,nP,nCT,nF,Ng,AV(nf,n)
+      real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
+      real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
+      real(kind=8),dimension(nF) :: WS,WD,TI,a1,a2,a3,a4,b1,b2
+      real(kind=8) :: P(nF,n),T(nF,n),U(nF,n)
+cf2py integer intent(hide),depend(DT) :: n = len(DT)
+cf2py integer intent(hide),depend(P_c) :: nP = size(P_c,2)
+cf2py integer intent(hide),depend(CT_c) :: nCT = size(CT_c,2)
+cf2py integer intent(hide),depend(WS) :: nF = len(WS)
+cf2py real(kind=8) intent(in),dimension(n) :: DT
+cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
+cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
+cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
+cf2py real(kind=8) intent(in),dimension(nF) :: WS,WD,TI
+cf2py integer intent(in),dimension(nF,n) :: AV
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
+cf2py integer optional intent(in) :: Ng = 4
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
+cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
+      ! internal variables
+      integer :: i,j
+      real(kind=8) :: CT_c_AV(n,nCT,2), P_c_AV(n,nCT,2)
+
+      do i=1,nF
+        CT_c_AV = CT_c
+        P_c_AV  = P_c
+        ! Re-defines the trust curve for non available turbines
+        do j=1,n
+          if (AV(i,j)==0) then
+            CT_c_AV(j,:,2) = CT_idle(j)
+            P_c_AV(j,:,2) = 0.0d0
+          end if
+        end do
+        call gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i),WD(i),
+     &       TI(i),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,WS_CI,
+     &       WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
+      end do
+
+      end subroutine gcl_av
+
+c ----------------------------------------------------------------------
 c gcl_GA(x,y,z,DT,P_c,CT_c,WS,WD,TI,STD_WD,Nga)
 c ----------------------------------------------------------------------
 c GAUSSIAN AVERAGE

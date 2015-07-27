@@ -6,7 +6,7 @@ c
 c ----------------------------------------------------------------------
 
 c ----------------------------------------------------------------------
-c get_RW(x,D,CT)
+c get_RW(x,D,CT,kj)
 c ----------------------------------------------------------------------
 c Computes the wake radius at a location
 c
@@ -15,6 +15,7 @@ c ----------
 c x (float): Distance between turbines in the stream-wise direction
 c D (float): Wind turbine diameter
 c CT (float): Outputs WindTurbine object's thrust coefficient
+c kj (float): Wake (linear) expansion coefficient
 c
 c Outputs
 c ----------
@@ -52,7 +53,7 @@ cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
       end subroutine get_RW
 
 c ----------------------------------------------------------------------
-c get_dU(x,r,D,CT)
+c get_dU(x,r,D,CT,kj)
 c ----------------------------------------------------------------------
 c Computes the wake velocity deficit at a location
 c
@@ -62,6 +63,7 @@ c x (float): Distance between turbines in the stream-wise direction
 c r (array): Radial distance between the turbine and the location
 c D (float): Wind turbine diameter
 c CT (float): Outputs WindTurbine object's thrust coefficient
+c kj (float): Wake (linear) expansion coefficient
 c
 c Outputs
 c ----------
@@ -101,7 +103,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dU
       end subroutine get_dU
 
 c ----------------------------------------------------------------------
-c get_dUeq(x,y,z,DT,D,CT)
+c get_dUeq(x,y,z,DT,D,CT,kj)
 c ----------------------------------------------------------------------
 c Computes the rotor averaged (equivalent) wake velocity deficit at
 c different turbine locations and diameters.
@@ -118,8 +120,7 @@ c z (array): Distance between turbines in the vertical direction
 c DT (array): Wake operating turbines diameter
 c D (float): Wake generating turbine diameter
 c CT (float): Outputs WindTurbine object's thrust coefficient
-c Ng (int): Polynomial order for Gauss-Legendre quadrature integration
-c           in both radial and angular positions
+c kj (float): Wake (linear) expansion coefficient
 c
 c Outputs
 c ----------
@@ -189,7 +190,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dUeq
 
 
 c ----------------------------------------------------------------------
-c noj_s(x,y,z,DT,P_c,CT_c,WS)
+c noj_s(x,y,z,DT,P_c,CT_c,WS,kj)
 c ----------------------------------------------------------------------
 c SINGLE FLOW CASE
 c Computes the WindFarm flow and Power using N. O. Jensen model:
@@ -206,6 +207,7 @@ c WS (float): Undisturbed rotor averaged (equivalent) wind speed at hub
 c             height [m/s]
 c WD (float): Undisturbed wind direction at hub height [deg.]
 c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c kj (float): Wake (linear) expansion coefficient
 c
 c rho (float): Air density at which the power curve is valid [kg/m^3]
 c WS_CI (array): Cut in wind speed [m/s] for each turbine
@@ -293,9 +295,9 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
       end subroutine noj_s
 
 c ----------------------------------------------------------------------
-c noj(x,y,z,DT,P_c,CT_c,WS,WD)
+c noj(x,y,z,DT,P_c,CT_c,WS,WD,kj)
 c ----------------------------------------------------------------------
-c MULTIPLE FLOW CASES with individual wind direction for each turbine
+c MULTIPLE FLOW CASES
 c
 c Inputs
 c ----------
@@ -309,7 +311,7 @@ c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
 c             height [m/s]
 c WD (array): Undisturbed wind direction at hub height [deg.]
 c             Meteorological coordinates (N=0,E=90,S=180,W=270)
-c TI (array): Ambient turbulence intensity [-]
+c kj (float): Wake (linear) expansion coefficient
 c
 c rho (float): Air density at which the power curve is valid [kg/m^3]
 c WS_CI (array): Cut in wind speed [m/s] for each turbine
@@ -355,6 +357,82 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       end do
 
       end subroutine noj
+
+c ----------------------------------------------------------------------
+c noj_av(x,y,z,DT,P_c,CT_c,WS,WD,kj,AV)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES with wt available
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c kj (float): Wake (linear) expansion coefficient
+c AV (array): Wind turbine available per flow [nF,n]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+      subroutine noj_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,AV,
+     &rho,WS_CI,WS_CO,CT_idle,P,T,U)
+
+      implicit none
+      integer :: n,nP,nCT,nF,AV(nf,n)
+      real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
+      real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
+      real(kind=8),dimension(nF) :: WS,WD,kj
+      real(kind=8) :: P(nF,n),T(nF,n),U(nF,n)
+cf2py integer intent(hide),depend(DT) :: n = len(DT)
+cf2py integer intent(hide),depend(P_c) :: nP = size(P_c,2)
+cf2py integer intent(hide),depend(CT_c) :: nCT = size(CT_c,2)
+cf2py integer intent(hide),depend(WS) :: nF = len(WS)
+cf2py real(kind=8) intent(in),dimension(n) :: DT
+cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
+cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
+cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
+cf2py real(kind=8) intent(in),dimension(nF) :: WS,WD
+cf2py integer intent(in),dimension(nF,n) :: AV
+cf2py real(kind=8) optional,intent(in),dimension(nF)::kj = 0.050
+cf2py real(kind=8) optional,intent(in) :: rho = 1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI = 4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO = 25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle = 0.053
+cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
+      ! internal variables
+      integer :: i,j
+      real(kind=8) :: CT_c_AV(n,nCT,2), P_c_AV(n,nCT,2)
+
+      do i=1,nF
+        CT_c_AV = CT_c
+        P_c_AV  = P_c
+        ! Re-defines the trust curve for non available turbines
+        do j=1,n
+          if (AV(i,j)==0) then
+            CT_c_AV(j,:,2) = CT_idle(j)
+            P_c_AV(j,:,2) = 0.0d0
+          end if
+        end do
+        call noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i),WD(i),
+     &            kj(i),rho,WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
+      end do
+
+      end subroutine noj_av
 
 c ----------------------------------------------------------------------
 c noj_GA(x,y,z,DT,P_c,CT_c,WS,WD,STD_WD,Nga)
