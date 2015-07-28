@@ -480,7 +480,8 @@ class AEP_f(Component):
         desc='Capacity factor for wind plant')
 
 
-    def __init__(self, wt_layout, wind_rose, wf, **kwargs):
+    def __init__(self, wind_speeds, wind_directions, wt_positions, scaling,
+        wt_layout, wind_rose, wf,**kwargs):
         """
         :param wt_layout: GenericWindFarmTurbineLayout()
         :param wind_rose: WeibullWindRoseVT()
@@ -492,7 +493,14 @@ class AEP_f(Component):
         self.wf = wf
         self.wf.wt_layout = wt_layout
         self.wind_rose = wind_rose
-        super(AEP_f, self).__init__(**kwargs)
+
+        WS,WD = np.meshgrid(np.array(self.wind_speeds),
+                np.array(self.wind_directions))
+        WS,WD = WS.flatten(),WD.flatten()
+
+        self.wf.wind_speeds=WS
+        self.wf.wind_directions=WD
+        super(AEP_f,self).__init__(**kwargs)
 
     def execute(self):
         power_curve = interp1d(
@@ -517,9 +525,6 @@ class AEP_f(Component):
         gross_aeps = zeros([len(self.wind_directions)])
 
         self.wf.wt_layout.wt_positions=self.wt_positions
-        self.wf.wind_speeds=self.wind_speeds
-        self.wf.wind_directions=self.wind_directions
-
         self.wf.run()
 
         for iwd, wd in enumerate(self.wind_directions):
