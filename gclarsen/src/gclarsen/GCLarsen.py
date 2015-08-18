@@ -359,12 +359,12 @@ def GCLarsen(
 
     if inflow == 'log':
         kappa = 0.4 # Kappa: von karman constant
-        us = WS*kappa/np.log(WF.WT.H/z0) #friction velocity
+        us = WS*kappa/np.log(WF.WT[0].H/z0) #friction velocity
         #eq inflow ws
-        WS_inf = gaussN(WF.WT.R, Ua, [WF.WT.H,us,z0]).sum()
+        WS_inf = gaussN(WF.WT[0].R, Ua, [WF.WT[0].H,us,z0]).sum()
     elif inflow == 'pow':
         #eq inflow ws
-        WS_inf = gaussN(WF.WT.R, Ua_shear, [WF.WT.H,WS,alpha]).sum()
+        WS_inf = gaussN(WF.WT[0].R, Ua_shear, [WF.WT[0].H,WS,alpha]).sum()
 
     # Gauss quadrature points
     r_Gc,w_Gc = np.polynomial.legendre.leggauss(NG)
@@ -386,18 +386,18 @@ def GCLarsen(
 
     # Extreme wake to define WT's in each wake, including partial wakes
     ID_wake = {id0[i]:(get_Rw(x=distFlowCoord[0,id0[i],:],\
-                              R=2.*WF.WT.R,TI=TI,CT=0.9,pars=pars)>\
+                              R=2.*WF.WT[0].R,TI=TI,CT=0.9,pars=pars)>\
                np.abs(distFlowCoord[1,id0[i],:])).nonzero()[0] \
                for i in range(WF.nWT)}
 
     for i in range(WF.nWT):
         #Current wind turbine starting from the most upstream
         cWT = id0[i]
-        cR = WF.WT.R
+        cR = WF.WT[i].R
         cU = U_WT[cWT]
-        if  cU>WF.WT.u_cutin:
-            Ct[cWT] = WF.WT.get_CT(U_WT[cWT])
-            P_WT[cWT] = WF.WT.get_P(U_WT[cWT])
+        if  cU>WF.WT[i].u_cutin:
+            Ct[cWT] = WF.WT[i].get_CT(U_WT[cWT])
+            P_WT[cWT] = WF.WT[i].get_P(U_WT[cWT])
         else:
            Ct[cWT] = 0.053
            P_WT[cWT] = 0.0
