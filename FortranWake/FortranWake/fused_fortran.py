@@ -281,8 +281,8 @@ c gcl(x,y,z,DT,P_c,CT_c,WS,WD,TI)
 c ----------------------------------------------------------------------
 c MULTIPLE FLOW CASES
 c Computes the WindFarm flow and Power using G. C. Larsen model:
-c Larsen, G. C., and P. E. Réthoré. A simple stationary semi-analytical
-c wake model. Technical Report Risø, 2009.
+c Larsen, G. C., and P. E. Rethore. A simple stationary semi-analytical
+c wake model. Technical Report Riso, 2009.
 c
 c Inputs
 c ----------
@@ -389,8 +389,8 @@ c gcl_av(x,y,z,DT,P_c,CT_c,WS,WD,TI,AV)
 c ----------------------------------------------------------------------
 c MULTIPLE FLOW CASES with wt available
 c Computes the WindFarm flow and Power using G. C. Larsen model:
-c Larsen, G. C., and P. E. Réthoré. A simple stationary semi-analytical
-c wake model. Technical Report Risø, 2009.
+c Larsen, G. C., and P. E. Rethore. A simple stationary semi-analytical
+c wake model. Technical Report Riso, 2009.
 c
 c Inputs
 c ----------
