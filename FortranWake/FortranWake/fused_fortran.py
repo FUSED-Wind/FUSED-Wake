@@ -118,7 +118,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power, self.wt_wind_speed, self.wt_thrust = f_noj.noj(
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_noj.noj(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,
@@ -213,7 +213,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power,self.wt_wind_speed,self.wt_thrust=f_noj.noj_av(
+        self.wt_power,self.wt_thrust,self.wt_wind_speed=f_noj.noj_av(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,
@@ -314,7 +314,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power, self.wt_wind_speed, self.wt_thrust = f_gcl.gcl(
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,
@@ -423,7 +423,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power, self.wt_wind_speed, self.wt_thrust = f_gcl.gcl(
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,
