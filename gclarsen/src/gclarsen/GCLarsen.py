@@ -357,14 +357,15 @@ def GCLarsen(
     """
     (distFlowCoord,id0) = WF.turbineDistance(WD)
 
+    # TODO: decide how at what height the us should be defined
     if inflow == 'log':
         kappa = 0.4 # Kappa: von karman constant
-        us = WS*kappa/np.log(WF.WT.H/z0) #friction velocity
+        us = WS*kappa/np.log(WF.WT[0].H/z0) #friction velocity
         #eq inflow ws
-        WS_inf = gaussN(WF.WT.R, Ua, [WF.WT.H,us,z0]).sum()
+        WS_inf = gaussN(WF.WT[0].R, Ua, [WF.WT[0].H,us,z0]).sum()
     elif inflow == 'pow':
         #eq inflow ws
-        WS_inf = gaussN(WF.WT.R, Ua_shear, [WF.WT.H,WS,alpha]).sum()
+        WS_inf = gaussN(WF.WT[0].R, Ua_shear, [WF.WT[0].H,WS,alpha]).sum()
 
     # Gauss quadrature points
     r_Gc,w_Gc = np.polynomial.legendre.leggauss(NG)
@@ -384,34 +385,44 @@ def GCLarsen(
     U_WT0 = WS_inf*np.ones([WF.nWT])
     DU_sq = 0.*U_WT
 
+    allR = np.array([WF.WT[i].R for i in range(WF.nWT)])
+
     # Extreme wake to define WT's in each wake, including partial wakes
-    ID_wake = {id0[i]:(get_Rw(x=distFlowCoord[0,id0[i],:],\
-                              R=2.*WF.WT.R,TI=TI,CT=0.9,pars=pars)>\
-               np.abs(distFlowCoord[1,id0[i],:])).nonzero()[0] \
-               for i in range(WF.nWT)}
+    ID_wake = {i:(get_Rw(x=distFlowCoord[0,i,:],                # streamwise distance
+                         R=WF.WT[i].R,                          # Upstream radius
+                         TI=TI,
+                         CT=0.9,                                #Maximum effect
+                         pars=pars)
+                        > np.abs(distFlowCoord[1,i,:]) + allR).nonzero()[0]
+               for i in id0}
 
     for i in range(WF.nWT):
         #Current wind turbine starting from the most upstream
         cWT = id0[i]
-        cR = WF.WT.R
+        # Current radius
+        cR = WF.WT[i].R
+        # Current hub wind speed
         cU = U_WT[cWT]
-        if  cU>WF.WT.u_cutin:
-            Ct[cWT] = WF.WT.get_CT(U_WT[cWT])
-            P_WT[cWT] = WF.WT.get_P(U_WT[cWT])
+        if  cU>WF.WT[i].u_cutin:
+            Ct[cWT] = WF.WT[i].get_CT(U_WT[cWT])
+            P_WT[cWT] = WF.WT[i].get_P(U_WT[cWT])
         else:
-           Ct[cWT] = 0.053
+           Ct[cWT] = 0.053  # Drag coefficient of the idled turbine
            P_WT[cWT] = 0.0
 
+        # Current turbine CT
         cCT=Ct[cWT]
         #ID_wake = {cWT:(get_Rw(x=distFlowCoord[0,cWT,:],\
         #                           R=cR*1.5,TI=TI,CT=cCT)\
         #           >np.abs(distFlowCoord[1,cWT,:])).nonzero()}
 
         #Radial coordinates in cWT for wake affected WT's
-        x=distFlowCoord[0,cWT,ID_wake[cWT]]
-        r_Ri  = np.abs(distFlowCoord[1,cWT,ID_wake[cWT]])
-        th_Ri = np.pi*(np.sign(distFlowCoord[1,cWT,ID_wake[cWT]])+1.0)
-        RW = get_Rw(x=x,R=cR,TI=TI,CT=cCT,pars=pars)
+        x = distFlowCoord[0, cWT, ID_wake[cWT]]
+        r_Ri  = np.abs(distFlowCoord[1,cWT, ID_wake[cWT]])
+        th_Ri = np.pi*(np.sign(distFlowCoord[1, cWT, ID_wake[cWT]]) + 1.0) # <- what is this? [0|2pi]
+
+        # Get all the wake radius at the position of the -in wake- downstream turbines
+        RW = get_Rw(x=x, R=cR, TI=TI, CT=cCT, pars=pars)
 
         # Meshgrids (Tensorial) extension of points of evaluation
         # to perform Gaussian quadrature
@@ -420,15 +431,21 @@ def GCLarsen(
         x_m, wj_m = np.meshgrid(x, wj)
         RW_m, wk_m = np.meshgrid(RW, wk)
 
-        # Radial points of evaluation
-        r_eval = np.sqrt(r_Ri_m**2.0 + \
-                 (cR*(rk_m+1.)/2.0)**2. + \
-                 r_Ri_m*cR*(rk_m+1.)*\
-                 np.cos(th_Ri_m-np.pi*(tj_m+1.)))
+        # downstream Radius
+        downR = np.array([WF.WT[j].R for j in ID_wake[cWT]])
+        downR_m, dummyvar = np.meshgrid(downR, np.zeros((NG**2)))
+        cH = WF.WT[cWT].H
+        downH = np.array([WF.WT[j].H for j in ID_wake[cWT]]) - cH
+        downH_m, dummyvar = np.meshgrid(downH, np.zeros((NG**2)))
+
+        # Radial points of evaluation    <- probably need to add the turbine height difference here?
+        r_eval = np.sqrt(r_Ri_m**2.0 +
+                         (downR_m * (rk_m + 1.) / 2.0)**2. +
+                         r_Ri_m * downR_m * (rk_m + 1.) * np.cos(th_Ri_m - np.pi*(tj_m + 1.)))
 
         # Eval wake velocity deficit
-        DU_m = get_dU(x=x_m,r=r_eval,Rw=RW_m,
-                      U=cU,R=cR,TI=TI,CT=cCT,pars=pars)
+        DU_m = get_dU(x=x_m, r=r_eval, Rw=RW_m,
+                      U=cU, R=downR_m, TI=TI, CT=cCT, pars=pars)
 
         localDU = np.sum((1./4.)*wj_m*wk_m*DU_m*(rk_m+1.0),axis=0)
 

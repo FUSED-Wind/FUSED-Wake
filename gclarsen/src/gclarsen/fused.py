@@ -129,7 +129,9 @@ class FWindFarm(WindFarm):
         # self.Ypos = coordArray[:,1]
         # self.nWT = len(self.Ypos)
         # # TODO: Figure out a better way to add the turbine name
-        self.WT = FWindTurbine('wt', wt_layout.wt_list[0])
+        self.WT = []
+        for i in range(len(wt_layout.wt_list)):
+            self.WT.append(FWindTurbine('wt', wt_layout.wt_list[i]))
 
 def generate_GenericWindFarmTurbineLayout(WF):
     """Generate a GenericWindFarmTurbineLayout instance based on a WindFarm instance
@@ -219,7 +221,7 @@ class FGCLarsen(Component):
             sup = self.sup,
             pars = self.pars)
 
-        self.wt_thrust = wt_CT * 0.5 * 1.225 * self.wt_wind_speed**2.0 * np.pi * WF.WT.R**2.
+        self.wt_thrust = wt_CT * 0.5 * 1.225 * self.wt_wind_speed**2.0 * np.pi * WF.WT[0].R**2.
 
         self.power = self.wt_power.sum()
         self.thrust = self.wt_thrust.sum()
