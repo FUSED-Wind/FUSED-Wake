@@ -1,6 +1,6 @@
 c ----------------------------------------------------------------------
 c
-c N.O.Jensen wake model
+c Modified N.O.Jensen wake model
 c by Juan P. Murcia <jumu@dtu.dk>
 c
 c ----------------------------------------------------------------------
@@ -39,7 +39,8 @@ cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
       ! axial velocity deficit at rotor disc
       a=(1.0d0-(sqrt(1.0d0-CT)))/2.0d0
       ! Near wake expansion ratio: k = D0/D from momentum balance
-      k=1.0d0!sqrt((1.0d0-a)/(1.0d0-2.0d0*a))
+      !k=1.0d0
+      k=sqrt((1.0d0-a)/(1.0d0-2.0d0*a))
 
       do i = 1, n
         if (x(i)<= 0) then !3.0d0*D ) then !
@@ -47,8 +48,8 @@ cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
           RW(i) = 0.0d0
         else
           ! Linear wake expansion x0 = 3D
-          !RW(i)=0.5d0*k*D + kj*( x(i) - 3.0d0*D )
-          RW(i)=0.5d0*k*D + kj*( x(i) )
+          RW(i)=0.5d0*k*D + kj*( x(i) - 3.0d0*D )
+          !RW(i)=0.5d0*k*D + kj*( x(i) )
         end if
       end do
       end subroutine get_RW
@@ -191,7 +192,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dUeq
 
 
 c ----------------------------------------------------------------------
-c noj_s(x,y,z,DT,P_c,CT_c,WS,kj)
+c mod_noj_s(x,y,z,DT,P_c,CT_c,WS,kj)
 c ----------------------------------------------------------------------
 c SINGLE FLOW CASE
 c Computes the WindFarm flow and Power using N. O. Jensen model:
@@ -221,7 +222,7 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,
+      subroutine mod_noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,
      &rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
@@ -281,13 +282,13 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
         !
         !Wake deficits are normalized by the local velocity
         !Linear sum wake deficits superposition
-        !dUsq = (U(i)*dUeq)**(2.0d0)
-        !U = U - dUsq**(0.5d0)
+        dUsq = (U(i)*dUeq)**(2.0d0)
+        U = U - dUsq**(0.5d0)
         !
         !All deficits are normalized by the inflow velocity
         !Squared root of the sum of squares wake deficits superposition
-        dUsq = dUsq + (WS*dUeq)**(2.0d0)
-        U = WS - dUsq**(0.5d0)
+        !dUsq = dUsq + (WS*dUeq)**(2.0d0)
+        !U = WS - dUsq**(0.5d0)
       end do
       ! Calculates the power and thrust
       do k=1,n
@@ -301,10 +302,10 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
         T(k) = CT*0.5d0*rho*U(k)*U(k)*pi*DT(k)*DT(k)/4.0d0
       end do
 
-      end subroutine noj_s
+      end subroutine mod_noj_s
 
 c ----------------------------------------------------------------------
-c noj(x,y,z,DT,P_c,CT_c,WS,WD,kj)
+c mod_noj(x,y,z,DT,P_c,CT_c,WS,WD,kj)
 c ----------------------------------------------------------------------
 c MULTIPLE FLOW CASES
 c
@@ -333,7 +334,7 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine noj(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,
+      subroutine mod_noj(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,
      &rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
@@ -361,14 +362,14 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
       integer :: i
 
       do i=1,nF
-        call noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i),kj(i),
-     &            rho,WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
+        call mod_noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i),
+     &            kj(i),rho,WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
       end do
 
-      end subroutine noj
+      end subroutine mod_noj
 
 c ----------------------------------------------------------------------
-c noj_av(x,y,z,DT,P_c,CT_c,WS,WD,kj,AV)
+c mod_noj_av(x,y,z,DT,P_c,CT_c,WS,WD,kj,AV)
 c ----------------------------------------------------------------------
 c MULTIPLE FLOW CASES with wt available
 c
@@ -398,8 +399,8 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine noj_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,kj,AV,
-     &rho,WS_CI,WS_CO,CT_idle,P,T,U)
+      subroutine mod_noj_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
+     &kj,AV,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
       integer :: n,nP,nCT,nF,AV(nf,n)
@@ -437,14 +438,14 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
             P_c_AV(j,:,2) = 0.0d0
           end if
         end do
-        call noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i),WD(i),
-     &            kj(i),rho,WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
+        call mod_noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i),
+     &       WD(i),kj(i),rho,WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
       end do
 
-      end subroutine noj_av
+      end subroutine mod_noj_av
 
 c ----------------------------------------------------------------------
-c noj_GA(x,y,z,DT,P_c,CT_c,WS,WD,STD_WD,Nga)
+c mod_noj_GA(x,y,z,DT,P_c,CT_c,WS,WD,STD_WD,Nga)
 c ----------------------------------------------------------------------
 c GAUSSIAN AVERAGE
 c Gauss-Hermite quadrature for normally distributed wind direction
@@ -477,7 +478,7 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine noj_GA(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
+      subroutine mod_noj_GA(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
      &STD_WD,Nga,kj,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
@@ -592,7 +593,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
         U(i,:)=0.0d0
         do j=1,Nga
           WD_aux = WD(i)+sqrt(2.0d0)*STD_WD(i)*root(j)
-          call noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD_aux,
+          call mod_noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD_aux,
      &      kj(i),rho,WS_CI,WS_CO,CT_idle,P_aux,T_aux,U_aux)
           P(i,:)=P(i,:)+weight(j)*P_aux*(1.0d0/sqrt(pi))
           T(i,:)=T(i,:)+weight(j)*T_aux*(1.0d0/sqrt(pi))
@@ -600,10 +601,10 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
         end do
       end do
 
-      end subroutine noj_GA
+      end subroutine mod_noj_GA
 
 c ----------------------------------------------------------------------
-c noj_mult_wd(x,y,z,DT,P_c,CT_c,WS,WD,TI)
+c mod_noj_mult_wd(x,y,z,DT,P_c,CT_c,WS,WD,TI)
 c ----------------------------------------------------------------------
 c MULTIPLE FLOW CASES with individual wind direction for each turbine
 c
@@ -632,8 +633,8 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine noj_mult_wd(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
-     &STD_WD,Nga,kj,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+      subroutine mod_noj_mult_wd(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,
+     &WD,STD_WD,Nga,kj,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
       integer :: n,nP,nCT,nF,Nga
@@ -666,9 +667,10 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
 
       do j=1,n
         do i=1,nF
-          call noj_GA(n,nP,nCT,1,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i,j),
-     &STD_WD(i,j),Nga,kj(i),rho,WS_CI,WS_CO,CT_idle,P_aux,T_aux,U_aux)
-!          call noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i,j),
+          call mod_noj_GA(n,nP,nCT,1,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),
+     &WD(i,j),STD_WD(i,j),Nga,kj(i),rho,WS_CI,WS_CO,CT_idle,P_aux,
+     &T_aux,U_aux)
+!          call mod_noj_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i,j),
 !     &      kj(i),rho,WS_CI,WS_CO,CT_idle,P_aux,T_aux,U_aux)
           P(i,j)=P_aux(j)
           T(i,j)=T_aux(j)
@@ -676,7 +678,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
         end do
       end do
 
-      end subroutine noj_mult_wd
+      end subroutine mod_noj_mult_wd
 
 c ----------------------------------------------------------------------
 c Additional routines

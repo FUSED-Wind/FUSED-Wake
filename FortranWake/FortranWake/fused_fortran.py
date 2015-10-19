@@ -11,6 +11,7 @@ from openmdao.lib.datatypes.api import Float, VarTree, Array, List, Int, Enum, S
 
 import NOJ as f_noj #fortran implementation of NOJ
 import GCL as f_gcl #fortran implementation of GCL
+import Mod_NOJ as f_mod_noj
 
 import numpy as np
 from numpy import zeros,ones,ones_like,meshgrid,array,hstack,trapz,exp,mean
@@ -451,6 +452,197 @@ c            (nWT,1) [m/s]
 
         self.power  = power
         self.thrust  = thrust
+
+
+# ----------------------------------------------------------------------
+#                FUSED-wind wrapped Modified NOJ wake model
+# ----------------------------------------------------------------------
+
+class FMod_NOJ(Component):
+    """
+    Implementation of the N. O. Jensen stationary wake model in according
+    to fusedwind.plant_flow interface.
+    """
+    # Inputs
+    wind_speeds = Array([], iotype='in', units='m/s',
+        desc='The different wind speeds to run [nF]')
+    wind_directions = Array([], iotype='in', units='deg',
+        desc='The different wind directions to run [nF]')
+    wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
+        desc='Wind turbine properties and layout')
+
+    # Specific Inputs:
+    wake_expansions = Array([], iotype='in', low='0.0', high='1.0',
+        desc='Linear wake radius expansion slope [nF]')
+
+    # Outputs
+    power = Array([], iotype='out', units='kW',
+        desc='Total wind plant power production [nF]')
+    thrust = Array(iotype='out', units='N',
+        desc='Total wind plant thrust [nF]')
+    wt_power = Array([], iotype='out',
+        desc='The power production of each wind turbine')
+    wt_thrust = Array([], iotype='out',
+        desc='The thrust of each wind turbine')
+
+    # Specific Outputs:
+    wt_wind_speed = Array([], iotype='out', units='m/s',
+        desc='The equivalent hub wind speed at each wind turbine')
+
+    def execute(self):
+        '''
+c ----------------------------------------------------------------------
+c mod_noj(x,y,z,DT,P_c,CT_c,WS,WD,kj)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c kj (float): Wake (linear) expansion coefficient
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+        '''
+        # get T2T distance in global coordinates
+        wt_layout = self.wt_layout
+        x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
+        # Run the wind flow case
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_mod_noj.mod_noj(
+            x_g = x_g,
+            y_g = y_g,
+            z_g = z_g,
+            dt = wt_layout.wt_array(attr='rotor_diameter'),
+            p_c = wt_layout.wt_array(attr='power_curve'),
+            ct_c = wt_layout.wt_array(attr='c_t_curve'),
+            ws = self.wind_speeds,
+            wd = self.wind_directions,
+            kj = self.wake_expansions,
+            rho = mean(wt_layout.wt_array(attr='air_density')),
+            ws_ci = wt_layout.wt_array(attr='cut_in_wind_speed'),
+            ws_co = wt_layout.wt_array(attr='cut_out_wind_speed'),
+            ct_idle = wt_layout.wt_array(attr='c_t_idle') )
+
+        power = self.wt_power.sum(axis=1)
+        thrust = self.wt_thrust.sum(axis=1)
+
+        self.power  = power
+        self.thrust  = thrust
+
+
+class FMod_NOJ_AV(Component):
+    """
+    Implementation of the N. O. Jensen stationary wake model in according
+    to fusedwind.plant_flow interface.
+
+    This model includes the option of having wt not available
+    """
+    # Inputs
+    wind_speeds = Array([], iotype='in', units='m/s',
+        desc='The different wind speeds to run [nF]')
+    wind_directions = Array([], iotype='in', units='deg',
+        desc='The different wind directions to run [nF]')
+    wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
+        desc='Wind turbine properties and layout')
+
+    # Specific Inputs:
+    wake_expansions = Array([], iotype='in', low='0.0', high='1.0',
+        desc='Linear wake radius expansion slope [nF]')
+    wt_available = Array([], iotype='in',
+        desc='Defines if each wind turbine is available [nF, nWT]')
+
+    # Outputs
+    power = Array([], iotype='out', units='kW',
+        desc='The power production at each inflow [nF]')
+    thrust = Array(iotype='out', units='N',
+        desc='Total wind farm thrust [nF]')
+    wt_power = Array([], iotype='out',
+        desc='The power production of each wind turbine [nF, nWT]')
+    wt_thrust = Array([], iotype='out',
+        desc='The thrust of each wind turbine [nF, nWT]')
+
+    # Specific Outputs:
+    wt_wind_speed = Array([], iotype='out', units='m/s',
+        desc='The equivalent hub wind speed at each wind turbine')
+
+    def execute(self):
+        '''
+c ----------------------------------------------------------------------
+c mod_noj_av(x,y,z,DT,P_c,CT_c,WS,WD,kj,AV)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES with wt available
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c kj (float): Wake (linear) expansion coefficient
+c AV (array): Wind turbine available per flow [nF,n]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+        '''
+        # get T2T distance in global coordinates
+        wt_layout = self.wt_layout
+        x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
+        # Run the wind flow case
+        self.wt_power,self.wt_thrust,self.wt_wind_speed=f_mod_noj.mod_noj_av(
+            x_g = x_g,
+            y_g = y_g,
+            z_g = z_g,
+            dt = wt_layout.wt_array(attr='rotor_diameter'),
+            p_c = wt_layout.wt_array(attr='power_curve'),
+            ct_c = wt_layout.wt_array(attr='c_t_curve'),
+            ws = self.wind_speeds,
+            wd = self.wind_directions,
+            kj = self.wake_expansions,
+            av = self.wt_available,
+            rho = mean(wt_layout.wt_array(attr='air_density')),
+            ws_ci = wt_layout.wt_array(attr='cut_in_wind_speed'),
+            ws_co = wt_layout.wt_array(attr='cut_out_wind_speed'),
+            ct_idle = wt_layout.wt_array(attr='c_t_idle') )
+
+        power = self.wt_power.sum(axis=1)
+        thrust = self.wt_thrust.sum(axis=1)
+
+        self.power  = power
+        self.thrust  = thrust
+
 
 
 class AEP_f(Component):
