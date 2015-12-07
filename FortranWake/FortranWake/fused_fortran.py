@@ -12,6 +12,7 @@ from openmdao.lib.datatypes.api import Float, VarTree, Array, List, Int, Enum, S
 import NOJ as f_noj #fortran implementation of NOJ
 import GCL as f_gcl #fortran implementation of GCL
 import Mod_NOJ as f_mod_noj
+import GAU as f_gau
 
 import numpy as np
 from numpy import zeros,ones,ones_like,meshgrid,array,hstack,trapz,exp,mean
@@ -424,7 +425,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl(
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl_av(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,
@@ -643,6 +644,207 @@ c            (nWT,1) [m/s]
         self.power  = power
         self.thrust  = thrust
 
+
+# ----------------------------------------------------------------------
+#                FUSED-wind wrapped GAU wake model
+# ----------------------------------------------------------------------
+
+class FGAU(Component):
+    """
+    Implementation of the Gaussian deficit stationary wake model in according
+    to fusedwind.plant_flow interface.
+    [1] Bastankhah, M., & Porte'-Agel, F. (2014). A new analytical model
+    for wind-turbine wakes. Renewable Energy, 70, 116-123.
+    """
+    # Inputs
+    wind_speeds = Array([], iotype='in', units='m/s',
+        desc='The different wind speeds to run [nF]')
+    wind_directions = Array([], iotype='in', units='deg',
+        desc='The different wind directions to run [nF]')
+    wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
+        desc='Wind turbine properties and layout')
+
+    # Specific Inputs:
+    wake_expansions = Array([], iotype='in', low='0.0', high='1.0',
+        desc='Linear wake radius expansion slope [nF]')
+    n_quad_points = Int(4, low=4, high=6, iotype='in',
+        desc='Number of points in the Gauss integration')
+
+    # Outputs
+    power = Array([], iotype='out', units='kW',
+        desc='Total wind plant power production [nF]')
+    thrust = Array(iotype='out', units='N',
+        desc='Total wind plant thrust [nF]')
+    wt_power = Array([], iotype='out',
+        desc='The power production of each wind turbine')
+    wt_thrust = Array([], iotype='out',
+        desc='The thrust of each wind turbine')
+
+    # Specific Outputs:
+    wt_wind_speed = Array([], iotype='out', units='m/s',
+        desc='The equivalent hub wind speed at each wind turbine')
+
+    def execute(self):
+        '''
+c ----------------------------------------------------------------------
+c gau(x,y,z,DT,P_c,CT_c,WS,WD,ks)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES
+c Bastankhah, M., & Porte'-Agel, F. (2014). A new analytical model for
+c wind-turbine wakes. Renewable Energy, 70, 116-123.
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c ks (array): Linear wake expansion [-]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+        '''
+        # get T2T distance in global coordinates
+        wt_layout = self.wt_layout
+        x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
+        # Run the wind flow case
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gau.gau(
+            x_g = x_g,
+            y_g = y_g,
+            z_g = z_g,
+            dt = wt_layout.wt_array(attr='rotor_diameter'),
+            p_c = wt_layout.wt_array(attr='power_curve'),
+            ct_c = wt_layout.wt_array(attr='c_t_curve'),
+            ws = self.wind_speeds,
+            wd = self.wind_directions,
+            ks = self.wake_expansions,
+            ng = self.n_quad_points,
+            rho = mean(wt_layout.wt_array(attr='air_density')),
+            ws_ci = wt_layout.wt_array(attr='cut_in_wind_speed'),
+            ws_co = wt_layout.wt_array(attr='cut_out_wind_speed'),
+            ct_idle = wt_layout.wt_array(attr='c_t_idle') )
+
+        power = self.wt_power.sum(axis=1)
+        thrust = self.wt_thrust.sum(axis=1)
+
+        self.power  = power
+        self.thrust  = thrust
+
+
+class FGAU_AV(Component):
+    """
+    Implementation of the G. C. Larsen stationary wake model in according
+    to fusedwind.plant_flow interface.
+
+    This model includes the option of having wt not available
+    """
+    # Inputs
+    wind_speeds = Array([], iotype='in', units='m/s',
+        desc='The different wind speeds to run [nF]')
+    wind_directions = Array([], iotype='in', units='deg',
+        desc='The different wind directions to run [nF]')
+    wt_layout = VarTree(GenericWindFarmTurbineLayout(), iotype='in',
+        desc='Wind turbine properties and layout')
+
+    # Specific Inputs:
+    wake_expansions = Array([], iotype='in', low='0.0', high='1.0',
+        desc='Linear wake radius expansion slope [nF]')
+    n_quad_points = Int(4, low=4, high=6, iotype='in',
+        desc='Number of points in the Gauss integration')
+    wt_available = Array([], iotype='in',
+        desc='Defines if each wind turbine is available [nF, nWT]')
+
+    # Outputs
+    power = Array([], iotype='out', units='kW',
+        desc='Total wind plant power production [nF]')
+    thrust = Array(iotype='out', units='N',
+        desc='Total wind plant thrust [nF]')
+    wt_power = Array([], iotype='out',
+        desc='The power production of each wind turbine')
+    wt_thrust = Array([], iotype='out',
+        desc='The thrust of each wind turbine')
+
+    # Specific Outputs:
+    wt_wind_speed = Array([], iotype='out', units='m/s',
+        desc='The equivalent hub wind speed at each wind turbine')
+
+    def execute(self):
+        '''
+c ----------------------------------------------------------------------
+c gau_av(x,y,z,DT,P_c,CT_c,WS,WD,ks,AV)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES with wt available
+c Bastankhah, M., & Porte'-Agel, F. (2014). A new analytical model for
+c wind-turbine wakes. Renewable Energy, 70, 116-123.
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s]
+c WD (array): Undisturbed wind direction at hub height [deg.]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c ks (array): Linear wake expansion [-]
+c AV (array): Wind turbine available per flow [nF,n]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+        '''
+        # get T2T distance in global coordinates
+        wt_layout = self.wt_layout
+        x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
+        # Run the wind flow case
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl_av(
+            x_g = x_g,
+            y_g = y_g,
+            z_g = z_g,
+            dt = wt_layout.wt_array(attr='rotor_diameter'),
+            p_c = wt_layout.wt_array(attr='power_curve'),
+            ct_c = wt_layout.wt_array(attr='c_t_curve'),
+            ws = self.wind_speeds,
+            wd = self.wind_directions,
+            ks = self.wake_expansions,
+            av = self.wt_available,
+            ng = self.n_quad_points,
+            rho = mean(wt_layout.wt_array(attr='air_density')),
+            ws_ci = wt_layout.wt_array(attr='cut_in_wind_speed'),
+            ws_co = wt_layout.wt_array(attr='cut_out_wind_speed'),
+            ct_idle = wt_layout.wt_array(attr='c_t_idle') )
+
+        power = self.wt_power.sum(axis=1)
+        thrust = self.wt_thrust.sum(axis=1)
+
+        self.power  = power
+        self.thrust  = thrust
 
 
 class AEP_f(Component):
