@@ -823,7 +823,7 @@ c            (nWT,1) [m/s]
         wt_layout = self.wt_layout
         x_g,y_g,z_g=get_T2T_gl_coord(wt_layout)
         # Run the wind flow case
-        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gcl.gcl_av(
+        self.wt_power, self.wt_thrust, self.wt_wind_speed = f_gau.gau_av(
             x_g = x_g,
             y_g = y_g,
             z_g = z_g,

@@ -46,14 +46,9 @@ cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
       k=sqrt((1.0d0-a)/(1.0d0-2.0d0*a))
 
       do i = 1, n
-        if (x(i)<= 0) then !3.0d0*D ) then !
-          ! Null wake radius for locations in front of the rotor disc
-          RW(i) = 0.0d0
-        else
-          ! Linear wake expansion:
-          ! RW is defined as the sigma of the Gaussian wake deficit
-          RW(i)=0.2d0*k*D + ks*x(i)
-        end if
+        ! Linear wake expansion:
+        ! RW is defined as the sigma of the Gaussian wake deficit
+        RW(i)=0.2d0*k*D + ks*x(i)
       end do
       end subroutine get_RW
 
@@ -88,17 +83,22 @@ cf2py real(kind=8) intent(in) :: D,CT,ks
 cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dU
       ! internal variables
       integer :: i
-      real(kind=8) :: tm10,tm20
-      real(kind=8), dimension(n) :: RW, tm0
+      real(kind=8), dimension(n) :: RW, tm0, tm10,tm20
 
       call get_RW(n,x,D,CT,RW,ks)
 
-      tm0 = (RW/D)**(2.0d0)
       do i = 1, n
-        tm10=1.0d0 - ( (1.0d0 - (CT/(8.0d0*tm0(i))))**(0.5d0) )
-        tm20=exp(-(1.0d0/(2.0d0*tm0(i)))*((r(i)/D)**(2.0d0)))
-        dU(i)=tm10*tm20
+        tm0(i) = (RW(i)/D)**(2.0d0)
+        if ( (x(i)<=2.d0*D).or.(1.0d0<=(CT/(8.0d0*tm0(i)))) ) then
+          ! Null wake radius for locations in front of the rotor disc
+          dU(i) = 0.0d0
+        else
+          tm10(i)=1.0d0 - ( (1.0d0 - (CT/(8.0d0*tm0(i))))**(0.5d0) )
+          tm20(i)=exp(-(1.0d0/(2.0d0*tm0(i)))*((r(i)/D)**(2.0d0)))
+          dU(i)=-tm10(i)*tm20(i)
+        end if
       end do
+
       end subroutine get_dU
 
 c ----------------------------------------------------------------------
