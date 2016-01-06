@@ -8,8 +8,8 @@ FUSED-Wake
 .. image:: https://img.shields.io/travis/rethore/FUSED-Wake.svg
         :target: https://travis-ci.org/rethore/FUSED-Wake
 
-.. image:: https://readthedocs.org/projects/fusedwake/badge/?version=latest
-        :target: https://readthedocs.org/projects/fusedwake/?badge=latest
+.. image:: https://readthedocs.org/projects/fused-wake/badge/?version=latest
+        :target: http://fused-wake.readthedocs.org/en/latest/?badge=latest
         :alt: Documentation Status
 
 
