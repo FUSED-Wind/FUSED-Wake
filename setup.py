@@ -29,7 +29,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Pierre-Elouan Rethore",
     author_email='pire@dtu.dk',
-    url='https://github.com/DTUWindEnergy/fusedwake',
+    url='https://github.com/DTUWindEnergy/FUSED-Wake',
     packages=[
         'fusedwake',
     ],

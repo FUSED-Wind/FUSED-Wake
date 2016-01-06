@@ -15,7 +15,7 @@ FUSED-Wake
 
 A collection of wind farm flow models for FUSED-Wind
 
-* Free software: ISC license
+* Free software: GNU Affero v3 license
 * Documentation: https://fusedwake.readthedocs.org.
 
 Features
