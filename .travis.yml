@@ -21,13 +21,20 @@ deploy:
     condition: $TOXENV == py27
     repo: rethore/FUSED-Wake
     tags: true
+addons:
+  apt:
+    sources:
+      - deadsnakes
+    packages:
+      - python3.5
+      - python3.5-dev
 env:
-- TOXENV=py35
-- TOXENV=py34
-- TOXENV=py33
-- TOXENV=py27
-- TOXENV=py26
-- TOXENV=pypy
+  - TOXENV=py35
+  - TOXENV=py34
+  - TOXENV=py33
+  - TOXENV=py27
+  - TOXENV=py26
+  - TOXENV=pypy
 install: pip install -U tox
 language: python
 script: tox

@@ -8,9 +8,10 @@ Last revision: 31/10/2013
 
 License: Apache v2.0, http://www.apache.org/licenses/LICENSE-2.0
 """
+from __future__ import print_function
 from numpy.ma import argmin, array
 
-from we_file_io import WEFileIO, TestWEFileIO
+from .we_file_io import WEFileIO, TestWEFileIO
 from xml.dom.minidom import parseString
 import xml.etree.cElementTree as ET
 from xml.etree import ElementTree
@@ -27,12 +28,12 @@ import numpy as np
 
 
 def print_elt(e_):
-    print e_.tag
-    print e_.text
-    print [i.tag for i in e_]
-    print e_.attrib
-    print e_.tail
-    
+    print(e_.tag)
+    print(e_.text)
+    print([i.tag for i in e_])
+    print(e_.attrib)
+    print(e_.tail)
+
 children = lambda e_: [i.tag for i in e_]
 find_attr = lambda e_, attrib_, text_: filter(lambda e__: e__.get(attrib_) == text_, e_.getiterator())
 find_tag = lambda e_, text_: filter(lambda e__: e__.tag == text_, e_.getiterator())
@@ -72,11 +73,11 @@ class VectLine(object):
         self.n = int(arr_[1])
         self.n_end = 2+2*self.n
         self.points = arr_[2:self.n_end].reshape([-1,2])
-        
+
     def plot(self, scale=1000.0, colmap=plt.cm.jet, **kwargs):
         """Plot the vectorline"""
         plt.plot(self.points[:,0], self.points[:,1], color=colmap(self.h/scale), **kwargs)
-        
+
     def add_to_wasp(self, wasp_core):
         """Add the vectorline to the wasp core"""
         wasp_core.addorographicline(self.h, self.n, self.points.T)
@@ -84,7 +85,7 @@ class VectLine(object):
     def write(self, fid):
         fid.write('%f  %d\n'%(self.h, self.n))
         fid.write(' '.join([str(i) for i in self.points.flatten()]) + '\n')
-            
+
 
 ### File I/O Classes ------------------------------------------------------------------------------
 
@@ -99,13 +100,13 @@ class MAP(WEFileIO):
             map_str=f.readlines()
         self._finish_reading(map_str)
 
-    def _finish_reading(self, map_str):    
+    def _finish_reading(self, map_str):
         self.header = map_str[:4]
         arr1 = np.array(''.join(map_str[4:]).split(), dtype='float')
         ### Data contains a list of vector lines
         self.data = list(generate_vl(arr1))
         ### Maximum height of all the vector lines
-        self.max_height = np.array([v.h for v in self.data]).max()        
+        self.max_height = np.array([v.h for v in self.data]).max()
 
     def _write(self):
         """ Write a file, with the same header"""
@@ -115,11 +116,11 @@ class MAP(WEFileIO):
                 v.write(f)
 
     def plot(self, **kwargs):
-        """Plot all the vector lines. Scale their color with the height. 
+        """Plot all the vector lines. Scale their color with the height.
         Returns a list of all the plot handles.
         """
         return [vl.plot(scale=self.max_height, **kwargs) for vl in self.data]
-            
+
     def add_to_wasp(self, wasp_core):
         """Add all the vector lines to the wasp core"""
         for v in self.data:
@@ -136,7 +137,7 @@ class ZipMAP(MAP):
         """
         if sub_filename:
             self.sub_filename = sub_filename
-            
+
         super(ZipMAP, self).__init__(filename)
 
     def _read(self):
@@ -148,7 +149,7 @@ class ZipMAP(MAP):
 class WTG(WEFileIO):
     """WAsP Turbine File."""
 
-    
+
     ### Private methods to be implemented in the subclasses --------------------
     def _read(self):
         """ Read the file."""
@@ -189,7 +190,7 @@ class WTG(WEFileIO):
 class POW(WEFileIO):
     """WAsP POW Turbine File."""
 
-    
+
     ### Private methods to be implemented in the subclasses --------------------
     def _read(self):
         """ Read the file."""
@@ -213,8 +214,8 @@ class POW(WEFileIO):
             f.write('%f %f\n'%(self.hub_height, self.rotor_diameter))
             f.write('%f %f\n'%(self.factors[0], self.factors[1]))
             for i in range(self.data.shape[0]):
-                f.write('%f %f %f\n'%(self.data[i,0] / self.factors[0], 
-                                      self.data[i,1] / self.factors[1], 
+                f.write('%f %f %f\n'%(self.data[i,0] / self.factors[0],
+                                      self.data[i,1] / self.factors[1],
                                       self.data[i,2]))
 
 class WWF(WEFileIO):
@@ -227,7 +228,7 @@ class WWF(WEFileIO):
         self.xml = xml
         SiteSummary = lambda d: (d.get('Label'),[float(d.get(i)) for i in ('XLocation', 'YLocation', 'HeightAGL', 'SiteElevation')])
         SectorData = lambda d: [float(d.get(i)) for i in ('CentreAngle', 'Frequency', 'WeibullA', 'Weibullk')]
-        SectorWiseData = lambda d: (d.find('SiteSummary').get('Label'), 
+        SectorWiseData = lambda d: (d.find('SiteSummary').get('Label'),
                                     np.array(list(map(SectorData, d.findall('PredictedWindClimate/SectorWiseData/SectorData')))))
 
         self.data = dict(list(map(SiteSummary, xml.findall('TurbineSite/SiteSummary'))))
@@ -266,25 +267,25 @@ class WWH(WEFileIO):
             wind_turbines[wt_name]['position'] = np.array(position + [float(height)])
             wind_climates = find_tag(wt, 'WeibullWind')
             if len(wind_climates) == 0:
-                print 'no predicted wind climates'
+                print('no predicted wind climates')
             else:
                 a = sectordata(wind_climates)
                 wind_turbines[wt_name]['wind_rose'] = a[np.argsort(a[:,0]),:]
             self.e_positions[wt_name] = find_tag(wt,'Location')
 
 
-            #wind_turbines[wt_name] = 
-            
+            #wind_turbines[wt_name] =
+
         ### Look for how many wind turbine generators there is:
         wtgs = find_attr(e, 'ClassDescription', 'Wind turbine generator')
         turbine_descriptions = {}
         if len(wtgs) == 0:
-            print 'No WTG present in this file'
+            print('No WTG present in this file')
         else:
             for wtg in wtgs:
                 turbine = get_wt(wtg)
                 turbine_descriptions[turbine['name']] = turbine
-                print turbine['name']
+                print(turbine['name'])
 
 
         for wt_name in wind_turbines.keys():
@@ -323,7 +324,7 @@ class WWH(WEFileIO):
                                 a = sectordata(wind_climates)
                                 general_windrose[height] = a[np.argsort(a[:,0]),:]
                         wt_groups[group_name]['general_wind_roses'] = general_windrose
-                        
+
         #map_name = find_tag(e, 'ExternalArchive')[0].get('ArchiveTagID')
         #map_file = ZipMAP(wwh_file, map_name)
 
@@ -347,7 +348,7 @@ class old_WWH(WEFileIO):
         xmlf = lambda exml, keyword, address: filter(lambda x: x.get('ClassDescription') == keyword, exml.findall(address))
 
         ### Find the turbine sites
-        turbine_sites = xmlf(e, 'Turbine site group', 
+        turbine_sites = xmlf(e, 'Turbine site group',
                              'WaspHierarchyMember/ChildMembers/WaspHierarchyMember/ChildMembers/WaspHierarchyMember')
 
         self.general_windroses = {}
@@ -371,18 +372,18 @@ class old_WWH(WEFileIO):
                 self.turbine['manufacturer'] = turbine_xml.get('ManufacturerName')
                 self.sites[site_name]['turbine'] = self.turbine
             except:
-                print 'No wind turbine generator found'
+                print('No wind turbine generator found')
 
 
 
             ### Data contains the label name of the turbine as keys, and for each one a list of x,y,h
             ts_xml = xmlf(ts, 'Turbine site', 'ChildMembers/WaspHierarchyMember')
 
-            
-            
-            SectorData = lambda d: [float(d.get(i)) for i in ('CentreAngleDegrees', 
-                                                              'SectorFrequency', 
-                                                              'WeibullA', 
+
+
+            SectorData = lambda d: [float(d.get(i)) for i in ('CentreAngleDegrees',
+                                                              'SectorFrequency',
+                                                              'WeibullA',
                                                               'WeibullK')]
 
             for i in list(ts_xml):
@@ -394,7 +395,7 @@ class old_WWH(WEFileIO):
                                     float(site_info.get('WorkingHeightAgl'))]
                 wind_climates = i.findall('MemberData/CalculationResults/PredictedWindClimate/RveaWeibullWindRose/WeibullWind')
                 if len(wind_climates) == 0:
-                    print 'no predicted wind climates'
+                    print('no predicted wind climates')
                 else:
                     a = np.array(list(map(SectorData, wind_climates)))
                     self.windroses[label] = a[np.argsort(a[:,0]),:]
@@ -413,7 +414,7 @@ class old_WWH(WEFileIO):
             ### 2D array of x,y for each turbine
             self.pos = np.array([(d[0], d[1]) for d in self.data.values()])
 
-        
+
 ## Do Some testing -------------------------------------------------------
 class TestWAsP(TestWEFileIO):
     """ Test class for MyFileType class """

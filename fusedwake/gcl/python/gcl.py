@@ -7,9 +7,8 @@ References:
 
 """
 import numpy as np
-import matplotlib.pyplot as plt
-import WindTurbine as wt
-import WindFarm as wf
+import fusedwake.WindTurbine as wt
+import fusedwake.WindFarm as wf
 
 def Ua(r,te,zc,us,z0):
     """Function of undisturbed inflow wind speed - log law.

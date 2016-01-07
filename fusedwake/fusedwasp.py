@@ -11,7 +11,7 @@ from fusedwind.plant_flow.vt import WTPC, GenericWindRoseVT, GenericWindTurbineP
 __author__ = 'pire'
 
 
-from py4we.wasp import WWF, WTG, WWH
+from fusedwake.py4we.wasp import WWF, WTG, WWH
 
 
 class WTDescFromWTG(Component):

@@ -58,16 +58,15 @@ class WindTurbine:
         self.u_rated = np.float(self.PCI_u(self.P_rated))
 
     def __repr__(self):
-        print "-------------------------------------------------------------"
-        print "\t %s" % (self.name)
-        print "-------------------------------------------------------------"
-        print "\nHeight \t %s [m]\nRadius \t %s [m] \n" %(self.H, self.R)
-        print "-------------------------------------------------------------"
-        print "\t u [m/s] \t P [kW] \t CT [-]"
+        print("-------------------------------------------------------------")
+        print("\t %s" % (self.name))
+        print("-------------------------------------------------------------")
+        print("\nHeight \t %s [m]\nRadius \t %s [m] \n" %(self.H, self.R))
+        print("-------------------------------------------------------------")
+        print("\t u [m/s] \t P [kW] \t CT [-]")
         for row in self.refCurvesArray:
-            print '\t %0.0f \t\t %0.0f \t\t %0.3f'%(row[0],row[1]/1000.0,row[2])
-        print "-------------------------------------------------------------"
-        print
+            print('\t %0.0f \t\t %0.0f \t\t %0.3f'%(row[0],row[1]/1000.0,row[2]))
+        print("-------------------------------------------------------------")
         return ''
 
 
@@ -136,6 +135,6 @@ class WindTurbine:
 '''
 v80 = WindTurbine('Vestas v80 2MW offshore','V80_2MW_offshore.dat',70,40)
 v80.display_windTurbine()
-print v80.get_P(u=np.array([10.5]))
-print v80.get_CT(u=np.array([10.5]))
+print(v80.get_P(u=np.array([10.5])))
+print(v80.get_CT(u=np.array([10.5])))
 '''

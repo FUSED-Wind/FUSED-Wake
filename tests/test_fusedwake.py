@@ -24,6 +24,12 @@ class TestFusedwake(unittest.TestCase):
     def test_000_something(self):
         pass
 
+    def test_imports(self):
+        import fusedwake.WindTurbine as wt
+        import fusedwake.WindFarm as wf
+        #import fusedwake.fused as fused_gcl
+        from fusedwake.gcl import GCLarsen_v0
+
 
 if __name__ == '__main__':
     import sys

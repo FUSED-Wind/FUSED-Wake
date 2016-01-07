@@ -4,8 +4,14 @@
 
 """
 import numpy as np
-import matplotlib.pyplot as plt
-import WindTurbine as wt
+MATPLOTLIB = True
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    MATPLOTLIB = False
+    print("WARNING: Matplotlib isn't installed correctly:", e)
+
+import fusedwake.WindTurbine as wt
 
 class WindFarm:
     def __init__(self, name, coordFile, WT):
@@ -32,9 +38,9 @@ class WindFarm:
             (self.pos[:,i]).T,self.nWT,axis=1) for i in range(self.nWT)],0,1)
 
     def __repr__(self):
-        print "-------------------------------------------------------------"
-        print "%s has %s %s wind turbines " %(self.name,self.nWT,self.WT.name)
-        print "-------------------------------------------------------------"
+        print("-------------------------------------------------------------")
+        print("%s has %s %s wind turbines " %(self.name,self.nWT,self.WT.name))
+        print("-------------------------------------------------------------")
         return ''
 
     def turbineDistance(self,wd):
@@ -77,20 +83,21 @@ class WindFarm:
         return np.dot(ROT,vect)
 
     def plot(self,WT_num=False):
-        x = (self.pos[0,:]-min(self.pos[0,:]))/(2.*self.WT.R)
-        y = (self.pos[1,:]-min(self.pos[1,:]))/(2.*self.WT.R)
-        fig, ax = plt.subplots()
-        ax.scatter(x,y,c='black')
-        if WT_num==True:
-            for i in range(0,self.nWT):
-                ax.annotate(i, (x[i],y[i]))
-        elif WT_num==False:
-            print 'No annotation of turbines'
-        ax.set_xlabel('x/D [-]')
-        ax.set_ylabel('y/D [-]')
-        ax.axis('equal')
-        ax.set_title(self.name)
-        return fig,ax
+        if MATPLOTLIB:
+            x = (self.pos[0,:]-min(self.pos[0,:]))/(2.*self.WT.R)
+            y = (self.pos[1,:]-min(self.pos[1,:]))/(2.*self.WT.R)
+            fig, ax = plt.subplots()
+            ax.scatter(x,y,c='black')
+            if WT_num==True:
+                for i in range(0,self.nWT):
+                    ax.annotate(i, (x[i],y[i]))
+            elif WT_num==False:
+                print( 'No annotation of turbines')
+            ax.set_xlabel('x/D [-]')
+            ax.set_ylabel('y/D [-]')
+            ax.axis('equal')
+            ax.set_title(self.name)
+            return fig,ax
 
     def plot_order(self,wd):
         x = (self.pos[0,:]-min(self.pos[0,:]))/1000

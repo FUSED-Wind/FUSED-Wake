@@ -1,5 +1,5 @@
 from unittest import TestCase
-from gclarsen.fusedwasp import  PlantFromWWH
+from fusedwake.fusedwasp import  PlantFromWWH
 
 __author__ = 'pire'
 
