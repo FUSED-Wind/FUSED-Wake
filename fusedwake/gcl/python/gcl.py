@@ -305,8 +305,8 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
     (Dist, id0) = WF.turbineDistance(WD)
 
     kappa = 0.4  # Kappa: von karman constant
-    us = WS * kappa/np.log(WF.WT.H/z0)  # friction velocity
-    WS_inf = gaussN(WF.WT.R, Ua, [WF.WT.H, us, z0]).sum()  # eq inflow ws
+    us = WS * kappa/np.log(WF.WT[id0[0]].H/z0)  # friction velocity
+    WS_inf = gaussN(WF.WT[id0[0]].R, Ua, [WF.WT[id0[0]].H, us, z0]).sum()  # eq inflow ws
 
     # Initialize arrays to NaN
     Ct = np.nan * np.ones([WF.nWT])
@@ -316,20 +316,20 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
     MaxDU = 0.0
 
     # Initialize first upstream turbine
-    Ct[id0[0]] = WF.WT.get_CT(WS_inf)
+    Ct[id0[0]] = WF.WT[id0[0]].get_CT(WS_inf)
     U_WT[id0[0]] = WS_inf
-    P_WT[id0[0]] = WF.WT.get_P(WS_inf)
+    P_WT[id0[0]] = WF.WT[id0[0]].get_P(WS_inf)
 
     for i in range(1, WF.nWT):
         cWT = id0[i]  # Current wind turbine
-        cR = WF.WT.R
+        cR = WF.WT[cWT].R
         LocalDU = np.zeros([WF.nWT, 1])
         for j in range(i-1, -1, -1):
             # Loop on the upstream turbines of iWT
             uWT = id0[j]
             uWS = U_WT[uWT]  # Wind speed at wind turbine uWT
             uCT = Ct[uWT]
-            uR = WF.WT.R
+            uR = WF.WT[uWT].R
             if np.isnan(uCT):
                 uCT = WF.WT.get_CT(uWS)
 
@@ -351,9 +351,9 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
             DU = -np.sqrt(np.sum(LocalDU**2))
 
         U_WT[cWT] = max(0, WS_inf + DU)
-        if  U_WT[cWT]>WF.WT.u_cutin:
-            Ct[cWT] = WF.WT.get_CT(U_WT[cWT])
-            P_WT[cWT] = WF.WT.get_P(U_WT[cWT])
+        if  U_WT[cWT]>WF.WT[cWT].u_cutin:
+            Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
+            P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
         else:
            Ct[cWT] = 0.053
            P_WT[cWT] = 0.0
@@ -389,18 +389,18 @@ def GCLarsen(
         Roughness height [m]
     alpha: float, optional
         Shear coefficient [-]
-                   Only used for power-law undisturbed inflow.
+        Only used for power-law undisturbed inflow.
     inflow: Str, optional
         Undisturbed inflow vertical profile:
-                   'log': Logarithmic law (neutral case); uses z0
-                   'pow': Power law profile; uses alpha
+           'log': Logarithmic law (neutral case); uses z0
+           'pow': Power law profile; uses alpha
     NG: int, optional
         Number of points in Gaussian Quadrature for equivalent wind
-                speed integration over rotor distFlowCoord
+        speed integration over rotor distFlowCoord
     sup: str, optional
         Wake velocity deficit superposition method:
-                'lin': Linear superposition
-                'quad' Quadratic superposition
+            'lin': Linear superposition
+            'quad' Quadratic superposition
 
     Returns
     -------
@@ -416,7 +416,7 @@ def GCLarsen(
     # TODO: decide how at what height the us should be defined
     if inflow == 'log':
         kappa = 0.4 # Kappa: von karman constant
-        us = WS*kappa/np.log(WF.WT[0].H/z0) #friction velocity
+        us = WS * kappa / np.log(WF.WT[0].H / z0)  # friction velocity
         #eq inflow ws
         WS_inf = gaussN(WF.WT[0].R, Ua, [WF.WT[0].H,us,z0]).sum()
     elif inflow == 'pow':
