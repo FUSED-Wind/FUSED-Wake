@@ -9,7 +9,12 @@ import fusedwake.WindTurbine as wt
 import fusedwake.gcl as gcl
 import numpy as np
 from fusedwake.py4we.wasp import WWH
-from fusedwake.fusedwasp import PlantFromWWH
+
+import os
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+#from fusedwake.fusedwasp import PlantFromWWH
 #
 # class FGCLarsenTestCase(unittest.TestCase):
 #
@@ -67,8 +72,8 @@ from fusedwake.fusedwasp import PlantFromWWH
 
 class GCLarsen_v2_TestCase(unittest.TestCase):
     def setUp(self):
-        self.v80 = wt.WindTurbine('Vestas v80 2MW offshore','V80_2MW_offshore.dat',70,40)
-        self.HR1 = wf.WindFarm('Horns Rev 1','HR_coordinates.dat',self.v80)
+        self.v80 = wt.WindTurbine('Vestas v80 2MW offshore', script_dir+'/V80_2MW_offshore.dat', 70,40)
+        self.HR1 = wf.WindFarm('Horns Rev 1', script_dir+'/HR_coordinates.dat', self.v80)
         self.inputs = dict(
             WS=8.0,
             z0=0.0001,
@@ -77,23 +82,23 @@ class GCLarsen_v2_TestCase(unittest.TestCase):
             WF=self.HR1,
             NG=4,
             sup='lin',
-            pars=[0.5,0.9,-0.124807893,0.136821858,15.6298,1.0])
+            pars=[0.5, 0.9, -0.124807893, 0.136821858, 15.6298, 1.0])
 
     def tearDown(self):
         pass
 
-    #def test_GCLarsen_v2(self):
-    #    """Testing that the new implementation of GCLarsen is compatible with the
-    #    old one.
-    #    """#
-    #
-    #
-    #    P_WT,U_WT, Ct = gcl.GCLarsen_v0(**self.inputs)
-    #    P_WT2,U_WT2, Ct2 = gcl.GCLarsen(**self.inputs)
+    def test_GCLarsen_v2(self):
+       """Testing that the new implementation of GCLarsen is compatible with the
+       old one.
+       """#
 
-    #    np.testing.assert_almost_equal(P_WT, P_WT2)
-    #    np.testing.assert_almost_equal(U_WT, U_WT2)
-    #    np.testing.assert_almost_equal(Ct, Ct2)
+
+       P_WT,U_WT, Ct = gcl.GCLarsen_v0(**self.inputs)
+       P_WT2,U_WT2, Ct2 = gcl.GCLarsen(**self.inputs)
+
+       np.testing.assert_almost_equal(P_WT, P_WT2)
+       np.testing.assert_almost_equal(U_WT, U_WT2)
+       np.testing.assert_almost_equal(Ct, Ct2)
 
 # class test_AEP(unittest.TestCase):
 #     def test_HR(self):
