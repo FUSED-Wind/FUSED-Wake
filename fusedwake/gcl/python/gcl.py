@@ -13,17 +13,23 @@ import fusedwake.WindFarm as wf
 def Ua(r,te,zc,us,z0):
     """Function of undisturbed inflow wind speed - log law.
 
-    Inputs
+    Parameters
     ----------
-    r  (np.array float): Radial coord [m]
-    te (np.array float): Angle coord where 0 is the horizontal right [rad]
-    zc (float): Height to hub center [m]
-    us (float): Friction velocity [m/s]
-    z0 (float): Roughness height [m]
+    r: np.array, float
+        Radial coord [m]
+    te: np.array, float
+        Angle coord where 0 is the horizontal right [rad]
+    zc: float
+        Height to hub center [m]
+    us: float
+        Friction velocity [m/s]
+    z0: float
+        Roughness height [m]
 
-    Outputs
-    ----------
-    Ua  (np.array float): Axial wind speed [m/s]
+    Returns
+    -------
+    Ua: np.array, float
+        Axial wind speed [m/s]
     """
     kappa = 0.4 # Kappa: von karman constant
     return us / kappa * np.log((zc + r * np.sin(te)) / z0)
@@ -31,17 +37,23 @@ def Ua(r,te,zc,us,z0):
 def Ua_shear(r,te,zc,uH,alpha):
     """Function of undisturbed inflow wind speed - power law.
 
-    Inputs
+    Parameters
     ----------
-    r  (np.array float): Radial coord [m]
-    te (np.array float): Angle coord where 0 is the horizontal right [rad]
-    zc (float): Height to hub center [m]
-    uH (float): Wind Speed at Hub Height [m/s]
-    alpha (float): Shear Coefficient [-]
+    r: np.array, float
+        Radial coord [m]
+    te: np.array, float
+        Angle coord where 0 is the horizontal right [rad]
+    zc: float
+        Height to hub center [m]
+    uH: float
+        Wind Speed at Hub Height [m/s]
+    alpha: float
+        Shear Coefficient [-]
 
-    Outputs
-    ----------
-    Ua  (np.array float): Axial wind speed [m/s]
+    Returns
+    -------
+    Ua: np.array, float
+        Axial wind speed [m/s]
     """
 
     return uH * ((zc + r * np.sin(te)) / zc)**alpha
@@ -51,16 +63,20 @@ def gaussN(R, func, varargin, NG=4):
     """Calculate numerically the gauss integration.
     [1] eq. 38
 
-    Inputs
+    Parameters
     ----------
-    R (float): Wind turbine radius [m]
-    func (function): Wind speed function
+    R: float
+        Wind turbine radius [m]
+    func: function
+        Wind speed function
     varargin: Other arguments for the function besides [r,te]
-    NG (int): Number of Ga
+    NG: int
+        Number of Ga
 
-    Outputs
-    ----------
-    Ua (float):
+    Returns
+    -------
+    Ua: float
+        integrated value
     """
     A = np.pi*R**2
     #coefficients
@@ -82,15 +98,19 @@ def gaussN(R, func, varargin, NG=4):
 def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the wake radius at 9.6D downstream location of a turbine
 
-    Inputs
+    Parameters
     ----------
-    R (float): Wind turbine radius
-    CT (float): Outputs WindTurbine object's thrust coefficient
-    TI (float): Ambient turbulence intensity
+    R: float
+        Wind turbine radius
+    CT: float
+        Outputs WindTurbine object's thrust coefficient
+    TI: float
+        Ambient turbulence intensity
 
-    Outputs
-    ----------
-    R96 (float): Wake radius at 9.6D downstream location
+    Returns
+    -------
+    R96: float
+        Wake radius at 9.6D downstream location
     """
     D = 2.0*R
 
@@ -107,16 +127,21 @@ def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.62
 def get_Rw(x,R,TI,CT,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the wake radius at a location
 
-    Inputs
+    Parameters
     ----------
-    x (float): Distance between turbines and wake location in the wind direction
-    R (float): Wind turbine radius
-    TI (float): Ambient turbulence intensity
-    CT (float): Outputs WindTurbine object's thrust coefficient
+    x: float
+        Distance between turbines and wake location in the wind direction
+    R: float
+        Wind turbine radius
+    TI: float
+        Ambient turbulence intensity
+    CT: float
+        Outputs WindTurbine object's thrust coefficient
 
-    Outputs
-    ----------
-    Rw (float): Wake radius at a location
+    Returns
+    -------
+    Rw: float
+        Wake radius at a location
     """
     _ones = np.ones(np.shape(x))
     D = 2.0*R
@@ -146,19 +171,28 @@ def get_dU(x,r,Rw,U,R,TI,CT,
     pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the wake velocity deficit at a location
 
-    Inputs
+    Parameters
     ----------
-    x (float): Distance between turbines and wake location in the wind direction
-    r (float): Radial distance between the turbine and the location
-    Rw (float): Wake radius at location [m]
-    R (float): Wake producing turbine's radius [m]
-    U (float): Undisturbed wind speed [m/s]
-    TI (float): Ambient turbulence intensity [-]
-    CT (float): Outputs WindTurbine object's thrust coefficient
+    x: float
+        Distance between turbines and wake location in the wind direction
+    r: float
+        Radial distance between the turbine and the location
+    Rw: float
+        Wake radius at location [m]
+    R: float
+        Wake producing turbine's radius [m]
+    U: float
+        Undisturbed wind speed [m/s]
+    TI: float
+        Ambient turbulence intensity [-]
+    CT: float
+        Outputs WindTurbine object's thrust coefficient
+    order: int, optional
 
-    Outputs
-    ----------
-    dU (float): Wake velocity deficit at a location
+    Returns
+    -------
+    dU: float
+        Wake velocity deficit at a location
     """
     _ones = np.ones(np.shape(x))
 
@@ -232,30 +266,41 @@ def dU4Gauss(r_e,t_e,rRi,tRi,x,Rw_,U,R,TI_,CT,
     return get_dU(x=x,r=np.sqrt(rRi**2+r_e**2+2*rRi*r_e*np.cos(tRi-t_e)),
            Rw=Rw_,U=U,R=R,TI=TI_,CT=CT,pars=pars)
 
-def GCLarsen_v0(WF,WS,WD,TI,z0,NG=4,sup='lin',
-    pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
+def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
+    pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the WindFarm flow and Power using GCLarsen
     [Larsen, 2009, A simple Stationary...]
 
-    Inputs
+    Parameters
     ----------
-    WF (WindFarm): Windfarm instance
-    WS (float): Undisturbed wind speed at hub height [m/s]
-    WD (float): Undisturbed wind direction at hub height [deg].
-                Meteorological axis. North = 0 [deg], clockwise.
-    TI (float): Ambient turbulence intensity [-]
-    z0 (float): Roughness height [m]
-    NG (int):   Number of points in Gaussian Quadrature for equivalent wind
-                speed integration over rotor distFlowCoord
-    sup (str):  Wake velocity deficit superposition method:
-                'lin': Linear superposition
-                'quad' Quadratic superposition
+    WF: WindFarm
+        Windfarm instance
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    WD: float
+        Undisturbed wind direction at hub height [deg].
+        Meteorological axis. North = 0 [deg], clockwise.
+    TI: float
+        Ambient turbulence intensity [-]
+    z0: float
+        Roughness height [m]
+    NG: int, optional
+        Number of points in Gaussian Quadrature for equivalent wind
+        speed integration over rotor distFlowCoord
+    sup: str, optional
+        Wake velocity deficit superposition method:
+            'lin': Linear superposition
+            'quad' Quadratic superposition
 
-    Outputs
-    ----------
-    P_WT: Power production of the wind turbines (nWT,1) [W]
-    U_WT: Wind speed at hub height (nWT,1) [m/s]
-    Ct:   Thrust coefficients for each wind turbine (nWT,1) [-]
+
+    Returns
+    -------
+    P_WT: ndarray
+        Power production of the wind turbines (nWT,1) [W]
+    U_WT: ndarray
+        Wind speed at hub height (nWT,1) [m/s]
+    Ct: ndarray
+        Thrust coefficients for each wind turbine (nWT,1) [-]
     """
     (Dist, id0) = WF.turbineDistance(WD)
 
@@ -329,30 +374,42 @@ def GCLarsen(
     """Computes the WindFarm flow and Power using GCLarsen
     [Larsen, 2009, A simple Stationary...]
 
-    Inputs
+    Parameters
     ----------
-    WF (WindFarm): Windfarm instance
-    WS (float): Undisturbed wind speed at hub height [m/s]
-    WD (float): Undisturbed wind direction at hub height [deg].
+    WF: WindFarm
+        Windfarm instance
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    WD: float
+        Undisturbed wind direction at hub height [deg].
                 Meteorological axis. North = 0 [deg], clockwise.
-    TI (float): Ambient turbulence intensity [-]
-    z0 (float): Roughness height [m]
-    alpha (float): Shear coefficient [-]
+    TI: float
+        Ambient turbulence intensity [-]
+    z0: float, optional
+        Roughness height [m]
+    alpha: float, optional
+        Shear coefficient [-]
                    Only used for power-law undisturbed inflow.
-    inflow (Str):  Undisturbed inflow vertical profile:
+    inflow: Str, optional
+        Undisturbed inflow vertical profile:
                    'log': Logarithmic law (neutral case); uses z0
                    'pow': Power law profile; uses alpha
-    NG (int):   Number of points in Gaussian Quadrature for equivalent wind
+    NG: int, optional
+        Number of points in Gaussian Quadrature for equivalent wind
                 speed integration over rotor distFlowCoord
-    sup (str):  Wake velocity deficit superposition method:
+    sup: str, optional
+        Wake velocity deficit superposition method:
                 'lin': Linear superposition
                 'quad' Quadratic superposition
 
-    Outputs
-    ----------
-    P_WT: Power production of the wind turbines (nWT,1) [W]
-    U_WT: Wind speed at hub height (nWT,1) [m/s]
-    Ct:   Thrust coefficients for each wind turbine (nWT,1) [-]
+    Returns
+    -------
+    P_WT: ndarray
+         Power production of the wind turbines (nWT,1) [W]
+    U_WT: ndarray
+         Wind speed at hub height (nWT,1) [m/s]
+    Ct: float
+        Thrust coefficients for each wind turbine (nWT,1) [-]
     """
     (distFlowCoord,id0) = WF.turbineDistance(WD)
 
@@ -466,20 +523,49 @@ def GCL_P_GaussQ_Norm_U_WD(WF,WS,meanWD,stdWD,NG_P,TI,
     power/WS prediction under normally distributed wind direction
     uncertainty inside the Reynolds averaging time
 
-    Inputs
+    Parameters
     ----------
-    meanWD (float): Mean wind direction [deg]
-    stdWD (float): Std wind direction [deg]
-    NG_P (int): Number of Gaussian quadrature points for power avg.
-    WS (float): Undisturbed wind speed at hub height [m/s]
-    z0 (float): Roughness height [m]
-    TI (float): Ambient turbulence intensity
+    WF: WindFarm
+        Windfarm instance
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    meanWD: float
+        Mean wind direction [deg]
+    stdWD: float
+        Std wind direction [deg]
+    NG_P: int
+        Number of Gaussian quadrature points for power avg.
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    z0: float
+        Roughness height [m]
+    TI: float
+        Ambient turbulence intensity
+    z0: float, optional
+        Roughness height [m]
+    alpha: float, optional
+        Shear coefficient [-]
+                   Only used for power-law undisturbed inflow.
+    inflow: Str, optional
+        Undisturbed inflow vertical profile:
+                   'log': Logarithmic law (neutral case); uses z0
+                   'pow': Power law profile; uses alpha
+    NG: int, optional
+        Number of points in Gaussian Quadrature for equivalent wind
+                speed integration over rotor distFlowCoord
+    sup: str, optional
+        Wake velocity deficit superposition method:
+                'lin': Linear superposition
+                'quad' Quadratic superposition
 
-    Outputs
-    ----------
-    P_WT: Mean Power production of the wind turbines (nWT,1) [W]
-    U_WT: Mean Wind speed at hub height (nWT,1) [m/s]
-    CT_WT: Mean thrust coefficient [-]
+    Returns
+    -------
+    P_WT: ndarray
+         Mean Power production of the wind turbines (nWT,1) [W]
+    U_WT: ndarray
+         Mean Wind speed at hub height (nWT,1) [m/s]
+    CT_WT: ndarray
+        Mean thrust coefficient [-]
     """
 
     xi, wi = np.polynomial.hermite.hermgauss(NG_P)
@@ -512,20 +598,49 @@ def GCL_P_GaussQ_Uni_U_WD(WF,WS,meanWD,U_WD,NG_P,TI,
     power/WS prediction under normally distributed wind direction
     uncertainty
 
-    Inputs
+    Parameters
     ----------
-    meanWD (float): Mean wind direction [deg]
-    stdWD (float): Std wind direction [deg]
-    NG_P (int): Number of Gaussian quadrature points for power avg.
-    WS (float): Undisturbed wind speed at hub height [m/s]
-    z0 (float): Roughness height [m]
-    TI (float): Ambient turbulence intensity
+    WF: WindFarm
+        Windfarm instance
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    meanWD: float
+        Mean wind direction [deg]
+    stdWD: float
+        Std wind direction [deg]
+    NG_P: int
+        Number of Gaussian quadrature points for power avg.
+    WS: float
+        Undisturbed wind speed at hub height [m/s]
+    z0: float
+        Roughness height [m]
+    TI: float
+        Ambient turbulence intensity
+    z0: float, optional
+        Roughness height [m]
+    alpha: float, optional
+        Shear coefficient [-]
+                   Only used for power-law undisturbed inflow.
+    inflow: Str, optional
+        Undisturbed inflow vertical profile:
+                   'log': Logarithmic law (neutral case); uses z0
+                   'pow': Power law profile; uses alpha
+    NG: int, optional
+        Number of points in Gaussian Quadrature for equivalent wind
+                speed integration over rotor distFlowCoord
+    sup: str, optional
+        Wake velocity deficit superposition method:
+                'lin': Linear superposition
+                'quad' Quadratic superposition
 
-    Outputs
-    ----------
-    P_WT: Mean Power production of the wind turbines (nWT,1) [W]
-    U_WT: Mean Wind speed at hub height (nWT,1) [m/s]
-    CT_WT: Mean thrust coefficient [-]
+    Returns
+    -------
+    P_WT: ndarray
+        Mean Power production of the wind turbines (nWT,1) [W]
+    U_WT: ndarray
+         Mean Wind speed at hub height (nWT,1) [m/s]
+    CT_WT: ndarray
+         Mean thrust coefficient [-]
     """
 
     xi, wi = np.polynomial.legendre.leggauss(NG_P)
