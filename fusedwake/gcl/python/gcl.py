@@ -257,16 +257,16 @@ def GCLarsen_v0(WF,WS,WD,TI,z0,NG=4,sup='lin',
     U_WT: Wind speed at hub height (nWT,1) [m/s]
     Ct:   Thrust coefficients for each wind turbine (nWT,1) [-]
     """
-    (Dist,id0) = WF.turbineDistance(WD)
+    (Dist, id0) = WF.turbineDistance(WD)
 
-    kappa = 0.4 # Kappa: von karman constant
-    us = WS*kappa/np.log(WF.WT.H/z0) #friction velocity
-    WS_inf = gaussN(WF.WT.R, Ua, [WF.WT.H,us,z0]).sum() #eq inflow ws
+    kappa = 0.4  # Kappa: von karman constant
+    us = WS * kappa/np.log(WF.WT.H/z0)  # friction velocity
+    WS_inf = gaussN(WF.WT.R, Ua, [WF.WT.H, us, z0]).sum()  # eq inflow ws
 
     # Initialize arrays to NaN
-    Ct = np.nan*np.ones([WF.nWT])
-    U_WT = np.nan*np.ones([WF.nWT])
-    P_WT = np.nan*np.ones([WF.nWT])
+    Ct = np.nan * np.ones([WF.nWT])
+    U_WT = np.nan * np.ones([WF.nWT])
+    P_WT = np.nan * np.ones([WF.nWT])
     MainWake = np.zeros([WF.nWT])
     MaxDU = 0.0
 
@@ -275,21 +275,21 @@ def GCLarsen_v0(WF,WS,WD,TI,z0,NG=4,sup='lin',
     U_WT[id0[0]] = WS_inf
     P_WT[id0[0]] = WF.WT.get_P(WS_inf)
 
-    for i in range(1,WF.nWT):
-        cWT = id0[i] #Current wind turbine
+    for i in range(1, WF.nWT):
+        cWT = id0[i]  # Current wind turbine
         cR = WF.WT.R
-        LocalDU = np.zeros([WF.nWT,1])
-        for j in range(i-1,-1,-1):
+        LocalDU = np.zeros([WF.nWT, 1])
+        for j in range(i-1, -1, -1):
             # Loop on the upstream turbines of iWT
             uWT = id0[j]
-            uWS = U_WT[uWT] # Wind speed at wind turbine uWT
+            uWS = U_WT[uWT]  # Wind speed at wind turbine uWT
             uCT = Ct[uWT]
             uR = WF.WT.R
-            if  np.isnan(uCT):
+            if np.isnan(uCT):
                 uCT = WF.WT.get_CT(uWS)
 
-            WakeL = Dist[0,uWT,cWT]
-            C2C =   Dist[1,uWT,cWT]
+            WakeL = Dist[0, uWT, cWT]
+            C2C =   Dist[1, uWT, cWT]
 
             # Calculate the wake width of jWT at the position of iWT
             Rw = get_Rw(WakeL,uR,TI,uCT,pars)
