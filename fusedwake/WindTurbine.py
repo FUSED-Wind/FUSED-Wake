@@ -85,17 +85,17 @@ class WindTurbine:
         #return np.interp(u, self.ref_u, self.ref_P, left=0)
         return ((u>=self.u_cutin)&(u<=self.u_cutout))*self.PCI(u)
 
-    def get_u(self,P):
-        """Computes the Power of the WindTurbine
-        at the undisturbed wind speed
+    def get_u(self, P):
+        """Computes the undisturbed wind speed of the WindTurbine
+        given a power under rated power
 
         Inputs
         ----------
-        u (float):  Undisturbed wind speed
+        P (float):  Power
 
         Outputs
         ----------
-        Power (float): WindTurbine object's power
+        u (float): Undisturbed wind speed
         """
         #return np.interp(P, self.ref_P[self.ref_P<self.P_rated],
         #    self.ref_u[self.ref_P<self.P_rated], left=0)
