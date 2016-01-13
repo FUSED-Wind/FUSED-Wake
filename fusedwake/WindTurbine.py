@@ -4,8 +4,11 @@
 
 """
 import numpy as np
-import scipy as sp
-from scipy.interpolate import interp1d as interpolator
+try:
+    import scipy as sp
+    from scipy.interpolate import interp1d as interpolator
+except Exception as e:
+    print(e.message)
 # from scipy.interpolate import pchipInterpolator as interpolator
 
 class WindTurbine:
@@ -17,15 +20,19 @@ class WindTurbine:
     def __init__(self,name,refCurvesFile,H,R,CT_idle=0.053):
         """Initializes a WindTurbine object
 
-        Inputs
+        Parameters
         ----------
-        name (str):  Wind turbine name
-        refCurvesFile (str): Power and thrust coefficient curves text file.
-        H (float): Wind turbine hub height [m]
-        R (float): Radius [m]
+        name: str
+            Wind turbine name
+        refCurvesFile: str
+            Power and thrust coefficient curves text file.
+        H: float
+            Wind turbine hub height [m]
+        R: float
+            Radius [m]
 
-        Outputs
-        ----------
+        Returns
+        -------
         WindTurbine (WindTurbine)
         """
         self.name = name
@@ -74,13 +81,15 @@ class WindTurbine:
         """Computes the Power of the WindTurbine
         at the undisturbed wind speed
 
-        Inputs
+        Parameters
         ----------
-        u (float):  Undisturbed wind speed
+        u: float
+            Undisturbed wind speed
 
-        Outputs
-        ----------
-        Power (float): WindTurbine object's power
+        Returns
+        -------
+        Power: float
+            WindTurbine object's power
         """
         #return np.interp(u, self.ref_u, self.ref_P, left=0)
         return ((u>=self.u_cutin)&(u<=self.u_cutout))*self.PCI(u)
@@ -89,13 +98,15 @@ class WindTurbine:
         """Computes the undisturbed wind speed of the WindTurbine
         given a power under rated power
 
-        Inputs
+        Parameters
         ----------
-        P (float):  Power
+        P: float
+            Power
 
-        Outputs
-        ----------
-        u (float): Undisturbed wind speed
+        Returns
+        -------
+        u: float
+            Undisturbed wind speed
         """
         return ((P >= 0.0) & (P <= self.P_rated)) * self.PCI_u(P)
 
@@ -103,13 +114,15 @@ class WindTurbine:
         """Computes the thrust coefficient of the WindTurbine
         at the undisturbed wind speed
 
-        Inputs
+        Parameters
         ----------
-        u (float):  Undisturbed wind speed
+        u: float
+            Undisturbed wind speed
 
-        Outputs
-        ----------
-        CT (float): Thrust coefficient
+        Returns
+        -------
+        CT: float
+            Thrust coefficient
         """
         #return np.interp(u, self.ref_u, self.ref_CT)
         return ((u>=self.u_cutin)&(u<=self.u_cutout))*self.CTCI(u) + \
@@ -119,13 +132,18 @@ class WindTurbine:
         """Computes the axial velocity deficit coefficient at the rotor disc
         bosed on the WindTurbine's thrust coefficient
 
-        Inputs
-        ----------
-        CT (float): Thrust coefficient
+        .. math::
+            a = \\frac{1}{2} \\left( 1 - \\sqrt{1-C_T} \\right)
 
-        Outputs
+        Parameters
         ----------
-        a (float): Axial velocity deficit coefficient at the rotor disc
+        CT: float
+            Thrust coefficient
+
+        Returns
+        -------
+        a: float
+            Axial velocity deficit coefficient at the rotor disc
         """
         return 0.5 * ( 1. - np.sqrt(1.-CT))
 
