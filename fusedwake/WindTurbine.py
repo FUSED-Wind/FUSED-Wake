@@ -97,9 +97,7 @@ class WindTurbine:
         ----------
         u (float): Undisturbed wind speed
         """
-        #return np.interp(P, self.ref_P[self.ref_P<self.P_rated],
-        #    self.ref_u[self.ref_P<self.P_rated], left=0)
-        return ((P>=0.0)&(P<=self.P_rated))*self.PCI_u(P)
+        return ((P >= 0.0) & (P <= self.P_rated)) * self.PCI_u(P)
 
     def get_CT(self,u):
         """Computes the thrust coefficient of the WindTurbine
