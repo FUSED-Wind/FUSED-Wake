@@ -125,12 +125,13 @@ def get_R96(R, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858
     """
     D = 2.0*R
     a1, a2, a3, a4, b1, b2 = pars
-    R96 = a1 * (np.exp(a2 * CT * CT + a3 * CT + a4 * CT**0.)) * (b1 * TI + b2) * D
+    R96 = a1 * (np.exp(a2 * CT * CT + a3 * CT + a4)) * (b1 * TI + b2) * D
 
     return R96
 
 def get_Rw(x, R, TI, CT, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
-    """Computes the wake radius at a location
+    """Computes the wake radius at a location.
+    [1]-eq.3
 
     .. math::
         R_w = \\left(\\frac{105  c_1^2 }{2 \\pi}\\right)^{0.2} (C_T A (x + x_0))^{1/3}
