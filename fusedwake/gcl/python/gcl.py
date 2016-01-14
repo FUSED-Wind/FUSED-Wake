@@ -13,6 +13,9 @@ import fusedwake.WindFarm as wf
 def Ua(r,te,zc,us,z0):
     """Function of undisturbed inflow wind speed - log law.
 
+    .. math::
+        U_a = \\frac{u^*}{\\kappa} \\ln \\left( \\frac{ z_c + r \\sin (te)) }{ z_0 } \\right)
+
     Parameters
     ----------
     r: np.array, float
@@ -36,6 +39,9 @@ def Ua(r,te,zc,us,z0):
 
 def Ua_shear(r,te,zc,uH,alpha):
     """Function of undisturbed inflow wind speed - power law.
+
+    .. math::
+        U_a = u_H \\left(\\frac{z_c + r \\sin(te) }{ z_c } \\right)^\\alpha
 
     Parameters
     ----------
@@ -80,7 +86,7 @@ def gaussN(R, func, varargin, NG=4):
     """
     A = np.pi*R**2
     #coefficients
-    if  NG==4: #for speed give the full values
+    if NG==4: #for speed give the full values
         rt = np.array([[ -0.339981043584856, -0.861136311594053,
             0.339981043584856, 0.861136311594053]])
         te = rt.T
@@ -219,7 +225,7 @@ def get_dU(x,r,Rw,U,R,TI,CT,
 
     dU = dU1
 
-    if  order == 2:
+    if order == 2:
 
         z_term1 = r**1.5
         z_term2 = (CT*Area*(x+x0))**(-0.5)
@@ -337,39 +343,32 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
             C2C =   Dist[1, uWT, cWT]
 
             # Calculate the wake width of jWT at the position of iWT
-            Rw = get_Rw(WakeL,uR,TI,uCT,pars)
-            if  (abs(C2C) <= Rw+cR or uWS==0):
-                LocalDU[uWT] = gaussN(uR,dU4Gauss,[C2C,0.0,WakeL,Rw,uWS,uR,TI,uCT,pars],NG).sum()
-                if  LocalDU[uWT]<MaxDU:
+            Rw = get_Rw(WakeL, uR, TI, uCT, pars)
+            if (abs(C2C) <= Rw+cR or uWS == 0):
+                LocalDU[uWT] = gaussN(uR, dU4Gauss,
+                    [C2C, 0.0, WakeL, Rw, uWS, uR, TI, uCT, pars], NG).sum()
+                if LocalDU[uWT]<MaxDU:
                     MaxDU = LocalDU[uWT]
-                    MainWake[cWT]=uWT
+                    MainWake[cWT] = uWT
 
         # Wake superposition
-        if  sup=='lin':
+        if sup == 'lin':
             DU = LocalDU.sum()
-        elif sup=='quad':
+        elif sup == 'quad':
             DU = -np.sqrt(np.sum(LocalDU**2))
 
         U_WT[cWT] = max(0, WS_inf + DU)
-        if  U_WT[cWT]>WF.WT[cWT].u_cutin:
+        if U_WT[cWT] > WF.WT[cWT].u_cutin:
             Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
         else:
-           Ct[cWT] = 0.053
-           P_WT[cWT] = 0.0
+            Ct[cWT] = 0.053
+            P_WT[cWT] = 0.0
 
     return (P_WT,U_WT,Ct)
 
-def GCLarsen(
-    WF,
-    WS,
-    WD,
-    TI,
-    z0=0.0001,
-    alpha=0.101,
-    inflow='log',
-    NG=4,
-    sup='lin',
+def GCLarsen(WF, WS, WD,TI,
+    z0=0.0001, alpha=0.101, inflow='log', NG=4, sup='lin',
     pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the WindFarm flow and Power using GCLarsen
     [Larsen, 2009, A simple Stationary...]
@@ -459,7 +458,7 @@ def GCLarsen(
         cR = WF.WT[i].R
         # Current hub wind speed
         cU = U_WT[cWT]
-        if  cU>WF.WT[i].u_cutin:
+        if cU>WF.WT[i].u_cutin:
             Ct[cWT] = WF.WT[i].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[i].get_P(U_WT[cWT])
         else:
@@ -506,19 +505,19 @@ def GCLarsen(
         localDU = np.sum((1./4.)*wj_m*wk_m*DU_m*(rk_m+1.0),axis=0)
 
         # Wake superposition
-        if  sup=='lin':
+        if sup == 'lin':
             U_WT[ID_wake[cWT]] = U_WT[ID_wake[cWT]] + localDU
             U_WT[U_WT<0.]=0.
-        elif sup=='quad':
+        elif sup == 'quad':
             DU_sq[ID_wake[cWT]] = DU_sq[ID_wake[cWT]] + localDU**2.
             U_WT = U_WT0 - np.sqrt(DU_sq)
             U_WT[U_WT<0.]=0.
 
     return (P_WT,U_WT,Ct)
 
-def GCL_P_GaussQ_Norm_U_WD(WF,WS,meanWD,stdWD,NG_P,TI,
-    z0=0.0001,alpha=0.101,inflow='log',NG=4,sup='lin',
-    pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
+def GCL_P_GaussQ_Norm_U_WD(WF, WS, meanWD, stdWD, NG_P, absTI,
+    z0=0.0001, alpha=0.101, inflow='log', NG=4, sup='lin',
+    pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the Gaussian quadrature average of GCLarsen
     power/WS prediction under normally distributed wind direction
     uncertainty inside the Reynolds averaging time
@@ -557,6 +556,8 @@ def GCL_P_GaussQ_Norm_U_WD(WF,WS,meanWD,stdWD,NG_P,TI,
         Wake velocity deficit superposition method:
                 'lin': Linear superposition
                 'quad' Quadratic superposition
+    pars: list, optional
+        GCL Model parameters
 
     Returns
     -------
