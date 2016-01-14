@@ -101,8 +101,11 @@ def gaussN(R, func, varargin, NG=4):
     return (np.pi/4.0)*(R**2./A)*w*w.T*func(R*(rt+1.0)/2.0,
         np.pi*(te+1.0),*varargin)*(rt+1.0)
 
-def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
+def get_R96(R, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the wake radius at 9.6D downstream location of a turbine
+
+    .. math::
+        R_{9.6D} = a_1 \\exp (a_2 C_T^2 + a_3 C_T + a_4)  (b_1  TI + b_2)  D
 
     Parameters
     ----------
@@ -112,6 +115,8 @@ def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.62
         Outputs WindTurbine object's thrust coefficient
     TI: float
         Ambient turbulence intensity
+    pars: list
+        GCL Model parameters [a1, a2, a3, a4, b1, b2]
 
     Returns
     -------
@@ -119,23 +124,36 @@ def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.62
         Wake radius at 9.6D downstream location
     """
     D = 2.0*R
-
-    a1=pars[0]
-    a2=pars[1]
-    a3=pars[2]
-    a4=pars[3]
-    b1=pars[4]
-    b2=pars[5]
-    R96=a1*(np.exp(a2*CT*CT+a3*CT+a4*CT**0.))*(b1*TI+b2)*D
+    a1, a2, a3, a4, b1, b2 = pars
+    R96 = a1 * (np.exp(a2 * CT * CT + a3 * CT + a4 * CT**0.)) * (b1 * TI + b2) * D
 
     return R96
 
-def get_Rw(x,R,TI,CT,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
+def get_Rw(x, R, TI, CT, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the wake radius at a location
+
+    .. math::
+        R_w = \\left(\\frac{105  c_1^2 }{2 \\pi}\\right)^{0.2} (C_T A (x + x_0))^{1/3}
+
+    with A, the area, and x_0 and c_1 defined as
+
+    .. math::
+        x_0 = \\frac{9.6 D}{\\left(\\frac{2 R_96}{k D} \\right)^3 - 1}
+
+        c_1 = \\left(\\frac{k D}{2}\\right)^{5/2}
+              \\left(\\frac{105}{2 \\pi} \\right)^{-1/2}
+              (C_T A x_0)^{-5/6}
+
+    with k and m defined as
+
+    .. math::
+        k = \\sqrt{\\frac{m + 1}{2}}
+
+        m = \\frac{1}{\\sqrt{1 - C_T}}
 
     Parameters
     ----------
-    x: float
+    x: float or ndarray
         Distance between turbines and wake location in the wind direction
     R: float
         Wind turbine radius
@@ -146,30 +164,28 @@ def get_Rw(x,R,TI,CT,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6
 
     Returns
     -------
-    Rw: float
+    Rw: float or ndarray
         Wake radius at a location
     """
     _ones = np.ones(np.shape(x))
-    D = 2.0*R
-    Area=np.pi*D*D/4.0
+    D = 2.0 * R
+    Area = np.pi * D**2.0 / 4.0
 
-    #CT=4.0*a*(1.-a)
+    m = 1.0 / (np.sqrt(1.0 - CT))
+    k = np.sqrt((m + 1.0) / 2.0)
 
-    m=1.0/(np.sqrt(1.0-CT))
-    k=np.sqrt((m+1.0)/2.0)
+    R96 = get_R96(R, CT, TI, pars)
 
-    R96 = get_R96(R,CT,TI,pars)
+    x0 = (9.6 * D) / ((2.0 * R96 / (k * D))**3.0 - 1.0)
+    term1 = (k * D / 2.0)**2.5
+    term2 = (105.0/(2.0*np.pi))**-0.5
+    term3 = (CT * Area * x0)**(-5.0 / 6.0)
+    c1 = term1 * term2 * term3
 
-    x0=(9.6*D)/((2.0*R96/(k*D))**3.0-1.0)
-    term1=(k*D/2.0)**2.5
-    term2=(105.0/(2.0*np.pi))**-0.5
-    term3=(CT*Area*x0)**(-5.0/6.0)
-    c1=term1*term2*term3
+    Rw = ((105.0 * c1**2.0 / (2.0 * np.pi))**0.2) * (CT * Area * (x + x0 * _ones))**(1.0 / 3.0)
 
-    Rw=((105.0*c1*c1/(2.0*np.pi))**0.2)*(CT*Area*(x+x0*_ones))**(1.0/3.0)
-
-    if type(x)==float and x+x0 <=0. : Rw = 0
-    elif type(x)==np.ndarray: Rw[x+x0*_ones<=0.] = 0.
+    if type(x) == float and x+x0 <= 0.: Rw = 0
+    elif type(x) == np.ndarray: Rw[x + x0 * _ones <= 0.] = 0.
     return Rw
 
 def get_dU(x,r,Rw,U,R,TI,CT,
