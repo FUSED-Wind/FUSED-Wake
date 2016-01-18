@@ -607,7 +607,7 @@ def GCL_P_GaussQ_Norm_U_WD(WF, WS, meanWD, stdWD, NG_P, absTI,
         meanU_WT += wi[i]*U_WT*(1./np.sqrt(np.pi))
         meanCT_WT += wi[i]*CT_WT*(1./np.sqrt(np.pi))
 
-    return meanP_WT,meanU_WT,meanCT_WT
+    return meanP_WT, meanU_WT, meanCT_WT
 
 def GCL_P_GaussQ_Uni_U_WD(WF,WS,meanWD,U_WD,NG_P,TI,
     z0=0.0001,alpha=0.101,inflow='log',NG=4,sup='lin',
