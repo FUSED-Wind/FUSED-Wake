@@ -1,0 +1,6 @@
+virtualenv venDWM
+. venDWM/bin/activate
+pip install --upgrade pip 
+pip install numpy
+pip install scipy
+pip install ipython[notebooks]
