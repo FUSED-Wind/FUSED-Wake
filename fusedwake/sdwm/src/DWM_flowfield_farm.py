@@ -479,7 +479,7 @@ def DWM_meta_meand(meand,meta):
             time   [t]   : time vector
     """
     #meand.time             = np.arange(1,600.+1,1) # number of wake meandering samples 10 min at 1Hz
-    meand.time             = np.arange(1,100+1,1) # number of wake meandering samples 10 min at 1Hz
+    meand.time             = np.arange(1,300+1,1) # number of wake meandering samples 10 min at 1Hz
 
     # Wake meandering based on meandering method with 0.8 as wake transport speed, see Keck et al. [4] & [5]
     meand.std_meand_x, meand.std_meand_y = meand_table_DWM_method(meta)
