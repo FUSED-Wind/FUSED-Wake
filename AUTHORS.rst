@@ -15,4 +15,4 @@ Contributors
 * Ewan Machefaux
 * Mathieu Gaumond
 * Alfredo Pena Diaz
-*
+* Rolf-Erik Keck
