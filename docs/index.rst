@@ -17,6 +17,8 @@ Contents:
    contributing
    authors
    history
+   references
+   source
 
 Indices and tables
 ==================
@@ -24,4 +26,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
