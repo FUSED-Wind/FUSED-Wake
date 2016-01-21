@@ -16,3 +16,4 @@ Contributors
 * Mathieu Gaumond
 * Alfredo Pena Diaz
 * Rolf-Erik Keck
+* Helge Madsen
