@@ -325,7 +325,7 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
     Ct: ndarray
         Thrust coefficients for each wind turbine (nWT,1) [-]
     """
-    (Dist, id0) = WF.turbineDistance(WD)
+    (Dist, nDownstream, id0) = WF.turbineDistance(WD)
 
     kappa = 0.4  # Kappa: von karman constant
     us = WS * kappa/np.log(WF.WT[id0[0]].H/z0)  # friction velocity
@@ -427,7 +427,7 @@ def GCLarsen(WF, WS, WD,TI,
     Ct: float
         Thrust coefficients for each wind turbine (nWT,1) [-]
     """
-    (distFlowCoord,id0) = WF.turbineDistance(WD)
+    (distFlowCoord, nDownstream, id0) = WF.turbineDistance(WD)
 
     # TODO: decide how at what height the us should be defined
     if inflow == 'log':
