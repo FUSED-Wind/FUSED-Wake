@@ -63,7 +63,7 @@ coverage:
 docs:
 	rm -f docs/fusedwake.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ fusedwake
+	sphinx-apidoc -f -o docs/ fusedwake
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
