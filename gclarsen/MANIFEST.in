@@ -1,3 +1,0 @@
-graft src/gclarsen/sphinx_build/html
-recursive-include src/gclarsen/test *.py
-
