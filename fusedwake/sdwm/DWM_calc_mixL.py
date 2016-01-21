@@ -8,25 +8,39 @@ from math import pi
 from scipy import linalg
 
 def DWM_init_calc_mixl(meta,mfor):
-    """Function that initializes the Ainslie model including improvements from ref [5-9]
+    """Function that initializes the Ainslie model including improvements from
+    [Keck_2011]_, [Keck_2012]_, [Keck_2013a]_, [Keck_2013b]_, [Keck_2014]_,
+    [Keck_2015]_
 
-        Inputs
+        Parameters
         ----------
-        meta (instance of class): Instance of class Meta holding DWM core variables
-        mfor (instance of class): Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        meta : (instance of class)
+            Instance of class Meta holding DWM core variables
+        mfor : (instance of class)
+            Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
 
-        Outputs
-        ----------
-        mfor (instance of class): Update instance of class Mfor with inialized flow variables based on wake case
-        F1_vector (np.array float): DWM filter functions F 1 governing the development of turbulent stresses ref[6-7], eq 3 of [5]
-        F2_vector (np.array float): DWM filter functions F 2 governing the development of turbulent stresses ref[6-7], eq 3 of [5]
-        visc_wake1 (np.array float): initialized contribution due to ambient turbulence for the eddy viscosity ref[5], Eq 3 first term of right and side
-        visc_wake2 (np.array float): initialized contribution due to shear layer of wake deficit for the eddy viscosity ref[5], Eq 3 last term of right and side
-        visc_wake (np.array float): eddy viscosity of DWM, combination of visc_wake1 and visc_wake2
-        u_star_DEF (np.array float): non dimensionalivelocity scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
-        l_star_DEF (np.array float): non dimensional integral length scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
-        One_div_du_dr_DWW (np.array float): denominator of Eq (5) in ref [5]
-        width (np.array int): wake width vector index
+        Returns
+        -------
+        mfor : (instance of class)
+            Update instance of class Mfor with inialized flow variables based on wake case
+        F1_vector : (np.array float)
+            DWM filter functions F 1 governing the development of turbulent stresses [Keck_2011]_, [Keck_2012]_, eq 3 of [Keck_2015]_
+        F2_vector : (np.array float)
+            DWM filter functions F 2 governing the development of turbulent stresses [Keck_2011]_, [Keck_2012]_, eq 3 of [Keck_2015]_
+        visc_wake1 : (np.array float)
+            initialized contribution due to ambient turbulence for the eddy viscosity [Keck_2015]_, Eq 3 first term of right and side
+        visc_wake2 : (np.array float)
+            initialized contribution due to shear layer of wake deficit for the eddy viscosity [Keck_2015]_, Eq 3 last term of right and side
+        visc_wake : (np.array float)
+            eddy viscosity of DWM, combination of visc_wake1 and visc_wake2
+        u_star_DEF : (np.array float)
+            non dimensionalivelocity scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
+        l_star_DEF : (np.array float)
+            non dimensional integral length scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
+        One_div_du_dr_DWW : (np.array float)
+            denominator of Eq (5) in [Keck_2015]_
+        width : (np.array int)
+            wake width vector index
     """
     # Generate the DWM filter functions for the eddy viscosity formulation
     F1_vector  = np.hstack((np.linspace(meta.f1[0],1,meta.f1[1]*meta.dz/2),np.linspace(1,1,meta.lz_mixl*meta.dz/2)))
@@ -51,7 +65,7 @@ def DWM_init_calc_mixl(meta,mfor):
     mfor.U[0,:] = mfor.U_init
     #Centerline
     mfor.V[0,:]     = 0.0
-    # Atmospheric stability effects based on Keck et al. [8]
+    # Atmospheric stability effects based on Keck et al. [Keck_2013a]_
     if (meta.atmo_stab== 'VU')==1:
           L_ABL_vector         = [42.9157,      68.5912,      88.0709]
           UW_UU_vector         = [-0.27991,    -0.26012,    -0.23296]
@@ -123,16 +137,19 @@ def DWM_init_calc_mixl(meta,mfor):
 def DWM_calc_wake_width(mfor,width,meta,j):
     """Function that estimate the wake width
 
-        Inputs
+        Parameters
         ----------
-        meta (instance of class): Instance of class Meta holding DWM core variables
-        mfor (instance of class): Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        meta : (instance of class)
+            Instance of class Meta holding DWM core variables
+        mfor : (instance of class)
+            Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
         width (np.array int) : wake width vector index
         j (int) : index in the main Ainslie forward scheme loop
 
-        Outputs
-        ----------
-        width (np.array int): updated wake width vector index
+        Returns
+        -------
+        width : (np.array int)
+            updated wake width vector index
     """
 
     # Calculating wake width
@@ -159,24 +176,36 @@ def DWM_calc_wake_width(mfor,width,meta,j):
 def DWM_eddy_viscosity(mfor,meta,width,visc_wake,visc_wake1,visc_wake2,F1_vector,F2_vector,u_star_DEF,l_star_DEF,One_div_du_dr_DWM,j):
     """Function that calculate the eddy viscosity
 
-        Inputs
+        Parameters
         ----------
-        meta (instance of class): Instance of class Meta holding DWM core variables
-        mfor (instance of class): Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
-        F1_vector (np.array float): DWM filter functions F 1 governing the development of turbulent stresses ref[6-7], eq 3 of [5]
-        F2_vector (np.array float): DWM filter functions F 2 governing the development of turbulent stresses ref[6-7], eq 3 of [5]
-        visc_wake1 (np.array float): initialized contribution due to ambient turbulence for the eddy viscosity ref[5], Eq 3 first term of right and side
-        visc_wake2 (np.array float): initialized contribution due to shear layer of wake deficit for the eddy viscosity ref[5], Eq 3 last term of right and side
-        visc_wake (np.array float): eddy viscosity of DWM, combination of visc_wake1 and visc_wake2
-        u_star_DEF (np.array float): non dimensional velocity scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
-        l_star_DEF (np.array float): non dimensional integral length scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
-        One_div_du_dr_DWW (np.array float): denominator of Eq (5) in ref [5]
-        width (np.array int): wake width vector index
+        meta : (instance of class)
+            Instance of class Meta holding DWM core variables
+        mfor : (instance of class)
+            Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        F1_vector : (np.array float)
+            DWM filter functions F 1 governing the development of turbulent stresses [Keck_2011]_, [Keck_2012]_, eq 3 of [Keck_2015]_
+        F2_vector : (np.array float)
+            DWM filter functions F 2 governing the development of turbulent stresses [Keck_2011]_, [Keck_2012]_, eq 3 of [Keck_2015]_
+        visc_wake1 : (np.array float)
+            initialized contribution due to ambient turbulence for the eddy viscosity [Keck_2015]_, Eq 3 first term of right and side
+        visc_wake2 : (np.array float)
+            initialized contribution due to shear layer of wake deficit for the eddy viscosity [Keck_2015]_, Eq 3 last term of right and side
+        visc_wake : (np.array float)
+            eddy viscosity of DWM, combination of visc_wake1 and visc_wake2
+        u_star_DEF : (np.array float)
+            non dimensional velocity scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
+        l_star_DEF : (np.array float)
+            non dimensional integral length scale ambient turbulence, which affect the wake deficit evolution (roughly corresponding to eddies smaller than 2D)
+        One_div_du_dr_DWW : (np.array float)
+            denominator of Eq (5) in [Keck_2015]_
+        width : (np.array int)
+            wake width vector index
         j (int) : index in the main Ainslie forward scheme loop
 
-        Outputs
-        ----------
-        mfor (instance of class): updated instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        Returns
+        -------
+        mfor : (instance of class)
+            updated instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
     """
 
 ## Calculate eddy viscosity
@@ -233,22 +262,24 @@ def DWM_eddy_viscosity(mfor,meta,width,visc_wake,visc_wake1,visc_wake2,F1_vector
 
 
 def DWM_velocity_solver(mfor,meta,j):
-    """Function that defines tridiagonal matrix to solve the NS equations Eq 1 and in Ref [5]
+    """Function that defines tridiagonal matrix to solve the NS equations Eq 1 and in [Keck_2015]_
        The momentum equation is discretized using a second order central difference scheme in radial direction and a first order upwind scheme in flow direction
 
         (1) Solve the momentum equation for the streamwise velocity component at all radial positions explicitly, by using the value of the radial velocity component and the eddy viscosity from the previous location upstream. This yields a tri- diagonal equation system where all the coefficients are known, which can easily be solved by any tridiagonal ma- trix algorithm.
         (2) Once the streamwise velocity is known, the radial velocity for all radial positions can be updated using the continuity equation
-        (3) The eddy viscosity for all radial positions is updated using Eq. (3) in Ref [6]
+        (3) The eddy viscosity for all radial positions is updated using Eq. (3) in [Keck_2011]_
         (4) March to the next downstream location and repeat steps 1-3.
 
-        Inputs
+        Parameters
         ----------
-        meta (instance of class): Instance of class Meta holding DWM core variables
-        mfor (instance of class): Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        meta : (instance of class)
+            Instance of class Meta holding DWM core variables
+        mfor : (instance of class)
+            Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
         j (int) : index in the main Ainslie forward scheme loop
 
-        Outputs
-        ----------
+        Returns
+        -------
         HL (np.array float)
         mat (np.array float)
 
@@ -316,23 +347,27 @@ def DWM_velocity_solver(mfor,meta,j):
 
     return HL, mat
 
-def DWM_calc_mixL(meta,aero,mfor):
+def DWM_calc_mixL(meta, aero, mfor):
     """ Main Ainslie - mixing length (Keck et al) function that compute the wake defcit as function of downstream distance in the meandering frame of reference
 
     (1) Solve the momentum equation for the streamwise velocity component at all radial positions explicitly, by using the value of the radial velocity component and the eddy viscosity from the previous location upstream. This yields a tri- diagonal equation system where all the coefficients are known, which can easily be solved by any tridiagonal ma- trix algorithm.
     (2) Once the streamwise velocity is known, the radial velocity for all radial positions can be updated using the continuity equation
-    (3) The eddy viscosity for all radial positions is updated using Eq. (3) in Ref [6]
+    (3) The eddy viscosity for all radial positions is updated using Eq. (3) in [Keck_2011]_
     (4) March to the next downstream location and repeat steps 1-3
 
     Inputs
     ----------
-        meta (instance of class): Instance of class Meta holding DWM core variables
-        aero (instance of class): Instance of class Aero holding BEM-aero core variables
-        mfor (instance of class): Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+        meta : (instance of class)
+            Instance of class Meta holding DWM core variables
+        aero : (instance of class)
+            Instance of class Aero holding BEM-aero core variables
+        mfor : (instance of class)
+            Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
 
     Outputs
     ----------
-        mfor (instance of class): Updated instance of class Mfor holding the velocity deficit
+        mfor : (instance of class)
+            Updated instance of class Mfor holding the velocity deficit
 
     """
 

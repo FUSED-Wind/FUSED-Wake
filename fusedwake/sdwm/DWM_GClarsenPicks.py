@@ -1,8 +1,7 @@
 
 """GC Larsen wake model applied to offshore wind farms (WindFarm object)
 @moduleauthor:: Juan P. Murcia <jumu@dtu.dk>
-References:
-[1] Larsen GC. "A simple stationary semi-analytical wake model", 2009
+References: [Larsen_2009]_
 """
 
 import numpy as np
@@ -10,16 +9,21 @@ import numpy as np
 def get_Rw(x,R,TI,CT,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the wake radius at a location
 
-    Inputs
+    Parameters
     ----------
-    x (float): Distance between turbines and wake location in the wind direction
-    R (float): Wind turbine radius
-    TI (float): Ambient turbulence intensity
-    CT (float): Outputs WindTurbine object's thrust coefficient
+    x: float
+        Distance between turbines and wake location in the wind direction
+    R: float
+        Wind turbine radius
+    TI: float
+        Ambient turbulence intensity
+    CT: float
+        Outputs WindTurbine object's thrust coefficient
 
-    Outputs
-    ----------
-    Rw (float): Wake radius at a location
+    Returns
+    -------
+    Rw: float
+        Wake radius at a location
     """
     _ones = np.ones(np.shape(x))
     D = 2.0*R
@@ -47,15 +51,19 @@ def get_Rw(x,R,TI,CT,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6
 def get_R96(R,CT,TI,pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0]):
     """Computes the wake radius at 9.6D downstream location of a turbine
 
-    Inputs
+    Parameters
     ----------
-    R (float): Wind turbine radius
-    CT (float): Outputs WindTurbine object's thrust coefficient
-    TI (float): Ambient turbulence intensity
+    R: float
+        Wind turbine radius
+    CT: float
+        Outputs WindTurbine object's thrust coefficient
+    TI: float
+        Ambient turbulence intensity
 
-    Outputs
-    ----------
-    R96 (float): Wake radius at 9.6D downstream location
+    Returns
+    -------
+    R96: float
+        Wake radius at 9.6D downstream location
     """
     D = 2.0*R
 

@@ -11,18 +11,22 @@ from math import cos, atan2, acos, exp, sqrt, sin
 from cBEM import *
 from glob import glob
 
-#########################################################################################
-#########################################################################################
-def getInduction(ngrid, sWT, Format, U0,meta,):
-    """Function that compute the axial induction distribution for subsequent use in the Ainslie wake flow model
+
+def getInduction(ngrid, sWT, Format, U0, meta):
+    """Function that compute the axial induction distribution for subsequent use
+        in the Ainslie wake flow model
 
         Parameters
         ----------
-        ngrid (int): number of grid point per radius in BEM
-        sWT (string): turbine name
-        Format (string) : input file format (HAWC2)
+        ngrid: int
+            number of grid point per radius in BEM
+        sWT: string
+            turbine name
+        Format: string
+            input file format (HAWC2)
         U0: mean hub height velocity
-        meta (instance of class): Instance of class Meta holding DWM core variables
+        meta: instance of class
+            Instance of class Meta holding DWM core variables
 
 
         Returns
@@ -56,8 +60,6 @@ def getInduction(ngrid, sWT, Format, U0,meta,):
     ################################################################
     ################################################################
     return BEM
-#########################################################################################
-#########################################################################################
 
 
 def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
@@ -65,19 +67,28 @@ def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
 
         Parameters
         ----------
-        Sim (instance of class) holds simulation related parameters
-        Wind (instance of class) holds wind inflow related parameters
-        Algo (instance of class) holds BEM algorithm related parameters
-        Rotor (instance of class) holds rotor related geometrical parameters
-        PcDataAll (array of float) holds the profile coefficient Cm, Cl, Cd and AoA
-        Env (instance of class) holds ambient conditions related parameters
-        Spec (instance of class) holds turbine specification parameters
-        Misc (instance of class) holds I/O parameters
+        Sim: instance of class
+            holds simulation related parameters
+        Wind: instance of class
+            holds wind inflow related parameters
+        Algo: instance of class
+            holds BEM algorithm related parameters
+        Rotor: instance of class
+            holds rotor related geometrical parameters
+        PcDataAll: ndarray(float)
+            holds the profile coefficient Cm, Cl, Cd and AoA
+        Env: instance of class
+            holds ambient conditions related parameters
+        Spec: instance of class
+            holds turbine specification parameters
+        Misc: instance of class
+            holds I/O parameters
 
 
         Returns
         -------
-        BEM (instnce of class) : refer to class description for details
+        BEM: instance of class
+            refer to class description for details
     """
     cone = Rotor.cone
     # print 'cone is', Rotor.cone
@@ -233,8 +244,8 @@ def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
     BEM.RPM = Sim.RPM
     BEM.PITCH = Sim.PITCH
     return BEM
-#########################################################################################
-#########################################################################################
+
+
 def getTorqueFromBlade(r0, Pt0, R):
     """Function that estimates the aerodynamic torque
 
@@ -255,17 +266,17 @@ def getTorqueFromBlade(r0, Pt0, R):
     r[0:n] = r0
     r[-1] = R
     Pt[0:n] = Pt0
-    Q = np.trapz(r * Pt,r )
+    Q = np.trapz(r * Pt, r)
     return Q
-#########################################################################################
-#########################################################################################
+
+
 def getThrustFromBlade(r0, Pn0, R):
     """Function that estimates the thrust force
 
         Parameters
         ----------
         r0: discrete radial position of blade [m]
-        Pn0: normal load in N
+        Pn0: normal load [N]
         R: blade radius [m]
 
 
@@ -281,31 +292,47 @@ def getThrustFromBlade(r0, Pn0, R):
     Pn[0:n] = Pn0
     T = np.trapz(Pn,r)
     return T
-#########################################################################################
-#########################################################################################
-def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4, omega, chord, F, Ftip, CnForAI, CtForTI,
-                           lambda_r, sigma, phi, Algo):
+
+def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4,
+    omega, chord, F, Ftip, CnForAI, CtForTI, lambda_r, sigma, phi, Algo):
     """Function that compute the induction coefficients while applying swirl
 
         Parameters
         ----------
-        a_last (float) : last iteration axial induction factor
-        Vrel_norm (float): normed relative velocity
-        Un (float): normal velocity
-        Ut (float): tangential velocity
-        V0_in3 (float): [0., 0., V0]
-        V0_in4 (float): [0., 0., V0]
-        nW_in4 (float): [0., 0., -a_last * V0]
-        omega (float): rotor rotational speed rad/s
-        chord (float): rotor chord length distribution
-        F (float): total loss
-        Ftip (float): tip loss
-        CnForAI (float): normal force coefficient
-        CtForTI (float): tangential force coefficient
-        lambda_r (float): speed ratio distribution
-        sigma (float): blade solidity
-        phi (float): flow angle
-        Algo (instance of class): holds algorith BEM related parameters
+        a_last: float
+            last iteration axial induction factor
+        Vrel_norm: float
+            normed relative velocity
+        Un: float
+            normal velocity
+        Ut: float
+            tangential velocity
+        V0_in3: float
+            [0., 0., V0]
+        V0_in4: float
+            [0., 0., V0]
+        nW_in4: float
+            [0., 0., -a_last * V0]
+        omega: float
+            rotor rotational speed rad/s
+        chord: float
+            rotor chord length distribution
+        F: float
+            total loss
+        Ftip: float
+            tip loss
+        CnForAI: float
+            normal force coefficient
+        CtForTI: float
+            tangential force coefficient
+        lambda_r: float
+            speed ratio distribution
+        sigma: float
+            blade solidity
+        phi: float
+            flow angle
+        Algo: instance of class
+            holds algorith BEM related parameters
 
 
         Returns
@@ -335,15 +362,17 @@ def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4, om
         aprime = a * 0.
 
     return a, aprime, CT_loc
-#########################################################################################
-#########################################################################################
+
+
 def fCorrectionHighThrust(CTcorrection, a, CnForAI, phi, a_last, sigma, F, Ftip, CT_loc):
     """Function that applying high thrust coefficient correction
 
         Parameters
         ----------
-        CTcorrection (string) : type of high thrust coefficient
-        a (float): axial induction coefficient
+        CTcorrection: str
+            type of high thrust coefficient
+        a: float
+            axial induction coefficient
         CnForAI: normal force coefficient
         phi: flow angle
         a_last: last iteration axial induction
@@ -368,15 +397,17 @@ def fCorrectionHighThrust(CTcorrection, a, CnForAI, phi, a_last, sigma, F, Ftip,
     else:
         raise Exception('CT correction not implemented')
     return a, CT_loc
-#########################################################################################
-#########################################################################################
+
+
 def fAeroCoeffWrap(Rotor, PcDataAll, e, alpha, phi, chord, Vrel_norm, Re, Fperf, Algo, Misc):
     """Tabulated airfoil data interpolation
 
         Parameters
         ----------
-        Rotor (instance of class) holds rotor related parameter
-        PcDataAll (array of float) holds the profile coefficient Cm, Cl, Cd and AoA
+        Rotor: instance of class
+            holds rotor related parameter
+        PcDataAll: ndarray(float)
+            holds the profile coefficient Cm, Cl, Cd and AoA
         e : element index in BEM loop
         alpha: Angle Of Attack
         phi: flow angle
@@ -384,8 +415,10 @@ def fAeroCoeffWrap(Rotor, PcDataAll, e, alpha, phi, chord, Vrel_norm, Re, Fperf,
         Vrel_norm: normed relative velocity
         Re: Reynolds number
         Fperf: performance losses (not implemented)
-        Algo (instance of class) holds alogrithm BEM related parameter
-        Misc (instance of class) holds I/O parameters
+        Algo: instance of class
+            holds alogrithm BEM related parameter
+        Misc: instance of class
+            holds I/O parameters
 
 
         Returns
@@ -433,8 +466,9 @@ def fAeroCoeffWrap(Rotor, PcDataAll, e, alpha, phi, chord, Vrel_norm, Re, Fperf,
         CtForTI = CtNoDrag
     return Cl, Cd, Cn, Ct, CnForAI, CtForTI
 
-def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thickness, Re, bReInterp, bThicknessInterp,
-               bRough):
+
+def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thickness,
+    Re, bReInterp, bThicknessInterp, bRough):
     """Function that interpolates in the profile coefficients tabulated airfoil data
 
         Parameters
@@ -452,7 +486,8 @@ def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thicknes
 
         Returns
         -------
-        ClCdCm (float): vector containing the Cl, Cd and Cm values at interpolation point
+        ClCdCm: float
+            vector containing the Cl, Cd and Cm values at interpolation point
     """
 
     if bRough:
@@ -482,21 +517,24 @@ def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thicknes
                 for j in np.arange(1, 4, 1):
                     ClCdCm[j - 1] = np.interp(rel_thickness, Profile_thickness_rel[ii1 - 1:ii2], temp[2:0:-1, j - 1])
     return ClCdCm
-#########################################################################################
-#########################################################################################
+
+
 def fSetRotorGrid(ngrid, Rotor):
     """Function that discretizes the blade in elements
 
         Parameters
         ----------
-        ngrid (int): numnber of blade elements-1
-        Rotor (instance of class) holds rotor related geometrical parameters
+        ngrid: int
+            numnber of blade elements-1
+        Rotor: instance of class
+            holds rotor related geometrical parameters
 
         Returns
         -------
-        Rotor (instance of class): updated instance of class Rotor
+        Rotor: instance of class
+            updated instance of class Rotor
     """
-    if (ngrid == 0) == 1:
+    if: ngrid == 0) == 1:
         print 'You didn''t specify a ngrid parameter'
     else:
         rfull = np.linspace(Rotor.rhub, Rotor.R, ngrid + 1)
@@ -510,12 +548,15 @@ def fInterpRotor(r_mid, Rotor):
 
         Parameters
         ----------
-        r_mid float): blade element center
-        Rotor (instance of class) holds rotor related geometrical parameters
+        r_mid: float
+            blade element center
+        Rotor: instance of class
+            holds rotor related geometrical parameters
 
         Returns
         -------
-    Rotor (instance of class): updated instance of class Rotor
+        Rotor: instance of class
+            updated instance of class Rotor
     """
     Rotor.chord = np.interp(r_mid, Rotor.r, Rotor.chord)
     Rotor.thickness_rel = np.interp(r_mid, Rotor.r, Rotor.thickness_rel_prof)
@@ -545,10 +586,20 @@ def fInterpRotor(r_mid, Rotor):
     for i in np.arange(1, len(Rotor.r)):
         Rotor.dr[i] = 2.0 * (Rotor.r[i] - Rotor.r[i - 1] - Rotor.dr[i - 1] * 0.5)
     return Rotor
-#########################################################################################
-#########################################################################################
+
+
 def fInitWT(sWT, Format, pathtowt):
     """Function that initializes the input reader
+
+    Parameters
+    ----------
+    sWT: TODO
+    Format: TODO
+    pathtowt: TODO
+
+    Returns
+    -------
+    TODO
     """
     Rotor = InitRotor()
     Env = InitEnv()
@@ -600,8 +651,8 @@ def fInitWT(sWT, Format, pathtowt):
     Rotor.SweptArea = pi * (Rotor.R * cos(Rotor.cone * pi / 180.)) ** 2
     Spec.TSR_rated = Spec.Omega_rated * Rotor.R * cos(Rotor.cone * pi / 180.) / Spec.V_rated
     return PcDataAll, AeData, Rotor, Env,  Spec, Algo, Misc
-#########################################################################################
-#########################################################################################
+
+
 def fReadPcFile(PcFileName, pathtowt, sWT, PcSet):
     """Function that loads HAWC2 profile coefficients file
     """
@@ -637,8 +688,8 @@ def fReadPcFile(PcFileName, pathtowt, sWT, PcSet):
         PcDataAll[i] = PcData
     fd.close()
     return PcDataAll, thickness_rel_prof, ndata
-#########################################################################################
-#########################################################################################
+
+
 def fReadAeFile(AeFileName, pathtowt, sWT, AeSet, ncol):
     """Function that loads HAWC2 aerodynamic coefficients file
     """
@@ -663,8 +714,8 @@ def fReadAeFile(AeFileName, pathtowt, sWT, AeSet, ncol):
         n = filter(None, n)
         AeData[i, :] = [float(k) for k in n]
     return AeData
-#########################################################################################
-#########################################################################################
+
+
 def fReadHtcFile(HtcFile, BladeBodyName, ):
     """Function that loads HAWC2 HTC file
     """
@@ -720,8 +771,8 @@ def fReadHtcFile(HtcFile, BladeBodyName, ):
                     AeSet = [float(i) for i in AeSet]
     fd.close()
     return AeSet, PcFileName, AeFileName, Nb, PitchAxis
-#########################################################################################
-#########################################################################################
+
+
 def fReadSpec(SpecFile,  Rotor, Spec, Algo):
     """Function that loads the turbine spec file
     """
@@ -778,5 +829,3 @@ def fReadSpec(SpecFile,  Rotor, Spec, Algo):
     parRotor = {'Omega': Spec.Omega_rated}
     Rotor.Set(**parRotor)
     return Rotor, Spec, Algo
-#########################################################################################
-#########################################################################################
