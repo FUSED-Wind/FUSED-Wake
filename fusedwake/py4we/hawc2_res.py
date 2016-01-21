@@ -25,7 +25,7 @@ class ResFile(WEFileIO):
     """ Description of your MyFileType class should be here.
 You can also describe the different methods.
 
-methods:
+Methods
 --------
 write: write a file
 reade: read a file
@@ -45,18 +45,18 @@ reade: read a file
         # Read Scalefactor
         with open(self.filename + '.sel') as f:
             data = f.readlines()
-        
+
         N    = int(data[8].split()[0])
         Nch  = int(data[8].split()[1])
-        
+
         scalefactor = ()
         for i in range(9+Nch+5, 9+2*Nch+5):
             scalefactor = scalefactor + (float(data[i]),)
-        
+
         # Get Data 1
         with open(self.filename + '.dat', 'rb') as f:
             self.data = np.fromfile(f, np.int16)
-        
+
         # Scale it
         self.data = np.reshape(self.data, (Nch, N))
         self.data = self.data.T*scalefactor

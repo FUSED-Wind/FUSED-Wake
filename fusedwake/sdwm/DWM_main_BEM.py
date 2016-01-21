@@ -534,15 +534,15 @@ def fSetRotorGrid(ngrid, Rotor):
         Rotor: instance of class
             updated instance of class Rotor
     """
-    if: ngrid == 0) == 1:
+    if (ngrid == 0) == 1:
         print 'You didn''t specify a ngrid parameter'
     else:
         rfull = np.linspace(Rotor.rhub, Rotor.R, ngrid + 1)
         r_mid = (rfull[0:-1] + rfull[1:]) / 2.
         Rotor = fInterpRotor(r_mid, Rotor)
     return Rotor
-#########################################################################################
-#########################################################################################
+
+
 def fInterpRotor(r_mid, Rotor):
     """Function that interpolate the blade geometry at the blade element center
 

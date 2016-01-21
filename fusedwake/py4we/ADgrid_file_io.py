@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 class ADgridFileIO(WEFileIO):
     """ Read and write the grid of an Actuator disk that is used in the CFD code EllipSys3D.
 
-    methods:
-    --------
+    methods
+    -------
         write: write a file
         reade: read a file
 
@@ -36,11 +36,11 @@ class ADgridFileIO(WEFileIO):
         with open(self.filename, 'w') as f:
             # Write dimensions
             f.write('%i %i %i\n'%(self.dims[0],self.dims[1],self.dims[2]))
-            # Write grid  
+            # Write grid
             for i in range(0,self.dims[0]*self.dims[1]):
                 f.write("%8.4f %8.4f %8.4f %12.8f %12.8f %12.8f\n"%(self.data[i,0],self.data[i,1],self.data[i,2],self.data[i,3],self.data[i,4],self.data[i,5]))
 
-           
+
 
 
     def _read(self):
@@ -67,14 +67,14 @@ class ADgridFileIO(WEFileIO):
             ax[0].set_ylabel('y')
 
             # Plot the thrust force on the blade.
-            # First convert the AD thrust forces to 
+            # First convert the AD thrust forces to
             # the thrust force blade distribution.
 
             # AD force to blade force
             i_r=1
             Fblade=np.zeros((self.dims[0],2))
             Fblade[0,0]=-self.data[0,0]
-            for i in range(0,self.dims[0]*self.dims[1]): 
+            for i in range(0,self.dims[0]*self.dims[1]):
                 if i<self.dims[1]*i_r:
                     Fblade[i_r-1,1]=Fblade[i_r-1,1]-self.data[i,3]
                 else:
@@ -82,7 +82,7 @@ class ADgridFileIO(WEFileIO):
                     i_r=i_r+1
             print("The total thrust force is = ",sum(Fblade[:,1]))
             Fblade[:,1]=Fblade[:,1]/3
-              
+
             # blade force to blade force distrubution
             qblade=Fblade
             dr=np.zeros((self.dims[0],1))
@@ -114,7 +114,7 @@ class ADgridFileIO(WEFileIO):
 #    def(self):
 #        plt.
 
-    
+
 
 ## Main function ---------------------------------------------------------
 if __name__ == '__main__':
@@ -132,8 +132,6 @@ if __name__ == '__main__':
     MY_OBJ = ADgridFileIO('test/ADgrid/ADgrid.dat')
     # This is how to write a file:
     MY_OBJ.write('test/ADgrid/ADgrid2.dat')
-    #print(MY_OBJ.data) 
+    #print(MY_OBJ.data)
     # This is how to plot a file
     MY_OBJ.plot()
-
-

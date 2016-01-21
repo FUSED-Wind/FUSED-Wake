@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ Main DWM core program: flowfield calculation
+
 @moduleauthor:: Ewan Machefaux <ewan.machefaux@gmail.com>
 """
 
@@ -18,62 +19,53 @@ def DWM_main_field_model(ID_waked,deficits,inlets_ffor,inlets_ffor_deficits,inle
        carried out at the downstream distance of interest, i.e., where downstream rotors are partially or fully in the
        wake of the upstream turbine.
 
-        Parameters
-        ----------
-        ID_waked: dict(nWT)
-            holding list of upstream turbine index for each turbine in the wind farm
-        deficits: dict(nWT)
-            holding a list of the mean rotor averaged deficit from upstream wakes
-        turb:  dict(nWT)
-            holding a list of mean turbulence intensities contributions from upstream wakes
-        inlets_ffor: dict(nWT)
-            holding a list of array containing the flow field in the fixed frame of reference from
-        upstream wakes contributions
-        inlets_ffor_deficits: dict(nWT)
-            holding a list of array containing the flow field in the fixed frame of
-        reference from upstream wakes contributions at the rotor position
-        inlets_ffor_turb: dict(nWT)
-            holding a list of array containing the turbulence field in the fixed frame of
-        reference from upstream wakes contributions at the rotor position
-        out: dict(nWT)
-            holding the main sDWM model outputs i.e mean power from BEM, mean power estimated from powercurve,
-        mean rotor averaged wind speed, mean rotor average turbulence intensity, mean thrust coefficient from BEM and
-        from power curve
-        par: dict(nWT)
-            holding the DWM cylindrical and cartesian grid coordinates as well as turbine and ambient conditions
 
-        Returns
-        -------
-        meta: (instance of class)
-            Instance of class Meta holding DWM core variables
-        aero: (instance of class)
-            Instance of class Aero holding BEM-aero core variables
-        mfor: (instance of class)
-            Instance of class Mfor holding the meandering frame of reference scalars used by the
-            Ainslie model in local Mixl coordinates
-        ffor: (instance of class)
-            Instance of class Ffor holding the fixed frame of reference velocity field in global
-        WF coordinates
-        DWM: dict(nWT)
-            list containing full outputs of the sDWM (including flow field in ffor and mfor) See description
-            of DWM_outputs for more details
-        deficits: dict(nWT)
-            update list of deficits contributions from upstream wakes
-        inlets_ffor: dict(nWT)
-            updated list of array containing the flow field in the fixed frame of reference from
-        upstream wakes contributions
-        inlets_ffor_deficits: dict(nWT)
-            updated list of array containing the flow field in the fixed frame of reference
-            from upstream wakes contributions at the rotor position
-        inlets_ffor_turb: dict(nWT)
-            updated list of array containing the turbulence field in the fixed frame of
-            reference from upstream wakes contributions at the rotor position
-        turb:dict(nWT)
-            updated list of mean turbulence intensities contributions from upstream wakes
-        out: returns the mean power from BEM, mean power estimated from power curve,mean rotor averaged wind speed, mean
-            rotor average turbulence intensity, mean thrust coefficient from BEM and from power curve
-        ID_waked: dict(nWT)
-            holding list of upstream turbine index for each turbine in the wind farm
+    Parameters
+    ----------
+    ID_waked: dict(nWT)
+        holding list of upstream turbine index for each turbine in the wind farm
+    deficits: dict(nWT)
+        holding a list of the mean rotor averaged deficit from upstream wakes
+    turb: dict(nWT)
+        holding a list of mean turbulence intensities contributions from upstream wakes
+    inlets_ffor: dict(nWT)
+        holding a list of array containing the flow field in the fixed frame of reference from upstream wakes contributions
+    inlets_ffor_deficits: dict(nWT)
+        holding a list of array containing the flow field in the fixed frame of reference from upstream wakes contributions at the rotor position
+    inlets_ffor_turb: dict(nWT)
+        holding a list of array containing the turbulence field in the fixed frame of reference from upstream wakes contributions at the rotor position
+    out: dict(nWT)
+        holding the main sDWM model outputs i.e mean power from BEM, mean power estimated from powercurve, mean rotor averaged wind speed, mean rotor average turbulence intensity, mean thrust coefficient from BEM and from power curve
+    par: dict(nWT)
+        holding the DWM cylindrical and cartesian grid coordinates as well as turbine and ambient conditions
+
+
+    Returns
+    -------
+    meta: (instance of class)
+        Instance of class Meta holding DWM core variables
+    aero: (instance of class)
+        Instance of class Aero holding BEM-aero core variables
+    mfor: (instance of class)
+        Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model in local Mixl coordinates
+    ffor: (instance of class)
+        Instance of class Ffor holding the fixed frame of reference velocity field in global WF coordinates
+    DWM: dict(nWT)
+        list containing full outputs of the sDWM (including flow field in ffor and mfor) See description of DWM_outputs for more details
+    deficits: dict(nWT)
+        update list of deficits contributions from upstream wakes
+    inlets_ffor: dict(nWT)
+        updated list of array containing the flow field in the fixed frame of reference from upstream wakes contributions
+    inlets_ffor_deficits: dict(nWT)
+        updated list of array containing the flow field in the fixed frame of reference from upstream wakes contributions at the rotor position
+    inlets_ffor_turb: dict(nWT)
+        updated list of array containing the turbulence field in the fixed frame of reference from upstream wakes contributions at the rotor position
+    turb: dict(nWT)
+        updated list of mean turbulence intensities contributions from upstream wakes
+    out: dict(nWT)
+        returns the mean power from BEM, mean power estimated from power curve,mean rotor averaged wind speed, mean rotor average turbulence intensity, mean thrust coefficient from BEM and from power curve
+    ID_waked: dict(nWT)
+        holding list of upstream turbine index for each turbine in the wind farm
     """
 
     ## Create instances of class
@@ -100,44 +92,44 @@ def DWM_main_field_model(ID_waked,deficits,inlets_ffor,inlets_ffor_deficits,inle
     ############## Write relevant results in DWM variables #############################################################
     if meta.full_output is True:
         DWM                  = DWM_outputs(DWM,ffor,mfor,meta,aero,BEM)
-    return( aero, meta, mfor, ffor, DWM, deficits,inlets_ffor, inlets_ffor_deficits,inlets_ffor_turb,turb, out,ID_waked)
+    return( aero, meta, mfor, ffor, DWM, deficits, inlets_ffor, inlets_ffor_deficits, inlets_ffor_turb, turb, out, ID_waked)
 
 def DWM_aero(meta,ffor,aero,deficits,turb,inlets_ffor,inlets_ffor_deficits,out):
     """ Aerodynamique module of the DWM. This module contains the wake summation module (deficit and turbulence accumulation)
     The steady state blade element momentum
 
-        Parameters
-        ----------
-        meta: (instance of class)
-            Instance of class Meta holding DWM core variables
-        aero: (instance of class)
-            Instance of class Aero holding BEM-aero core variables
+    Parameters
+    ----------
+    meta: (instance of class)
+        Instance of class Meta holding DWM core variables
+    aero: (instance of class)
+        Instance of class Aero holding BEM-aero core variables
 
-        deficits: dict(nWT)
-            holding a list of deficits contributions from upstream wakes
-        turb:  dict(nWT)
-            holding a list of mean turbulence intensities contributions from upstream wakes
-        inlets_ffor: dict(nWT)
-            holding a list of array containing the flow field in the fixed frame of reference from
-            upstream wakes contributions
-        inlets_ffor_deficits: dict(nWT)
-            holding a list of array containing the flow field in the fixed frame of
-            reference from upstream wakes contributions at the rotor position
-        out: dict(nWT)
-            holding the main sDWM model outputs i.e mean power from BEM, mean power estimated from powercurve,
-            mean rotor averaged wind speed, mean rotor average turbulence intensity, mean thrust coefficient from BEM and
-            from power curve
+    deficits: dict(nWT)
+        holding a list of deficits contributions from upstream wakes
+    turb:  dict(nWT)
+        holding a list of mean turbulence intensities contributions from upstream wakes
+    inlets_ffor: dict(nWT)
+        holding a list of array containing the flow field in the fixed frame of reference from
+        upstream wakes contributions
+    inlets_ffor_deficits: dict(nWT)
+        holding a list of array containing the flow field in the fixed frame of
+        reference from upstream wakes contributions at the rotor position
+    out: dict(nWT)
+        holding the main sDWM model outputs i.e mean power from BEM, mean power estimated from powercurve,
+        mean rotor averaged wind speed, mean rotor average turbulence intensity, mean thrust coefficient from BEM and
+        from power curve
 
-        Returns
-        -------
-        aero: (instance of class)
-            updated Instance of class Aero holding BEM-aero core variables
-        mfor: (instance of class)
-            updated Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
-        out dict(nWT):
-            dict including mean power from PC and BEM, mean thrust coefficient from PC and BEM
-        BEM: (instance of class)
-            holds the key results from the BEM calculation
+    Returns
+    -------
+    aero: (instance of class)
+        updated Instance of class Aero holding BEM-aero core variables
+    mfor: (instance of class)
+        updated Instance of class Mfor holding the meandering frame of reference scalars used by the Ainslie model
+    out dict(nWT):
+        dict including mean power from PC and BEM, mean thrust coefficient from PC and BEM
+    BEM: (instance of class)
+        holds the key results from the BEM calculation
 
     """
 
@@ -314,8 +306,7 @@ def DWM_get_deficit(ffor,meta,deficits,ID_waked,inlets_ffor,inlets_ffor_deficits
     Parameters
     ----------
     ffor:(instance of class)
-        Instance of class Ffor holding the fixed frame of reference velocity field in global
-        WF coordinates
+        Instance of class Ffor holding the fixed frame of reference velocity field in global WF coordinates
     meta: (instance of class)
         Instance of class Meta holding DWM core variables
     deficits: dict(nWT)
@@ -362,8 +353,7 @@ def DWM_get_turb(ffor,meta,turb,inlets_ffor_turb,):
     Parameters
     ----------
     ffor: (instance of class)
-        Instance of class Ffor holding the fixed frame of reference velocity field in global
-        WF coordinates
+        Instance of class Ffor holding the fixed frame of reference velocity field in global WF coordinates
     meta: (instance of class)
         Instance of class Meta holding DWM core variables
     turb:  dict(nWT)
@@ -555,6 +545,7 @@ def meand_table_DWM_method(meta):
     Function to determine the meandering magnitude as function of ambient conditions at given downstream position i_z
     The parameters required for the determination of the meandering magnitude are: downstream distance, height,
     turbulence intensity and atmospheric stability
+    
     Parameters
     ----------
     meta:    class holding grid and ambient parameters

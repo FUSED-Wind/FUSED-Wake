@@ -35,8 +35,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 """
 
 import numpy as np
-import fusedwake.WindFarm as wf # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
-import fusedwake.WindTurbine as wt # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
+import fusedwake.WindFarm as wf
+import fusedwake.WindTurbine as wt
 from DWM_flowfield_farm import DWM_main_field_model
 from DWM_GClarsenPicks import get_Rw
 from DWM_init_dict import init
@@ -62,11 +62,11 @@ def sDWM(argv):
     try:
         opts, args = getopt.getopt(argv,"hi:",["WD=","WS=","TI=","WTcoord=","WTG=","HH=","R=","stab=","accum="])
     except getopt.GetoptError:
-        print 'RUN_sDWM.py -i <WD> <WS> <TI> <WT coord.> <WTG> <HH> <R> <Stab.> <accum.> <optim>'
+        print('RUN_sDWM.py -i <WD> <WS> <TI> <WT coord.> <WTG> <HH> <R> <Stab.> <accum.> <optim>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'usage: RUN_sDWM.py -i <WD: deg, 0deg is the north> <WS: m/s> <TI: [-]> <WT coord. turbine coordinate file> <WTG name>  <HH hub height: m> <R turbine radius: m> <stab: VS, S ... VU, U> <accum: linear, quadratic, dominant, ewma>'
+            print('usage: RUN_sDWM.py -i <WD: deg, 0deg is the north> <WS: m/s> <TI: [-]> <WT coord. turbine coordinate file> <WTG name>  <HH hub height: m> <R turbine radius: m> <stab: VS, S ... VU, U> <accum: linear, quadratic, dominant, ewma>')
             sys.exit()
         elif opt in ("-i"):
             WD = float(sys.argv[2])
@@ -85,7 +85,7 @@ def sDWM(argv):
     WT = wt.WindTurbine('Windturbine','../WT-data/'+WTG+'/'+WTG+'_PC.dat',HH,R)
     WF = wf.WindFarm('Windfarm',WTcoord,WT)
 
-    print '***** sDWM v'+ __version__+' // WF: '+str(WF.nWT)+' WT(s) / WD '+str(WD)+'deg / WS '+str(WS)+' m/s / TI '+str(TI)+' / accumulation: '+accum+'  ******************'
+    print('***** sDWM v'+ __version__+' // WF: '+str(WF.nWT)+' WT(s) / WD '+str(WD)+'deg / WS '+str(WS)+' m/s / TI '+str(TI)+' / accumulation: '+accum+'  ******************')
 
     # Scaling wind farm to NREL's rotor size
     if 'Lill' in WTcoord:
@@ -148,7 +148,7 @@ def sDWM(argv):
         WT_p_out[iT]=out[str(meta.wtg_ind[0])][0]
         Vel_out[iT]=out[str(meta.wtg_ind[0])][1]
     elapsedttt = time.time() - ttt
-    print '***** sDWM v'+ __version__+' // Farm prod. is: %4.2f kW, %i WT(s) : %s -- in %4.2f sec *************' %(Farm_p_out,WF.nWT,np.array_str(WT_p_out),elapsedttt)
+    print('***** sDWM v'+ __version__+' // Farm prod. is: %4.2f kW, %i WT(s) : %s -- in %4.2f sec *************' %(Farm_p_out,WF.nWT,np.array_str(WT_p_out),elapsedttt))
     return Farm_p_out,WT_p_out,Vel_out,Pos_out,WF,WT,aero, meta, mfor, ffor, DWM, deficits,inlets_ffor,inlets_ffor_deficits, inlets_ffor_turb,turb, out,ID_waked
 
 if __name__ == "__main__":

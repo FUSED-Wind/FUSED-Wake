@@ -17,14 +17,14 @@ class WEFileIO(object):
     def __init__(self, filename=None, file_type_name = "MyFileTypeName", file_extension="*"):
         """ Initialized the classe using the filename
 
-        Parameters:
+        Parameters
         ----------
-        filename : string (optional)
-                   The file name to read and write
-        file_type_name : string (optional)
-                   The name of the file type
-        file_extension : string (optional)
-                   The file name extension of the file type, e.g. "txt"
+        filename: str (optional)
+           The file name to read and write
+        file_type_name: str (optional)
+           The name of the file type
+        file_extension: str (optional)
+           The file name extension of the file type, e.g. "txt"
         """
         self.file_type_name = file_type_name
         self.file_extension = file_extension
@@ -33,19 +33,19 @@ class WEFileIO(object):
             self.filename = filename
             ### If the filename is provided, read the file
             self.read()
-         
+
 
     def read(self, filename=None):
         """ Read the file
-        Parameters:
+        Parameters
         ----------
-        filename : string (optional)
-                   The file name to read
+        filename: str (optional)
+           The file name to read
 
-        Returns:
-        --------
-        data : string
-               the data read
+        Returns
+        -------
+        data: str
+            the data read
         """
         if filename:
             ### If there is a new filename, replace the object variable
@@ -60,10 +60,10 @@ class WEFileIO(object):
     def write(self, filename=None):
         """ Write a file
 
-        Parameters:
+        Parameters
         ----------
-        filename : string (optional)
-                   The file name to write
+        filename: str (optional)
+           The file name to write
         """
 
         if filename:

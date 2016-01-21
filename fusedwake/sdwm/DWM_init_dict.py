@@ -7,13 +7,13 @@ import numpy as np
 def init(WF):
     """Function that initializes dictionnaries used as part of the wake tree model (windfarm model) and the core DWM model
 
-        Inputs
+        Parameters
         ----------
         WF: WindFarm
             Instance of class WindFarm holding wind farm layout and coordinate
 
-        Outputs
-        ----------
+        Returns
+        -------
         deficits: dict(nWT)
             holding a list of deficits contributions from upstream wakes
         turb:  dict(nWT)

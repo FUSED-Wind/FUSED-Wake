@@ -22,8 +22,8 @@ class MyDatFileIO(WEFileIO):
     """ Description of your MyFileType class should be here.
     You can also describe the different methods.
 
-    methods:
-    --------
+    Methods
+    -------
         write: write a file
         reade: read a file
 
@@ -73,4 +73,3 @@ if __name__ == '__main__':
     """
     #unittest.main()
     MyDatFileIO("test/dat/test_file.dat").plot()
-

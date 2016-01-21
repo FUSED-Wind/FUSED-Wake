@@ -22,8 +22,8 @@ from py4we.we_file_io import WEFileIO, TestWEFileIO
 class MannInputFile(WEFileIO):
     """ This is a class for handling the Mann input files
 
-    methods:
-    --------
+    Methods
+    -------
         write: write a file
         reade: read a file
 
@@ -43,17 +43,17 @@ class MannInputFile(WEFileIO):
             data = f.read()
 
         self.items = data.split('\n')
-        self.keys = ['fieldDim', 'NComp', 
-                'n1', 'n2', 'n3', 
-                'L1', 'L2', 'L3', 
-                'type', 'U', 'z', 'z_0', 
-                'spectrum', 'seeds', 
+        self.keys = ['fieldDim', 'NComp',
+                'n1', 'n2', 'n3',
+                'L1', 'L2', 'L3',
+                'type', 'U', 'z', 'z_0',
+                'spectrum', 'seeds',
                 'file_u', 'file_v', 'file_w']
 
         ## Data is a dictionary containing the variables
         self.data = dict([(k, v) for k, v in zip(self.keys, self.items)])
 
-        # Print out something 
+        # Print out something
         #print(self.filename, ':', self.data)
 
     def __getitem__(self, key):
@@ -71,8 +71,8 @@ class MannTurbFile(WEFileIO):
     The class is loading the three files u,v,w and merge them into a 4D array
     located in self.data.
 
-    methods:
-    --------
+    Methods
+    -------
         write: write a file
         reade: read a file
 
@@ -80,8 +80,8 @@ class MannTurbFile(WEFileIO):
 
     def _write(self):
         """ Write a file (overrided)
-        First write the input file corresponding to the new file. 
-        Then write the 3 corresponding turbulence files. 
+        First write the input file corresponding to the new file.
+        Then write the 3 corresponding turbulence files.
         """
         self.inputs.write(self.filename)
         ## The directory name of the input file
@@ -103,13 +103,13 @@ class MannTurbFile(WEFileIO):
 
     def _read(self):
         """ Read the file (overrided)
-        The method first create a MannInputFile instance, that reads the 
-        inputfile used to generate the turbulence file. It then uses the 
-        inputs to locate the turbulence file, load it and format it as a 
+        The method first create a MannInputFile instance, that reads the
+        inputfile used to generate the turbulence file. It then uses the
+        inputs to locate the turbulence file, load it and format it as a
         4D array.
 
         Creates:
-        -------- 
+        --------
             self.data: numpy.array([n1, n2, n3, 3])
                 The turbulence data (i,j,k,u)
             self.inputs: MannInputFile (behaves as a dict)
@@ -144,13 +144,13 @@ class TestMannType(TestWEFileIO):
         of the original file
         """
         original_filename = self.test_file
-        new_filename = original_filename + '_new' 
+        new_filename = original_filename + '_new'
 
         ### Open a new file
         original_file = MannTurbFile(original_filename)
 
         for i in ['u', 'v', 'w']:
-            original_file.inputs['file_'+i] += '_new' 
+            original_file.inputs['file_'+i] += '_new'
 
         ### write the file to a new filename
         original_file.write(new_filename)
@@ -175,4 +175,3 @@ if __name__ == '__main__':
     OK
     """
     unittest.main()
-

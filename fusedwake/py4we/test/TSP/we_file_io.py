@@ -18,7 +18,7 @@ class WEFileIO(object):
     def __init__(self, filename=None):
         """ Initialized the classe using the filename
 
-        Parameters:
+        Parameters
         ----------
         filename : string (optional)
                    The file name to read and write
@@ -26,19 +26,19 @@ class WEFileIO(object):
         if filename:
             ### If there is a new filename, replace the object variable
             self.filename = filename
-            
+
             ### If the filename is provided, read the file
             self.read()
 
 
     def read(self, filename=None):
         """ Read the file
-        Parameters:
+        Parameters
         ----------
         filename : string (optional)
                    The file name to read
 
-        Returns:
+        Returns
         --------
         data : string
         	   the data read
@@ -57,7 +57,7 @@ class WEFileIO(object):
     def write(self, filename=None):
         """ Write a file
 
-        Parameters:
+        Parameters
         ----------
         filename : string (optional)
                    The file name to write
@@ -76,7 +76,7 @@ class WEFileIO(object):
 
     def plot(self, imgfilename=None):
         self._plot()
-        
+
         #Verify if a imgfilename was supplied:
         if imgfilename:
             self.fig.savefig(imgfilename,dpi=400)
@@ -103,7 +103,7 @@ class WEFileIO(object):
         """
         ### You are going to replace this code when you inherit from this class
         raise NotImplementedError("This method must be implemented in subclass")
-    
+
 
 
 ## Do Some testing -------------------------------------------------------
@@ -116,7 +116,7 @@ class TestWEFileIO(unittest.TestCase):
     def __init__(self, filename=None):
         """ Initialized the classe using the filename
 
-        Parameters:
+        Parameters
         ----------
         filename : string (optional)
                    The file name to read and write
@@ -124,7 +124,7 @@ class TestWEFileIO(unittest.TestCase):
         if filename:
             ### If there is a new filename, replace the object variable
             self.test_file = filename
-            
+
 
     def _duplicate(self, class_, filename):
         original_filename = filename

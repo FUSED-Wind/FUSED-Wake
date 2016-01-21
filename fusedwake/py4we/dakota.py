@@ -19,19 +19,13 @@ import matplotlib.pyplot as plt
 
 class DakotaTabFileIO(WEFileIO):
     """ Dakota tabular self.data (.dat) file class
-    
+
     A Multilevel Parallel Object-Oriented Framework for:
 
     Design Optimization
     Parameter Estimation
     Uncertainty Quantification
     Sensitivity Analysis
-
-    methods:
-    --------
-        write: write a file
-        read:  read a file
-
     """
     def _write(self):
         """ Write a file (overrided)
@@ -79,17 +73,17 @@ class DakotaTabFileIO(WEFileIO):
 
             # Initialize data dictionary
             self.data = {}
-            for i_col in range(n_col):          
+            for i_col in range(n_col):
                 self.data[self.keys[i_col]] = list()
-            # Loop over lines and extract variables of interest    
+            # Loop over lines and extract variables of interest
             for i_row in range(n_row):
                 line = rawData[i_row]
                 columns = line.split()
-                for i_col in range(n_col):          
+                for i_col in range(n_col):
                     self.data[self.keys[i_col]].append(float(columns[i_col]))
 
-        # Print out something 
-        # print (self.keys) 
+        # Print out something
+        # print (self.keys)
         # print (self.data[ self.keys[0] ])
 
     def _plot(self,fig):
@@ -137,15 +131,12 @@ if __name__ == '__main__':
     OK
     """
     unittest.main()
-    
-    ''' Example uses of DakotaTabFileIO class: 
+
+    ''' Example uses of DakotaTabFileIO class:
     '''
-    # a = DakotaTabFileIO("test/dakota/rosen_grad_opt.dat")    
+    # a = DakotaTabFileIO("test/dakota/rosen_grad_opt.dat")
     # print (type(a))
     # print (a.keys)
     # print (a.data)
     # print (a['x1'])
     # a.plot()
-    
-    
-
