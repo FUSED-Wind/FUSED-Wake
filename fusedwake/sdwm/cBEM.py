@@ -169,4 +169,3 @@ class InitBEM:
         """Parsing data ."""
         for key, value in parBEM.iteritems():
             setattr(self, key, value)
-

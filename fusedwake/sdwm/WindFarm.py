@@ -7,6 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import WindTurbine as wt
 
+class WindTurbineList(list):
+    def __getattr__(self, key):
+        return getattr(self.__getitem__(0), key)
+
+    def names(self):
+        return [getattr(wt, 'name') for wt in self]
+
 class WindFarm:
     def __init__(self, name, coordFile, WT):
         """Initializes a WindFarm object
@@ -25,7 +32,8 @@ class WindFarm:
         coordArray = np.loadtxt(coordFile)
         self.pos = coordArray.T # np.array(2 x nWT)
         self.nWT = len(self.pos[0,:])
-        self.WT = WT
+        # We generate a wind turbine list
+        self.WT = WindTurbineList([WT for i in range(self.nWT)])
 
         # Vector from iWT to jWT: self.vectWTtoWT[:,i,j]
         self.vectWTtoWT=np.swapaxes([self.pos-np.repeat(np.atleast_2d \

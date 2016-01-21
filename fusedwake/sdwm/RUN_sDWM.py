@@ -35,8 +35,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 """
 
 import numpy as np
-import WindFarm as wf # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
-import WindTurbine as wt # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
+import fusedwake.WindFarm as wf # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
+import fusedwake.WindTurbine as wt # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
 from DWM_flowfield_farm import DWM_main_field_model
 from DWM_GClarsenPicks import get_Rw
 from DWM_init_dict import init

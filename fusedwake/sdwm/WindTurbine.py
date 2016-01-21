@@ -14,7 +14,7 @@ class WindTurbine:
     Defines WT parameters and operational curves
 
     """
-    def __init__(self,name,refCurvesFile,H,R,CT_idle=0.053):
+    def __init__(self, name, refCurvesFile, H, R, CT_idle=0.053):
         """Initializes a WindTurbine object
 
         Inputs

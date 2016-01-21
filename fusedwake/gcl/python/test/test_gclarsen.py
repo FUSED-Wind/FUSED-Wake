@@ -93,8 +93,8 @@ class GCLarsen_v2_TestCase(unittest.TestCase):
        """#
 
 
-       P_WT,U_WT, Ct = gcl.GCLarsen_v0(**self.inputs)
-       P_WT2,U_WT2, Ct2 = gcl.GCLarsen(**self.inputs)
+       P_WT, U_WT, Ct = gcl.GCLarsen_v0(**self.inputs)
+       P_WT2, U_WT2, Ct2 = gcl.GCLarsen(**self.inputs)
 
        np.testing.assert_almost_equal(P_WT, P_WT2)
        np.testing.assert_almost_equal(U_WT, U_WT2)
