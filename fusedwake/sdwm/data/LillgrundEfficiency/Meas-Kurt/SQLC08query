@@ -1,0 +1,1 @@
+SELECT r1.mean, r2.mean, r3.mean FROM speeds r1, dirs r2, powers r3 WHERE (r1.mean>=8.5) and (r1.mean<=9.5) and (r3.cid=831)
