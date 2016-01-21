@@ -532,7 +532,7 @@ def GCLarsen(WF, WS, WD,TI,
 
     return (P_WT,U_WT,Ct)
 
-def GCL_P_GaussQ_Norm_U_WD(WF, WS, meanWD, stdWD, NG_P, absTI,
+def GCL_P_GaussQ_Norm_U_WD(WF, WS, meanWD, stdWD, NG_P, TI,
     z0=0.0001, alpha=0.101, inflow='log', NG=4, sup='lin',
     pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the Gaussian quadrature average of GCLarsen
