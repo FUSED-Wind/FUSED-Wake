@@ -16,7 +16,7 @@ from glob import glob
 def getInduction(ngrid, sWT, Format, U0,meta,):
     """Function that compute the axial induction distribution for subsequent use in the Ainslie wake flow model
 
-        Inputs
+        Parameters
         ----------
         ngrid (int): number of grid point per radius in BEM
         sWT (string): turbine name
@@ -24,8 +24,9 @@ def getInduction(ngrid, sWT, Format, U0,meta,):
         U0: mean hub height velocity
         meta (instance of class): Instance of class Meta holding DWM core variables
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         BEM (instnce of class) : refer to class description for details
     """
 
@@ -62,7 +63,7 @@ def getInduction(ngrid, sWT, Format, U0,meta,):
 def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
     """Function that run the BEM main loop
 
-        Inputs
+        Parameters
         ----------
         Sim (instance of class) holds simulation related parameters
         Wind (instance of class) holds wind inflow related parameters
@@ -73,8 +74,9 @@ def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
         Spec (instance of class) holds turbine specification parameters
         Misc (instance of class) holds I/O parameters
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         BEM (instnce of class) : refer to class description for details
     """
     cone = Rotor.cone
@@ -236,14 +238,15 @@ def fBEMsteady(Sim, Wind, Algo, Rotor, PcDataAll, Env, Spec, Misc):
 def getTorqueFromBlade(r0, Pt0, R):
     """Function that estimates the aerodynamic torque
 
-        Inputs
+        Parameters
         ----------
         r0: discrete radial position of blade [m]
         Pt0: tangential load in N
         R: blade radius [m]
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         Q: aerodynamic torque [Nm]
     """
     n = len(r0)
@@ -259,14 +262,15 @@ def getTorqueFromBlade(r0, Pt0, R):
 def getThrustFromBlade(r0, Pn0, R):
     """Function that estimates the thrust force
 
-        Inputs
+        Parameters
         ----------
         r0: discrete radial position of blade [m]
         Pn0: normal load in N
         R: blade radius [m]
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         T: aerodynamic thrust [N]
     """
     n = len(r0)
@@ -283,7 +287,7 @@ def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4, om
                            lambda_r, sigma, phi, Algo):
     """Function that compute the induction coefficients while applying swirl
 
-        Inputs
+        Parameters
         ----------
         a_last (float) : last iteration axial induction factor
         Vrel_norm (float): normed relative velocity
@@ -303,8 +307,9 @@ def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4, om
         phi (float): flow angle
         Algo (instance of class): holds algorith BEM related parameters
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         a: axial induction factor
         aprime: tangential induction factor
         CT_loc: local thrust coefficient
@@ -335,7 +340,7 @@ def fInductionCoefficients(a_last, Vrel_norm, Un, Ut, V0_in3, V0_in4, nW_in4, om
 def fCorrectionHighThrust(CTcorrection, a, CnForAI, phi, a_last, sigma, F, Ftip, CT_loc):
     """Function that applying high thrust coefficient correction
 
-        Inputs
+        Parameters
         ----------
         CTcorrection (string) : type of high thrust coefficient
         a (float): axial induction coefficient
@@ -347,8 +352,9 @@ def fCorrectionHighThrust(CTcorrection, a, CnForAI, phi, a_last, sigma, F, Ftip,
         Ftip: tip losses
         CT_loc: local thrust coefficient
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         a: axial induction factor
         CT_loc: local thrust coefficient
     """
@@ -367,7 +373,7 @@ def fCorrectionHighThrust(CTcorrection, a, CnForAI, phi, a_last, sigma, F, Ftip,
 def fAeroCoeffWrap(Rotor, PcDataAll, e, alpha, phi, chord, Vrel_norm, Re, Fperf, Algo, Misc):
     """Tabulated airfoil data interpolation
 
-        Inputs
+        Parameters
         ----------
         Rotor (instance of class) holds rotor related parameter
         PcDataAll (array of float) holds the profile coefficient Cm, Cl, Cd and AoA
@@ -381,8 +387,9 @@ def fAeroCoeffWrap(Rotor, PcDataAll, e, alpha, phi, chord, Vrel_norm, Re, Fperf,
         Algo (instance of class) holds alogrithm BEM related parameter
         Misc (instance of class) holds I/O parameters
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         Cl: lift coefficient
         Cd: drag coefficient
         Cn: normal coefficient
@@ -430,7 +437,7 @@ def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thicknes
                bRough):
     """Function that interpolates in the profile coefficients tabulated airfoil data
 
-        Inputs
+        Parameters
         ----------
         alpha: angle of attack deg
         PcDataAll: array holding all profile coefficients
@@ -442,8 +449,9 @@ def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thicknes
         bThicknessInterp: Thickness interpolation flag
         bRoughs: Roughness profile interpolation flag
 
-        Outputs
-        ----------
+
+        Returns
+        -------
         ClCdCm (float): vector containing the Cl, Cd and Cm values at interpolation point
     """
 
@@ -479,12 +487,13 @@ def fAeroCoeff(alpha, PcDataAll, ProfileSet, Profile_thickness_rel, rel_thicknes
 def fSetRotorGrid(ngrid, Rotor):
     """Function that discretizes the blade in elements
 
-        Inputs
+        Parameters
         ----------
         ngrid (int): numnber of blade elements-1
         Rotor (instance of class) holds rotor related geometrical parameters
-        Outputs
-        ----------
+
+        Returns
+        -------
         Rotor (instance of class): updated instance of class Rotor
     """
     if (ngrid == 0) == 1:
@@ -499,12 +508,13 @@ def fSetRotorGrid(ngrid, Rotor):
 def fInterpRotor(r_mid, Rotor):
     """Function that interpolate the blade geometry at the blade element center
 
-        Inputs
+        Parameters
         ----------
         r_mid float): blade element center
         Rotor (instance of class) holds rotor related geometrical parameters
-        Outputs
-        ----------
+
+        Returns
+        -------
     Rotor (instance of class): updated instance of class Rotor
     """
     Rotor.chord = np.interp(r_mid, Rotor.r, Rotor.chord)
