@@ -17,8 +17,10 @@ Contents:
    contributing
    authors
    history
+   models
    references
    source
+
 
 Indices and tables
 ==================
