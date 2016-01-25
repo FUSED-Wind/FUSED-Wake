@@ -9,7 +9,8 @@ elif inflow == 'pow':
     WS_inf = gaussN(WF.WT[0].R, Ua_shear, [WF.WT[0].H,WS,alpha]).sum()
 
 
-def gauss_rws()
+def gauss_rws():
+    pass
 
 class WFFM(WindFarm):
     def supperposition(self, ws, **kwargs):
