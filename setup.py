@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#
+# try:
+#     from setuptools import setup
+# except ImportError:
+#     from distutils.core import setup
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+
+
+from numpy.distutils.core import setup
+from numpy.distutils.core import Extension
+import os
+import glob
 
 
 with open('README.rst') as readme_file:
@@ -54,5 +61,17 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    ext_modules=[Extension('fusedwake.gcl.fortran',
+                           glob.glob(os.path.join('fusedwake', 'gcl', 'fortran',
+                                                  'GCL.f'))),
+                Extension('fusedwake.noj.fortran',
+                           glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
+                                                  'NOJ.f'))),
+                Extension('fusedwake.noj.fortran',
+                           glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
+                                                  'Mod_NOJ.f'))),
+                Extension('fusedwake.bpa.fortran',
+                           glob.glob(os.path.join('fusedwake', 'bpa', 'fortran',
+                                                  'BPA.f')))],
 )

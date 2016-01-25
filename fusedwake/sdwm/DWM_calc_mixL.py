@@ -317,19 +317,19 @@ def DWM_velocity_solver(mfor,meta,j):
 
     # Calculation of U for the wake body
     # mfor.visc[j-1,range(0,int(meta.lr_mixl*meta.dr_mixl),1)+1]
-    VL11[ind_R]             = -mfor.V[j-1,ind_R]      / (2.0*meta.dr)
-    VL21[ind_R]             = mfor.visc[j-1,ind_R]    / (2.0*meta.vr_mixl[ind_R]*meta.dr)
-    VL31[ind_R]             = -mfor.visc[j-1,ind_R]   / (meta.dr**2)
-    VL41[ind_R]             = (mfor.visc[j-1,ind_R_p] - mfor.visc[j-1,ind_R_m])  / (2*meta.dr)**2 # new term due to d(nu_t)/dr dependence
-    VL12[ind_R]             = mfor.U[j-1,ind_R]       / (meta.dz_mixl)
-    VL22[ind_R]             = +2.0*mfor.visc[j-1,ind_R] / (meta.dr**2)
-    VL13[ind_R]             = mfor.V[j-1,ind_R]       / (2.0*meta.dr)
-    VL23[ind_R]             = -mfor.visc[j-1,ind_R]   / (2.0*meta.vr_mixl[ind_R]*meta.dr)
-    VL33[ind_R]             = -mfor.visc[j-1,ind_R]   / (meta.dr**2)
-    VL43[ind_R]             = -(mfor.visc[j-1,ind_R_p] - mfor.visc[j-1,ind_R_m])  / (2.0*meta.dr)**2 # new term due to d(nu_t)/dr dependence
-    VL1[ind_R]              = VL11[ind_R] + VL21[ind_R] + VL31[ind_R] + VL41[ind_R]
-    VL2[ind_R]              = VL12[ind_R] + VL22[ind_R]
-    VL3[ind_R]              = VL13[ind_R] + VL23[ind_R] + VL33[ind_R] + VL43[ind_R]
+    VL11[ind_R] = -mfor.V[j-1,ind_R]      / (2.0*meta.dr)
+    VL21[ind_R] = mfor.visc[j-1,ind_R]    / (2.0*meta.vr_mixl[ind_R]*meta.dr)
+    VL31[ind_R] = -mfor.visc[j-1,ind_R]   / (meta.dr**2)
+    VL41[ind_R] = (mfor.visc[j-1,ind_R_p] - mfor.visc[j-1,ind_R_m])  / (2*meta.dr)**2 # new term due to d(nu_t)/dr dependence
+    VL12[ind_R] = mfor.U[j-1,ind_R]       / (meta.dz_mixl)
+    VL22[ind_R] = +2.0*mfor.visc[j-1,ind_R] / (meta.dr**2)
+    VL13[ind_R] = mfor.V[j-1,ind_R]       / (2.0*meta.dr)
+    VL23[ind_R] = -mfor.visc[j-1,ind_R]   / (2.0*meta.vr_mixl[ind_R]*meta.dr)
+    VL33[ind_R] = -mfor.visc[j-1,ind_R]   / (meta.dr**2)
+    VL43[ind_R] = -(mfor.visc[j-1,ind_R_p] - mfor.visc[j-1,ind_R_m])  / (2.0*meta.dr)**2 # new term due to d(nu_t)/dr dependence
+    VL1[ind_R]  = VL11[ind_R] + VL21[ind_R] + VL31[ind_R] + VL41[ind_R]
+    VL2[ind_R]  = VL12[ind_R] + VL22[ind_R]
+    VL3[ind_R]  = VL13[ind_R] + VL23[ind_R] + VL33[ind_R] + VL43[ind_R]
 
     # build the matrix for X =A/B
     mat[ind_R_m,ind_R] = VL1[ind_R]
