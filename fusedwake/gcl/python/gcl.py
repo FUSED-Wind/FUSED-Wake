@@ -101,7 +101,7 @@ def gaussN(R, func, varargin, NG=4):
     return (np.pi/4.0)*(R**2./A)*w*w.T*func(R*(rt+1.0)/2.0,
         np.pi*(te+1.0),*varargin)*(rt+1.0)
 
-def get_R96(R, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
+def get_r96(D, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0]):
     """Computes the wake radius at 9.6D downstream location of a turbine
 
     .. math::
@@ -109,8 +109,8 @@ def get_R96(R, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858
 
     Parameters
     ----------
-    R: float
-        Wind turbine radius
+    D: float
+        Wind turbine diameter
     CT: float
         Outputs WindTurbine object's thrust coefficient
     TI: float
@@ -123,7 +123,6 @@ def get_R96(R, CT, TI, pars=[0.435449861, 0.797853685, -0.124807893, 0.136821858
     R96: float
         Wake radius at 9.6D downstream location
     """
-    D = 2.0*R
     a1, a2, a3, a4, b1, b2 = pars
     R96 = a1 * (np.exp(a2 * CT * CT + a3 * CT + a4)) * (b1 * TI + b2) * D
 
@@ -175,7 +174,7 @@ def get_Rw(x, R, TI, CT, pars=[0.435449861, 0.797853685, -0.124807893, 0.1368218
     m = 1.0 / (np.sqrt(1.0 - CT))
     k = np.sqrt((m + 1.0) / 2.0)
 
-    R96 = get_R96(R, CT, TI, pars)
+    R96 = get_r96(D, CT, TI, pars)
 
     x0 = (9.6 * D) / ((2.0 * R96 / (k * D))**3.0 - 1.0)
     term1 = (k * D / 2.0)**2.5
@@ -224,7 +223,7 @@ def get_dU(x,r,Rw,U,R,TI,CT,
     m=1./(np.sqrt(1.-CT))
     k=np.sqrt((m+1.)/2.)
 
-    R96 = get_R96(R,CT,TI,pars)
+    R96 = get_r96(D,CT,TI,pars)
 
     x0=(9.6*D)/((2.*R96/(k*D))**3.-1.)
     term1=(k*D/2.)**2.5
@@ -684,7 +683,7 @@ def GCL_P_GaussQ_Uni_U_WD(WF,WS,meanWD,U_WD,NG_P,TI,
 
     return meanP_WT,meanU_WT,meanCT_WT
 '''
-print get_R96(R=80.0,CT=0.5,TI=0.05)
+print get_r96(D=80.0,CT=0.5,TI=0.05)
 print
 print get_Rw(x=np.linspace(10.,100.0,10),R=80.0,TI=0.05,a=0.3)
 print

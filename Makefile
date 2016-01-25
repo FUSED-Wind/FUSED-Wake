@@ -82,3 +82,6 @@ dist: clean
 
 install: clean
 	python setup.py install
+
+develop: clean
+	python setup.py develop

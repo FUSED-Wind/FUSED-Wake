@@ -9,8 +9,8 @@
 
 
 
-from numpy.distutils.core import setup
-from numpy.distutils.core import Extension
+from setuptools import setup
+from setuptools import Extension
 import os
 import glob
 
