@@ -12,3 +12,4 @@ scipy
 jupyter
 matplotlib
 pandas
+sphinx-fortran
