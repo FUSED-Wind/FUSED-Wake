@@ -59,9 +59,9 @@ class Meta:
 
         ## Model inputs calibrated constant
         self.Model                 = 'mixL' # Eddy viscosity model as per Keck et al. [2]
-        # self.fU                    = 1.10 # fU = 1.1 & fR = 0.98 yields the best fit to AL calibration data according to Keck et al. [5].
+        # self.fU                    = 1.10 # fU = 1.1 & fR = 0.98 yields the best fit to AL calibration data according to Keck et al. [Keck_2015]_.
         # self.fR                    = 0.98 #
-        self.fU                    = 1. #Madsen et al [2].
+        self.fU                    = 1. # [Madsen_2009]_
         self.fR                    = 1.
         self.atmo_stab             = 'N'
         self.k1                    = 0.0919 # k1 = 0.0919 & k2 = 0.0178 yields the best fit to AL calibration data according to Keck et al. [5].

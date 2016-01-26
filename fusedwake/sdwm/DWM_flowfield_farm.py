@@ -95,8 +95,7 @@ def DWM_main_field_model(ID_waked,deficits,inlets_ffor,inlets_ffor_deficits,inle
     return( aero, meta, mfor, ffor, DWM, deficits, inlets_ffor, inlets_ffor_deficits, inlets_ffor_turb, turb, out, ID_waked)
 
 def DWM_aero(meta,ffor,aero,deficits,turb,inlets_ffor,inlets_ffor_deficits,out):
-    """ Aerodynamique module of the DWM. This module contains the wake summation module (deficit and turbulence accumulation)
-    The steady state blade element momentum
+    """ Aerodynamique module of the DWM. This module contains the wake summation module (deficit and turbulence accumulation) as well as a steady state blade element momentum
 
     Parameters
     ----------
@@ -255,19 +254,19 @@ def DWM_rotor_aero(meta,aero):
     Returns
     -------
     aero (updated)
-             CP [1],        : turbine power coefficient
-             CPloc[r,1],    : local CP for power estimation
-             Power [1],     : power from BEM [W]
-             CT [1],        : thrust coefficient [-]
-             RPM [1],       : rotational speed [RPM]
-             PITCH [1]      : pitch angle [deg]
-             U_w [1,r],     : local axial velocity in the wake from momemtum theory
-             a [1,r],       : local induction factor
-             dA [1],        : local annular area
-             f_w [1],       : calibration factor on wake deficit expansion
-             mean_a [1],    : rotor averaged axial induction
-             r_t [1,r],     : non dimensional radial position where a is evaluated
-             r_w [1,r]      : wake radius in near wake regime
+    CP [1],        : turbine power coefficient
+    CPloc[r,1],    : local CP for power estimation
+    Power [1],     : power from BEM [W]
+    CT [1],        : thrust coefficient [-]
+    RPM [1],       : rotational speed [RPM]
+    PITCH [1]      : pitch angle [deg]
+    U_w [1,r],     : local axial velocity in the wake from momemtum theory
+    a [1,r],       : local induction factor
+    dA [1],        : local annular area
+    f_w [1],       : calibration factor on wake deficit expansion
+    mean_a [1],    : rotor averaged axial induction
+    r_t [1,r],     : non dimensional radial position where a is evaluated
+    r_w [1,r]      : wake radius in near wake regime
     """
 
     if (meta.mean_WS_DWM >= meta.WTG_spec.u_cutin) or (meta.mean_WS_DWM <= meta.WTG_spec.u_cutout) is True:
@@ -350,16 +349,13 @@ def DWM_get_deficit(ffor,meta,deficits,ID_waked,inlets_ffor,inlets_ffor_deficits
 def DWM_get_turb(ffor,meta,turb,inlets_ffor_turb,):
     """
     Function that calculate the rotor averaged turbulence intensity
+
     Parameters
     ----------
-    ffor: (instance of class)
-        Instance of class Ffor holding the fixed frame of reference velocity field in global WF coordinates
-    meta: (instance of class)
-        Instance of class Meta holding DWM core variables
-    turb:  dict(nWT)
-        holding a list of turbulence intensities contributions from upstream wakes
-    inlets_ffor_turb: dict(nWT)
-        holding a list of array containing the turbulence field in the fixed frame of reference from upstream wakes contributions at the rotor position
+    ffor: (instance of class) Ffor holding the fixed frame of reference velocity field in global WF coordinates
+    meta: (instance of class) Instance of class Meta holding DWM core variables
+    turb:  dict(nWT) holding a list of turbulence intensities contributions from upstream wakes
+    inlets_ffor_turb: dict(nWT) holding a list of array containing the turbulence field in the fixed frame of reference from upstream wakes contributions at the rotor position
 
     Returns
     -------
@@ -398,15 +394,15 @@ def DWM_MFOR_to_FFOR(mfor,meta,meand,ffor):
     Returns
     -------
     ffor: (instance of class)    updated class holding global velocity field
-        x_vec(1,nx) : coordinates in X direction
-        y_vec(1,ny) : coordinates in Y direction
-        z_vec(1,nz) : coordinates in Z direction (streamwise)
-        x_mat(nx,ny): coordinates matrix in meshgrid format for the X component
-        y_mat(nx,ny): coordinates matrix in meshgrid format for the Ycomponent
-        z_mat(nx,nz): coordinates matrix in meshgrid format for the Z component
-        TI_meand_axial_ffor (nx,ny,nz): turbulence due to wake meandering in global coordinate system
-        WS_axial_ffor (nx,ny,nz): velocity deficit in global coordinate system
-        TI_axial_ffor (nx,ny,nz): apparent turbulence in global coordinate system see Madsen et al [2]
+    x_vec(1,nx) : coordinates in X direction
+    y_vec(1,ny) : coordinates in Y direction
+    z_vec(1,nz) : coordinates in Z direction (streamwise)
+    x_mat(nx,ny): coordinates matrix in meshgrid format for the X component
+    y_mat(nx,ny): coordinates matrix in meshgrid format for the Ycomponent
+    z_mat(nx,nz): coordinates matrix in meshgrid format for the Z component
+    TI_meand_axial_ffor (nx,ny,nz): turbulence due to wake meandering in global coordinate system
+    WS_axial_ffor (nx,ny,nz): velocity deficit in global coordinate system
+    TI_axial_ffor (nx,ny,nz): apparent turbulence in global coordinate system see Madsen et al [2]
     meta: (instance of class)
     """
 
@@ -481,11 +477,11 @@ def DWM_make_grid(meta):
     Returns
     -------
     meta (updated)
-            lz_mixl  : length of the mixing length domain
-            vz_mixl  : vector of streamwise grid points of the polar MFoR domain in R
-            vz       : vector of streamwise grid points indices of the cartesian domain
-            nz       : vector length of streamwise grid points of the cartesian domain in D
-            z_vec    : vector length of streamwise grid points of the cartesian domain in D
+    lz_mixl  : length of the mixing length domain
+    vz_mixl  : vector of streamwise grid points of the polar MFoR domain in R
+    vz       : vector of streamwise grid points indices of the cartesian domain
+    nz       : vector length of streamwise grid points of the cartesian domain in D
+    z_vec    : vector length of streamwise grid points of the cartesian domain in D
     """
 
     meta.vz=meta.hub_z[0:]*meta.dz
@@ -510,11 +506,11 @@ def DWM_meta_meand(meand,meta):
     Returns
     -------
     meand: (updated)
-            meand_pos_x [z,t]  : vector holding wake position in lateral
-            meand_pos_y [z,t]  : vector holding wake position in longitunal
-            std_meand_x [z,t]  : standard deviation of wake center position in lateral
-            std_meand_y [z,t]  : standard deviation of wake center position in long
-            time   [t]   : time vector
+    meand_pos_x [z,t]  : vector holding wake position in lateral
+    meand_pos_y [z,t]  : vector holding wake position in longitunal
+    std_meand_x [z,t]  : standard deviation of wake center position in lateral
+    std_meand_y [z,t]  : standard deviation of wake center position in long
+    time   [t]   : time vector
     """
     #meand.time             = np.arange(1,600.+1,1) # number of wake meandering samples 10 min at 1Hz
     meand.time             = np.arange(1,300+1,1) # number of wake meandering samples 10 min at 1Hz

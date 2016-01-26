@@ -4,7 +4,7 @@
 .. [Keck_2013b] Keck et al., A consistent turbulence formulation for the dynamic wake meandering model in the atmospheric boundary layer, PhD thesis, DTU Wind Energy PhD-0012 (EN), July 2013.
 .. [Keck_2014] Keck, et al, A pragmatic approach to wind farm simulations using the dynamic wake meandering model. 2014 Wind Energy, 18, 1671–1682. http://doi.org/10.1002/we
 .. [Keck_2015] Keck, R.-E. Validation of the standalone implementation of the dynamic wake meandering model for power production. (2015) Wind Energy, 18(9), 1579–1591. http://doi.org/10.1002/we.1777
-.. [Larsen 2008] Larsen, G. C. et al, Wake meandering: a pragmatic approach. Wind Energy, 11(4), 377–395. http://doi.org/10.1002/we.267
+.. [Larsen_2008] Larsen, G. C. et al, Wake meandering: a pragmatic approach. Wind Energy, 11(4), 377–395. http://doi.org/10.1002/we.267
 .. [Larsen_2009] Larsen, G. C. A simple stationary semi-analytical wake model, (2009) 1713(August), 1–21.
 .. [Larsen_2011] Larsen, T. J. et al, Validation of the Dynamic Wake Meander Model for Loads and Power Production in the Egmond aan Zee Wind Farm, 2011 Wind Energy. 1–19. http://doi.org/10.1002/we
 .. [Larsen_2015] Larsen, G. C., Machefaux, E. et al.  Wake meandering under non-neutral atmospheric stability conditions - theory and facts. 2015 Journal of Physics: Conference Series, 625(1), 012036. http://doi.org/10.1088/1742-6596/625/1/012036
