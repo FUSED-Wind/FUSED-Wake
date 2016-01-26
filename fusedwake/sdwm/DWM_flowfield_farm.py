@@ -13,6 +13,146 @@ from math import pi, sqrt
 from scipy import io, interpolate
 from DWM_misc import smooth
 
+import sys
+sys.path.append("../src/")
+import numpy as np
+import fusedwake.WindFarm as wf # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
+import fusedwake.WindTurbine as wt # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
+from DWM_GClarsenPicks import get_Rw
+from DWM_init_dict import init
+import sys, getopt
+import time
+from . import __version__
+
+def run_sdwm(WD, WS, TI, WTcoord, WTG, HH, R, stab, accum):
+    """
+         Main wrapper to the core flow field DWM model
+         This function:
+         1) handles inputs arguments,
+         2) set up defaults values,
+         3) call the wind farm layout model,
+         4) create the wake tree by calling the expansion of the GCL model
+         5) main loop run for each turbine from most upstream to the most downstream in flow coordinate system
+
+    Parameters
+    ----------
+    WD: float
+
+    WS: float
+
+    TI: float
+
+    WTcoord: float
+
+    WTG: float
+
+    HH: float
+
+    R: float
+
+    stab: str
+
+    accum: str
+
+    Returns
+    -------
+    Farm_p_out:
+    WT_p_out:
+    Vel_out:
+    Pos_out:
+    WF:
+    WT:
+    aero:
+    meta:
+    mfor:
+    ffor:
+    DWM:
+    deficits:
+    inlets_ffor:
+    inlets_ffor_deficits:
+    inlets_ffor_turb:
+    turb:
+    out:
+    ID_waked:
+
+    """
+
+    ttt = time.time()
+
+    # Load wind turbine and wind farm
+    WT = wt.WindTurbine('Windturbine','../WT-data/'+WTG+'/'+WTG+'_PC.dat',HH,R)
+    WF = wf.WindFarm('Windfarm',WTcoord,WT)
+
+    print '***** sDWM v'+ __version__+' // WF: '+str(WF.nWT)+' WT(s) / WD '+str(WD)+'deg / WS '+str(WS)+' m/s / TI '+str(TI)+' / accumulation: '+accum+'  ******************'
+
+    # Scaling wind farm to NREL's rotor size
+    if 'Lill' in WTcoord:
+        WF.vectWTtoWT=WF.vectWTtoWT*(WT.R/46.5) # 46.5 is the Lillgrund nominal radius of SWT turbine
+
+    # Compute distance WT to WT in mean flow coordinate system
+    distFlowCoord, nDownstream, id0= WF.turbineDistance(WD)
+
+    # Init dictionnaries
+    deficits, turb, inlets_ffor, inlets_ffor_deficits,inlets_ffor_turb,out, DWM, ID_waked, ID_wake_adj, Farm_p_out, WT_p_out, Vel_out, Pos_out=init(WF)
+
+    # Extreme wake to define WT's in each wake, including partial wakes. This is a call to GCL expansion model [12]
+    ID_wake = {id0[i]:(get_Rw(x=distFlowCoord[0,id0[i],:],
+                              R = 2. * WF.WT.R,
+                              TI=TI,
+                              CT=WT.get_CT(WS),
+                              pars=[0.435449861,0.797853685,-0.124807893,0.136821858,15.6298,1.0])>\
+               np.abs(distFlowCoord[1,id0[i],:])).nonzero()[0] \
+               for i in range(WF.nWT)}
+
+    ## Main DWM loop over turbines
+    for iT in range(WF.nWT):
+        print 'Simulating turbine '+ str(iT+1) +'/'+str(WF.nWT)
+        # Define flow case geometry
+        cWT = id0[iT]
+        #Radial coordinates in cWT for wake affected WT's
+        x=distFlowCoord[0,cWT,ID_wake[cWT]]
+        C2C   = distFlowCoord[1,cWT,ID_wake[cWT]]
+        index_orig=np.argsort(x)
+        x=np.sort(x)
+        row= ID_wake[id0[iT]][index_orig]
+        C2C=C2C[index_orig]
+
+        # wind turbine positions
+        Pos_out[iT,0] = ((WF.pos[0,cWT]-min(WF.pos[0,:]))/(2.*WF.WT.R))*(WT.R/46.5)
+        Pos_out[iT,1] = ((WF.pos[1,cWT]-min(WF.pos[1,:]))/(2.*WF.WT.R))*(WT.R/46.5)
+
+        # Wrapping the DWM core model with inputs
+        par={
+         'WS'         : WS, # wind speed [m/s]
+         'TI'         : TI, # turbulence intensity
+         'atmo_stab'  : stab, # atmospheric stability VU, U ,NU, N, NS, S, VS
+         'WTG'        : WTG, # wind turbine name
+         'WTG_spec'   : WT, # class holding wind turbine specifications
+         'wtg_ind'    : row, # turbine index
+         'hub_z'      : x/(2*WF.WT.R), # set up location of downstream turbines in flow direction
+         'hub_x'      : np.ceil((3*(max(abs(C2C))+WF.WT.R))/WF.WT.R)*0.5+C2C/(WF.WT.R), # set up lateral displacements of downstream turbines
+         'C2C'        : C2C, # parse the "Center to Center" distance between hubs
+         'lx'         : np.ceil((3.*(max(abs(C2C))+WF.WT.R))/WF.WT.R),  # set up length of the domain in lateral coordinates in rotor diameter [D]
+         'ly'         : np.ceil((3.*(max(abs(C2C))+WF.WT.R))/WF.WT.R),  # set up length of the domain in longitudinal in rotor diameter [D]
+         'accu_inlet' : True, # specify whether inlet propagation is enabled (more accurate but slows down simulations), if disable, it behaves like HAWC2-DWM
+         'accu'       : accum, # type of wake accumulation (linear, dominant [4] or quadratic)
+         'full_output': True # Flag for generating the complete output with velocity deficit scalars (larger memory foot print if enabled)
+        }
+        ID_wake_adj[str(id0[iT])]=row
+        aero, meta, mfor, ffor, DWM, deficits,inlets_ffor,inlets_ffor_deficits, \
+        inlets_ffor_turb,turb, out,ID_waked = DWM_main_field_model(ID_waked,deficits,inlets_ffor,inlets_ffor_deficits,
+                                                                   inlets_ffor_turb,turb,DWM,out,**par)
+
+        # Total power
+        Farm_p_out= Farm_p_out+out[str(meta.wtg_ind[0])][0] # based on BEM,# Farm_p_out= Farm_p_out+out[str(meta.wtg_ind[0])][4] # based on power curve
+        # Power by each turbine
+        WT_p_out[iT]=out[str(meta.wtg_ind[0])][0]
+        Vel_out[iT]=out[str(meta.wtg_ind[0])][1]
+    elapsedttt = time.time() - ttt
+    print '***** sDWM v'+ __version__+' // Farm prod. is: %4.2f kW, %i WT(s) : %s -- in %4.2f sec *************' %(Farm_p_out,WF.nWT,np.array_str(WT_p_out),elapsedttt)
+    return Farm_p_out,WT_p_out,Vel_out,Pos_out,WF,WT,aero, meta, mfor, ffor, DWM, deficits,inlets_ffor,inlets_ffor_deficits, inlets_ffor_turb,turb, out,ID_waked
+
+
 def DWM_main_field_model(ID_waked,deficits,inlets_ffor,inlets_ffor_deficits,inlets_ffor_turb,turb,DWM,out,**par):
     """Main flow field calculation function, handling all the calls to each sub functions. This function is called for
        each turbine in the wind farm from the most upstream to the most downstream one. The flow field calculations are
@@ -541,7 +681,7 @@ def meand_table_DWM_method(meta):
     Function to determine the meandering magnitude as function of ambient conditions at given downstream position i_z
     The parameters required for the determination of the meandering magnitude are: downstream distance, height,
     turbulence intensity and atmospheric stability
-    
+
     Parameters
     ----------
     meta:    class holding grid and ambient parameters
