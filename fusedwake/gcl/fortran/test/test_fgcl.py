@@ -7,7 +7,7 @@ class TestFortranGCL(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_R96(self):
+    def test_r96(self):
         # Fixed parameters
         a1 = 0.435449861
         a2 = 0.797853685
