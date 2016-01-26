@@ -9,14 +9,14 @@ FUSED-Wake
         :target: https://travis-ci.org/rethore/FUSED-Wake
 
 .. image:: https://readthedocs.org/projects/fused-wake/badge/?version=latest
-        :target: http://fused-wake.readthedocs.org/en/latest/?badge=latest
+        :target: https://fused-wake.readthedocs.org/en/latest/?badge=latest
         :alt: Documentation Status
 
 
 A collection of wind farm flow models for FUSED-Wind
 
 * Free software: GNU Affero v3 license
-* Documentation: https://fusedwake.readthedocs.org.
+* Documentation: https://fused-wake.readthedocs.org/en/master/.
 
 Features
 --------
