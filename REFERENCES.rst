@@ -10,3 +10,7 @@
 .. [Larsen_2015] Larsen, G. C., Machefaux, E. et al.  Wake meandering under non-neutral atmospheric stability conditions - theory and facts. 2015 Journal of Physics: Conference Series, 625(1), 012036. http://doi.org/10.1088/1742-6596/625/1/012036
 .. [Machefaux] Machefaux, E. et al, Engineering models for merging wakes in wind farm optimization applications.
 .. [Madsen_2009] Madsen, H. A. et al, Calibration and Validation of the Dynamic Wake Meandering Model for Implementation in an Aeroelastic Code. Journal of Solar Energy Engineering, 132(4), 041014. http://doi.org/10.1115/1.4002555
+.. [Madsen_2009] Madsen HA, Thomsen K, Larsen GC. A new method for prediction of detailed wake loads. In Proceedings of IEA Joint Action of Wind Turbines 16th Symposium, May 2003 at NREL, by Thor S-E (ed.). Boulder, USA, 2003; 171–188
+.. [Larsen_2007] Larsen TJ. Hansen AM. How to HAWC2, the users manual. Risø-R-1597(en) 2007.
+.. [Frandsen_2007] Frandsen ST. Turbulence and turbulence-generated structural loading in wind turbine clusters. Risø-R-1188(EN). Risø National Laboratory, Technical University of Denmark, Roskilde, Denmark, 2007.
+.. [NOJensen_1983]_ Jensen NO. A note on wind generator interaction. Risø M 2411. November 1983.
