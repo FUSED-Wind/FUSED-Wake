@@ -51,7 +51,7 @@ import fusedwake
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax', 'sphinxfortran.fortran_autodoc', 'sphinxfortran.fortran_domain']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -273,6 +273,10 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+
+fortran_src = [
+    'fusedwake/gcl/fortran/GCL.f',
+]
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
 

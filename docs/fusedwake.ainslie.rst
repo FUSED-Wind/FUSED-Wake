@@ -1,17 +1,17 @@
-fusedwake.noj package
-=====================
+fusedwake.ainslie package
+=========================
 
 Subpackages
 -----------
 
 .. toctree::
 
-    fusedwake.noj.python
+    fusedwake.ainslie.python
 
 Module contents
 ---------------
 
-.. automodule:: fusedwake.noj
+.. automodule:: fusedwake.ainslie
     :members:
     :undoc-members:
     :show-inheritance:

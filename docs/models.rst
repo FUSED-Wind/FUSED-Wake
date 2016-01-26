@@ -16,7 +16,7 @@ Theory
 Introduction
 """"""""""""
 The Dynamic Wake Meandering is a widely used engineering model for simulating wind farm wake flows and the structural response of wind turbines in wind farm environment. Its computational demands are typically several order of magnitude lower than Computational Fluid Dynamics model. This model was first proposed by [Madsen_2003]_, with the ambition of combining an engineering flow model that captures the essential physics behind wake dynamics while maintaining low computational demand. This model therefore aims at performing wind farm design calculations, which typically involves a larger number of design iterations, while taking into account both load and power production aspects of each individual turbine. The combined load and power was, prior to the introduction of the DWM mode, not available in widely IEC standards models such as the wake model for load calculation of Frandsen [Frandsen_2007]_ and the industry standard Jensen's model [NOJensen_1983]_ for power production.
-The original implementation of the model was proposed by [Madsen_2009]_ in DTU's aero-elastic code HAWC2 [Larsen_2007]_. The present version of the model is an extension of the standalone Matlab based model of 
+The original implementation of the model was proposed by [Madsen_2009]_ in DTU's aero-elastic code HAWC2 [Larsen_2007]_. The present version of the model is an extension of the standalone Matlab based model of
 [Keck_2013b]_ applied to wind farm calculations where each turbine are modeled using a Blade Element Momemtum (BEM) approach.
 
 

@@ -9,8 +9,10 @@
 
 
 
-from setuptools import setup
-from setuptools import Extension
+#from setuptools import setup
+#from setuptools import Extension
+from numpy.distutils.core import setup
+from numpy.distutils.extension import Extension
 import os
 import glob
 
@@ -22,11 +24,19 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'sphinx',
+    'sphinx-fortran',
+    'numpy',
+    'scipy',
+    'pandas',
+    'matplotlib',
+    'PyYAML',
 ]
 
 test_requirements = [
-    # TODO: put package test requirements here
+    'tox',
+    'pytest',
+    'coverall',
 ]
 
 setup(
