@@ -6,7 +6,7 @@ Standalone Dynamic Wake Meandering
 
 The following is a general description of the standalone **Dynamic Wake Meandering (DWM)** implemented in FUSED Wake.
 The present software is currently under development (beta version release).
-It is an adaptation of the standalone Dynamic Wake Meandering model implementation of Rolf-Erik Keck ([Keck_2013b]_), based on the theory described in [Larsen_2008]_, [Larsen_2015]_, [Madsen_2009]_. 
+It is an adaptation of the standalone Dynamic Wake Meandering model implementation of Rolf-Erik Keck ([Keck_2013b]_), based on the theory described in [Larsen_2008]_, [Larsen_2015]_, [Madsen_2009]_.
 As opposed to the implementation of the DWM model in the commercial aero-elastic software HAWC2 developed at DTU Wind Energy, the present version of the model is not coupled to an aero-elastic turbine model, and therefore, is only meant to be used in wind farm power production application.
 
 
@@ -21,7 +21,7 @@ The original implementation of the model was proposed by [Madsen_2009]_ in DTU's
 
 
 
-Wind farm module 
+Wind farm module
 """"""""""""
 The wind farm module is initially called prior to any DWM core computations to create the so-called wake tree. The wake tree is a table that describes the wake relationship between turbines for a given wind farm layout and ambient mean flow conditions.
 The wake envelop, i.e. the boundaries of the average wake in the fixed frame of reference, is estimated from a single call to the Larsen wake model [Larsen_2009]_, using the mean ambient conditions. Once the average wake expansion is known, the intersection between downstream rotor and the upstream generated wake envelop is investigated to identify downstream rotor in full or partial wake situation. The following illustrates the wake tree of two corresponding rows from the Lillgrund wind farm at an inflow angle of 120deg.
@@ -31,9 +31,11 @@ The wake envelop, i.e. the boundaries of the average wake in the fixed frame of 
 .. image:: ../fusedwake/sdwm/Figs/Lillgrund_120deg_row_1.png
    :scale: 75 %
 The following shows the corresponding wake tree python dictionary, where turbine index are ranked from the most upstream to the downstream location in the wind farm:
-.. code:: 
+.. code::
     {'0': array([ 0,  7, 15, 23, 30]),
      '1': array([ 1,  8, 16, 24, 31, 36, 41, 45]),
+     ...
+     }
 
 
 Dynamic wake meandering core module
@@ -41,23 +43,23 @@ Dynamic wake meandering core module
 
 The core flowfield calculation are carried out for each turbine from the most upstream to the most downstream location in the wind farm following the preliminary defined wake tree. The calculations are based on the following work flow:
 
-# Computational domain set up.
-This step generates a computational grid in Cartesian coordinate system where the width is determined from the lateral position of each downwind turbine with respect to the upstream wake generating one. In order to account for dynamic sideways displacements of the wake, the domain has a larger lateral extent than the downwind rotor lateral positions (typically in the order of 1 rotor diameter). 
+- # Computational domain set up.
+This step generates a computational grid in Cartesian coordinate system where the width is determined from the lateral position of each downwind turbine with respect to the upstream wake generating one. In order to account for dynamic sideways displacements of the wake, the domain has a larger lateral extent than the downwind rotor lateral positions (typically in the order of 1 rotor diameter).
 
-# Extracting wake meandering statistics from the meta model.
-This step generates time series of wake meandering from the surrogate model developed from high fidelity CFD computations. The meandering magnitude is a function of atmospheric stability [Keck_2013a]_, mean turbulence level and rotor diameter [Larsen_2008]_ as well as turbine hub height. 
+- # Extracting wake meandering statistics from the meta model.
+This step generates time series of wake meandering from the surrogate model developed from high fidelity CFD computations. The meandering magnitude is a function of atmospheric stability [Keck_2013a]_, mean turbulence level and rotor diameter [Larsen_2008]_ as well as turbine hub height.
 
-# Simulate the steady state aerodynamic response of the turbine
-In this step, the aerodynamic module is used to carry out a Blade Element Momemtum (BEM) simulation using as input either free stream conditions or aggregated upstream wakes conditions (through a wake summation model). The resulting rotor averaged velocity deficit and turbulence intensity, power production as well as turbine axial induction are extracted. 
+- # Simulate the steady state aerodynamic response of the turbine
+In this step, the aerodynamic module is used to carry out a Blade Element Momemtum (BEM) simulation using as input either free stream conditions or aggregated upstream wakes conditions (through a wake summation model). The resulting rotor averaged velocity deficit and turbulence intensity, power production as well as turbine axial induction are extracted.
 
-# Compute wake in moving frame of reference (MFOR)
-In this step, the axi-symmetric 1D Navier Stokes (NS) folder using the Thin Shear Layer (TL) approximation is used to compute the axi-symmetric wake deficit in the moving frame of reference. This computation is carried out on a cylindrical grid layout extending in the streamwise flow direction to the end of the wake propagation row, i.e., the location of the most downwind turbine. 
+- # Compute wake in moving frame of reference (MFOR)
+In this step, the axi-symmetric 1D Navier Stokes (NS) folder using the Thin Shear Layer (TL) approximation is used to compute the axi-symmetric wake deficit in the moving frame of reference. This computation is carried out on a cylindrical grid layout extending in the streamwise flow direction to the end of the wake propagation row, i.e., the location of the most downwind turbine.
 The input conditions of the NS-TL solver is based on the radial distribution of axial induction from the aerodynamic module. A complete description of the wake flow model as implemented in the sDWM is available in [Keck_2011]_, [Keck_2012]_, [Keck_2015]_.
 
-# Estimate the wake deficit in the fixed frame of reference (FFOR)
-In this step, the resulting deficit in the fixed frame of reference at the downwind location of the waked rotor is calculated. This is done by applying a lateral and longitudinal displacement on the MFOR wake profile within a specified time loop (600 s at 1HZ by default). 
+- # Estimate the wake deficit in the fixed frame of reference (FFOR)
+In this step, the resulting deficit in the fixed frame of reference at the downwind location of the waked rotor is calculated. This is done by applying a lateral and longitudinal displacement on the MFOR wake profile within a specified time loop (600 s at 1HZ by default).
 
-# Estimate the rotor averaged deficit and turbulence level at each downwind rotor.
+- # Estimate the rotor averaged deficit and turbulence level at each downwind rotor.
 In this final step, the contribution of the upstream turbines in terms of velocity deficit and added turbulence level to each of its downwind turbine is evaluated and stored for subsequent use in the the aerodynamic module (wake superposition).
 
 The following summarize the standalone Dynamic Wake Meandering work flow in a flow chart.
@@ -75,7 +77,9 @@ The present implementation aims at simulating the average power production of ea
 .. image:: ../fusedwake/sdwm/Figs/HAWC2DWMandFUSEDWINDDWM.png
    :scale: 50 %
 
-
+Tutorial
+^^^^^^^^
+A Jupyter Notebook simple tutorial is available in the repo: [fusedwake/sdwm/notebooks/notebooks/RUN-example-sDWM.ipynb](https://github.com/rethore/FUSED-Wake/blob/master/fusedwake/sdwm/notebooks/RUN-example-sDWM.ipynb)
 
 DISCLAIMER
 ^^^^^^
