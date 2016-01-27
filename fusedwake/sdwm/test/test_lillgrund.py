@@ -1,6 +1,7 @@
 import numpy as np
 import sys
-sys.path.append("../src/")
+import os
+current_dir = os.path.dirname(os.path.realpath(__file__))
 import numpy as np
 import unittest
 
@@ -16,7 +17,7 @@ class Test_Lillgrund_SDWM(unittest.TestCase):
             'TI':0.06,
             # WTcoord='../data/Lill_A04B04C04.dat'; '../data/Lill_full.dat'
             # 'WTcoord':'../data/Lill_A04.dat',
-            'WTcoord':'../data/Lill_full.dat',
+            'WTcoord': current_dir + '/../data/Lill_full.dat',
             'WTG':'NREL5MW',
             'HH':90.0,
             'R':63.0,

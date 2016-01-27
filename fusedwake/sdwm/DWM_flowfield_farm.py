@@ -14,7 +14,6 @@ from scipy import io, interpolate
 from DWM_misc import smooth
 
 import sys
-sys.path.append("../src/")
 import numpy as np
 import fusedwake.WindFarm as wf # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
 import fusedwake.WindTurbine as wt # An offshore wind farm model Juan P. Murcia <jumu@dtu.dk>
@@ -23,6 +22,9 @@ from DWM_init_dict import init
 import sys, getopt
 import time
 from . import __version__
+
+import os
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 def run_sdwm(WD, WS, TI, WTcoord, WTG, HH, R, stab, accum):
     """
@@ -80,7 +82,7 @@ def run_sdwm(WD, WS, TI, WTcoord, WTG, HH, R, stab, accum):
     ttt = time.time()
 
     # Load wind turbine and wind farm
-    WT = wt.WindTurbine('Windturbine','../WT-data/'+WTG+'/'+WTG+'_PC.dat',HH,R)
+    WT = wt.WindTurbine('Windturbine',current_dir+'/WT-data/'+WTG+'/'+WTG+'_PC.dat',HH,R)
     WF = wf.WindFarm('Windfarm',WTcoord,WT)
 
     print '***** sDWM v'+ __version__+' // WF: '+str(WF.nWT)+' WT(s) / WD '+str(WD)+'deg / WS '+str(WS)+' m/s / TI '+str(TI)+' / accumulation: '+accum+'  ******************'
@@ -697,7 +699,7 @@ def meand_table_DWM_method(meta):
     lloc=len(location)
     index_orig=np.argsort(location)
     location=np.sort(location) # sorting for interpolation on continuous function
-    Meand = io.loadmat('../data/meand_data.mat')
+    Meand = io.loadmat(current_dir+'/data/meand_data.mat')
     TI_vector     = np.array([0.0, 60.0, 100.0, 140.0, 200.0])/1000.0
     #creates tmp_TI for interpolation
     ind=TI_vector<=meta.TI

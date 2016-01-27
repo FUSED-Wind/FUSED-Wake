@@ -10,6 +10,8 @@ from sys import exit
 from math import cos, atan2, acos, exp, sqrt, sin
 from cBEM import *
 from glob import glob
+import os
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def getInduction(ngrid, sWT, Format, U0, meta):
@@ -36,7 +38,7 @@ def getInduction(ngrid, sWT, Format, U0, meta):
 
 
     # Initialization
-    PcDataAll, AeData, Rotor, Env, Spec, Algo, Misc = fInitWT(sWT, Format, '../WT-data/')
+    PcDataAll, AeData, Rotor, Env, Spec, Algo, Misc = fInitWT(sWT, Format, current_dir+'/WT-data/')
     Rotor = fSetRotorGrid(ngrid, Rotor)
 
     RPM=np.interp(U0,Spec.WS,Spec.RPM)

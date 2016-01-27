@@ -43,6 +43,8 @@ from DWM_init_dict import init
 import sys, getopt
 import time
 import matplotlib.pyplot as plt
+import os
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 def sDWM(argv):
     """
@@ -56,7 +58,7 @@ def sDWM(argv):
     """
 
     # default run values
-    WD = 120.0;WS = 9.0;TI = 0.06;WTcoord='../data/Lill_full.dat'; WTG='NREL5MW'; HH=90.0; R=63.0; stab='N'; accum='dominant'
+    WD = 120.0;WS = 9.0;TI = 0.06;WTcoord=current_dir+'/data/Lill_full.dat'; WTG='NREL5MW'; HH=90.0; R=63.0; stab='N'; accum='dominant'
 
     # Input arguments parser
     try:
