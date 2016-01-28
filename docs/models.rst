@@ -79,7 +79,7 @@ The present implementation aims at simulating the average power production of ea
 
 Tutorial
 ^^^^^^^^
-A Jupyter Notebook simple tutorial is available in the repo: [fusedwake/sdwm/notebooks/notebooks/RUN-example-sDWM.ipynb](https://github.com/rethore/FUSED-Wake/blob/master/fusedwake/sdwm/notebooks/RUN-example-sDWM.ipynb)
+A Jupyter Notebook simple tutorial is available in the repo: `fusedwake/sdwm/notebooks/notebooks/RUN-example-sDWM.ipynb <https://github.com/rethore/FUSED-Wake/blob/master/fusedwake/sdwm/notebooks/RUN-example-sDWM.ipynb>`_
 
 DISCLAIMER
 ^^^^^^
