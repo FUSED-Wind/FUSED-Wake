@@ -77,6 +77,11 @@ The present implementation aims at simulating the average power production of ea
 .. image:: ../fusedwake/sdwm/Figs/HAWC2DWMandFUSEDWINDDWM.png
    :scale: 50 %
 
+Further validation on different turbine and wind farm are currently being performed internally at DTU Wind Energy. 
+
+Further development will include the integration of real atmospheric conditions from the Mann model. 
+This will ensure that the meandering paths are correlated with the turbulence box within the computational domain. This is a pre requisite for integrating load calculations in the present model. 
+
 Tutorial
 ^^^^^^^^
 A Jupyter Notebook simple tutorial is available in the repo: `fusedwake/sdwm/notebooks/notebooks/RUN-example-sDWM.ipynb <https://github.com/rethore/FUSED-Wake/blob/master/fusedwake/sdwm/notebooks/RUN-example-sDWM.ipynb>`_
