@@ -11,13 +11,13 @@ except Exception as e:
     print(e.message)
 # from scipy.interpolate import pchipInterpolator as interpolator
 
-class WindTurbine:
+class WindTurbine(object):
     """Wind Turbine instance
 
     Defines WT parameters and operational curves
 
     """
-    def __init__(self,name,refCurvesFile,H,R,CT_idle=0.053):
+    def __init__(self, name, refCurvesFile, H, R, CT_idle=0.053):
         """Initializes a WindTurbine object
 
         Parameters
@@ -147,6 +147,76 @@ class WindTurbine:
         """
         return 0.5 * ( 1. - np.sqrt(1.-CT))
 
+
+class WindTurbineDICT(WindTurbine):
+    """Wind Turbine instance
+
+    Defines WT parameters and operational curves from a windIO dictionary
+
+    """
+    def __init__(self, wt=None, wt_type=None):
+        """Initializes a WindTurbine object
+
+        Parameters
+        ----------
+        wt: dict
+            a WindIO dictionary containing the description of the turbine
+
+        Returns
+        -------
+        WindTurbine (WindTurbine)
+        """
+        self.data = wt_type
+        self.data.update(wt)
+        self.wt_init(wt, wt_type)
+
+    def wt_init(self, wt, wt_type):
+        self.name = wt['name']
+        self.turbine_type = wt['turbine_type']
+        self.position = wt['position']
+        self.type = wt_type['name']
+        self.H = wt_type['hub_height']
+        self.R = wt_type['rotor_diameter'] / 2.0
+
+        if 'c_t_idle' in wt:
+            self.CT_idle = wt_type['c_t_idle']
+        else:
+            self.CT_idle = 0.056
+
+        self.power_factor = 1000.0 # <- Juan Pablo is using W as a basis to define power
+
+        self.pc = np.array(wt_type['power_curve'])
+        self.ctc = np.array(wt_type['c_t_curve'])
+
+        self.u_cutin = wt_type['cut_in_wind_speed']
+        self.u_cutout = wt_type['cut_out_wind_speed']
+        self.P_rated = wt_type['rated_power'] * self.power_factor
+
+        self.PCI = interpolator(self.pc[:,0], self.pc[:,1]*self.power_factor)
+        self.CTCI = interpolator(self.ctc[:,0], self.ctc[:,1])
+
+        index = np.nonzero(self.pc[:,1]*self.power_factor==self.P_rated)[0][0]
+        self.PCI_u = interpolator(self.pc[:index+1,1] * self.power_factor, self.pc[:index+1,0])
+        self.u_rated = wt_type['rated_wind_speed']
+        self.refCurvesArray = np.vstack([self.pc[:,0].T,
+                                         self.pc[:,1].T*self.power_factor,
+                                         self.CTCI(self.pc[:,0].T)]).T
+
+
+    def __getattr__(self, key):
+        """Give access to a list of the properties of the turbine
+
+        Parameters
+        ----------
+        key: str
+            The parameter to return
+
+        Returns
+        -------
+        parameters: list
+            The parameter list of the turbines
+        """
+        return self.data[key]
 
 '''
 v80 = WindTurbine('Vestas v80 2MW offshore','V80_2MW_offshore.dat',70,40)

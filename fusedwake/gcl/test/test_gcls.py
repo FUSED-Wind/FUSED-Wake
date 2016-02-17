@@ -4,6 +4,9 @@ import fusedwake.gcl.fortran as fgcl
 import fusedwake.gcl.python as gcl
 import numpy as np
 
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
 class TestGCLImplementations(unittest.TestCase):
     def setUp(self):
         pass

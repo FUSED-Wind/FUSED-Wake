@@ -1,0 +1,442 @@
+layout:
+  - name: WT01
+    row: 1
+    position: [423974, 6151447]
+    turbine_type: V80
+  - name: WT02
+    row: 2
+    position: [424042, 6150891]
+    turbine_type: V80
+  - name: WT03
+    row: 3
+    position: [424111, 6150335]
+    turbine_type: V80
+  - name: WT04
+    row: 4
+    position: [424179, 6149779]
+    turbine_type: V80
+  - name: WT05
+    row: 5
+    position: [424247, 6149224]
+    turbine_type: V80
+  - name: WT06
+    row: 6
+    position: [424315, 6148668]
+    turbine_type: V80
+  - name: WT07
+    row: 7
+    position: [424384, 6148112]
+    turbine_type: V80
+  - name: WT08
+    row: 8
+    position: [424452, 6147556]
+    turbine_type: V80
+  - name: WT11
+    row: 1
+    position: [424534, 6151447]
+    turbine_type: V80
+  - name: WT12
+    row: 2
+    position: [424602, 6150891]
+    turbine_type: V80
+  - name: WT13
+    row: 3
+    position: [424671, 6150335]
+    turbine_type: V80
+  - name: WT14
+    row: 4
+    position: [424739, 6149779]
+    turbine_type: V80
+  - name: WT15
+    row: 5
+    position: [424807, 6149224]
+    turbine_type: V80
+  - name: WT16
+    row: 6
+    position: [424875, 6148668]
+    turbine_type: V80
+  - name: WT17
+    row: 7
+    position: [424944, 6148112]
+    turbine_type: V80
+  - name: WT18
+    row: 8
+    position: [425012, 6147556]
+    turbine_type: V80
+  - name: WT21
+    row: 1
+    position: [425094, 6151447]
+    turbine_type: V80
+  - name: WT22
+    row: 2
+    position: [425162, 6150891]
+    turbine_type: V80
+  - name: WT23
+    row: 3
+    position: [425231, 6150335]
+    turbine_type: V80
+  - name: WT24
+    row: 4
+    position: [425299, 6149779]
+    turbine_type: V80
+  - name: WT25
+    row: 5
+    position: [425367, 6149224]
+    turbine_type: V80
+  - name: WT26
+    row: 6
+    position: [425435, 6148668]
+    turbine_type: V80
+  - name: WT27
+    row: 7
+    position: [425504, 6148112]
+    turbine_type: V80
+  - name: WT28
+    row: 8
+    position: [425572, 6147556]
+    turbine_type: V80
+  - name: WT31
+    row: 1
+    position: [425654, 6151447]
+    turbine_type: V80
+  - name: WT32
+    row: 2
+    position: [425722, 6150891]
+    turbine_type: V80
+  - name: WT33
+    row: 3
+    position: [425791, 6150335]
+    turbine_type: V80
+  - name: WT34
+    row: 4
+    position: [425859, 6149779]
+    turbine_type: V80
+  - name: WT35
+    row: 5
+    position: [425927, 6149224]
+    turbine_type: V80
+  - name: WT36
+    row: 6
+    position: [425995, 6148668]
+    turbine_type: V80
+  - name: WT37
+    row: 7
+    position: [426064, 6148112]
+    turbine_type: V80
+  - name: WT38
+    row: 8
+    position: [426132, 6147556]
+    turbine_type: V80
+  - name: WT41
+    row: 1
+    position: [426214, 6151447]
+    turbine_type: V80
+  - name: WT42
+    row: 2
+    position: [426282, 6150891]
+    turbine_type: V80
+  - name: WT43
+    row: 3
+    position: [426351, 6150335]
+    turbine_type: V80
+  - name: WT44
+    row: 4
+    position: [426419, 6149779]
+    turbine_type: V80
+  - name: WT45
+    row: 5
+    position: [426487, 6149224]
+    turbine_type: V80
+  - name: WT46
+    row: 6
+    position: [426555, 6148668]
+    turbine_type: V80
+  - name: WT47
+    row: 7
+    position: [426624, 6148112]
+    turbine_type: V80
+  - name: WT48
+    row: 8
+    position: [426692, 6147556]
+    turbine_type: V80
+  - name: WT51
+    row: 1
+    position: [426774, 6151447]
+    turbine_type: V80
+  - name: WT52
+    row: 2
+    position: [426842, 6150891]
+    turbine_type: V80
+  - name: WT53
+    row: 3
+    position: [426911, 6150335]
+    turbine_type: V80
+  - name: WT54
+    row: 4
+    position: [426979, 6149779]
+    turbine_type: V80
+  - name: WT55
+    row: 5
+    position: [427047, 6149224]
+    turbine_type: V80
+  - name: WT56
+    row: 6
+    position: [427115, 6148668]
+    turbine_type: V80
+  - name: WT57
+    row: 7
+    position: [427184, 6148112]
+    turbine_type: V80
+  - name: WT58
+    row: 8
+    position: [427252, 6147556]
+    turbine_type: V80
+  - name: WT61
+    row: 1
+    position: [427334, 6151447]
+    turbine_type: V80
+  - name: WT62
+    row: 2
+    position: [427402, 6150891]
+    turbine_type: V80
+  - name: WT63
+    row: 3
+    position: [427471, 6150335]
+    turbine_type: V80
+  - name: WT64
+    row: 4
+    position: [427539, 6149779]
+    turbine_type: V80
+  - name: WT65
+    row: 5
+    position: [427607, 6149224]
+    turbine_type: V80
+  - name: WT66
+    row: 6
+    position: [427675, 6148668]
+    turbine_type: V80
+  - name: WT67
+    row: 7
+    position: [427744, 6148112]
+    turbine_type: V80
+  - name: WT68
+    row: 8
+    position: [427812, 6147556]
+  - name: WT71
+    row: 1
+    position: [427894, 6151447]
+    turbine_type: V80
+  - name: WT72
+    row: 2
+    position: [427962, 6150891]
+    turbine_type: V80
+  - name: WT73
+    row: 3
+    position: [428031, 6150335]
+    turbine_type: V80
+  - name: WT74
+    row: 4
+    position: [428099, 6149779]
+    turbine_type: V80
+  - name: WT75
+    row: 5
+    position: [428167, 6149224]
+    turbine_type: V80
+  - name: WT76
+    row: 6
+    position: [428235, 6148668]
+    turbine_type: V80
+  - name: WT77
+    row: 7
+    position: [428304, 6148112]
+    turbine_type: V80
+  - name: WT78
+    row: 8
+    position: [428372, 6147556]
+    turbine_type: V80
+  - name: WT81
+    row: 1
+    position: [428454, 6151447]
+    turbine_type: V80
+  - name: WT82
+    row: 2
+    position: [428522, 6150891]
+    turbine_type: V80
+  - name: WT83
+    row: 3
+    position: [428591, 6150335]
+    turbine_type: V80
+  - name: WT84
+    row: 4
+    position: [428659, 6149779]
+    turbine_type: V80
+  - name: WT85
+    row: 5
+    position: [428727, 6149224]
+    turbine_type: V80
+  - name: WT86
+    row: 6
+    position: [428795, 6148668]
+    turbine_type: V80
+  - name: WT87
+    row: 7
+    position: [428864, 6148112]
+    turbine_type: V80
+  - name: WT88
+    row: 8
+    position: [428932, 6147556]
+    turbine_type: V80
+  - name: WT91
+    row: 1
+    position: [429014, 6151447]
+    turbine_type: V80
+  - name: WT92
+    row: 2
+    position: [429082, 6150891]
+    turbine_type: V80
+  - name: WT93
+    row: 3
+    position: [429151, 6150335]
+    turbine_type: V80
+  - name: WT94
+    row: 4
+    position: [429219, 6149779]
+    turbine_type: V80
+  - name: WT95
+    row: 5
+    position: [429287, 6149224]
+    turbine_type: V80
+  - name: WT96
+    row: 6
+    position: [429355, 6148668]
+    turbine_type: V80
+  - name: WT97
+    row: 7
+    position: [429424, 6148112]
+  - name: WT98
+    row: 8
+    position: [429492, 6147556]
+    turbine_type: V80
+
+metmasts:
+  - name: M2
+    position: [423412, 6153342] # <- wrong location!! please find the right one and make a pull request
+  - name: M6
+    position: [431255, 6149504]
+  - name: M7
+    position: [435252, 6149494]
+
+turbine_types:
+  # Sources:
+  # [1] https://windbench.net/system/files/hornsrev_v80_0.pdf
+  # [2] http://www.thewindpower.net/turbine_en_30_vestas_2000.php
+  # [3] http://en.wind-turbine-models.com/turbines/668-vestas-v-80-offshore
+  # [4] WAsP wind turbine library (distributed as part of the WAsP software)
+  - name: V80
+    hub_height: 70.0          # [1]
+    rotor_diameter: 80.0      # [1]
+    rated_power: 2000.0       # [1]
+    cut_in_wind_speed: 4.0    # [1]
+    cut_out_wind_speed: 25.0  # [1]
+    rated_wind_speed: 16.0    # [1]
+    wind_class: IEC Ia (DIBt III) # [2]
+    air_density: 1.225        # guess
+    gear_box:
+      speed_number: 3
+      ratio: 1:100,5 # [2]
+      type: spur/planetary # [3]
+    nacelle: # [2]
+      weight: 68000.0 # kg     [2], 69000.0 kg according to [3]
+    rotor: # [2, 3]
+      weight: 37000.0 # kg     [2]
+      tip_speed: 80.0 # m/s    [3]
+      min_speed: 9 # rd/min [2]
+      max_speed: 19 # rd/min [2]
+      manufacturer: Vestas
+    hub:
+      weight: 18000 # kg [3]
+    tower: # [2]
+      weight: 198000.0 #kg [2], max 148000.0 kg according to [3]
+      material: steel
+      manufacturer: Welcon
+    control: # [1]
+      type: Active Pitch, Variable Speed
+    generator: # [2]
+      type: ASYNC
+      number: 1
+      max_output_speed: 1909 #rounds/minute
+      output_voltage: 690 #V
+      grid_frequency: 50/60 # Hz
+    power_curve: # [1]
+      - [3.0,   0.0]
+      - [4.0,   66.6]
+      - [5.0,   154.0]
+      - [6.0,   282.0]
+      - [7.0,   460.0]
+      - [8.0,   696.0]
+      - [9.0,   996.0]
+      - [10.0,  1341.0]
+      - [11.0,  1661.0]
+      - [12.0,  1866.0]
+      - [13.0,  1958.0]
+      - [14.0,  1988.0]
+      - [15.0,  1997.0]
+      - [16.0,  1999.0]
+      - [17.0,  2000.0]
+      - [18.0,  2000.0]
+      - [19.0,  2000.0]
+      - [20.0,  2000.0]
+      - [21.0,  2000.0]
+      - [22.0,  2000.0]
+      - [23.0,  2000.0]
+      - [24.0,  2000.0]
+      - [25.0,  2000.0]
+    c_t_curve:
+      - [3.0,  0.00]
+      - [4.0,  0.818]
+      - [5.0,  0.806]
+      - [6.0,  0.804]
+      - [7.0,  0.805]
+      - [8.0,  0.806]
+      - [9.0,  0.807]
+      - [10.0, 0.793]
+      - [11.0, 0.739]
+      - [12.0, 0.709]
+      - [13.0, 0.409]
+      - [14.0, 0.314]
+      - [15.0, 0.249]
+      - [16.0, 0.202]
+      - [17.0, 0.167]
+      - [18.0, 0.140]
+      - [19.0, 0.119]
+      - [20.0, 0.102]
+      - [21.0, 0.088]
+      - [22.0, 0.077]
+      - [23.0, 0.067]
+      - [24.0, 0.060]
+      - [25.0, 0.053]
+    c_t_idle: 0.053 # [4]
+    blade:
+      geometry: # [1]
+        # [radius [m], c [m], twist [deg],   airfoil   ]
+        - [2.563,      2.004,   9.50,      'Cylinder 1']
+        - [4.389,      2.523,   9.50,      'Cylinder 1']
+        - [6.216,      3.015,   9.50,      'FFA W3-301']
+        - [8.042,      3.278,   9.50,      'FFA W3-301']
+        - [9.868,      3.309,   9.50,      'FFA W3-301']
+        - [11.694,     3.195,   9.50,      'FFA W3-301']
+        - [13.520,     3.039,   9.22,      'FFA W3-241']
+        - [15.346,     2.863,   7.81,      'FFA W3-211']
+        - [17.173,     2.687,   6.40,      'FFA W3-211']
+        - [18.999,     2.511,   5.11,      'FFA W3-211']
+        - [20.825,     2.334,   3.83,      'FFA W3-211']
+        - [22.651,     2.158,   2.61,      'NACA 63-221']
+        - [24.477,     1.982,   1.48,      'NACA 63-221']
+        - [26.304,     1.806,   0.42,      'NACA 63-221']
+        - [28.130,     1.630,   0.49,      'NACA 63-221']
+        - [29.956,     1.454,   1.23,      'NACA 63-218']
+        - [31.782,     1.278,   1.79,      'NACA 63-218']
+        - [33.608,     1.102,   2.24,      'NACA 63-218']
+        - [35.435,     0.926,   2.61,      'NACA 63-218']
+        - [37.261,     0.749,   2.84,      'NACA 63-218']
+        - [39.087,     0.573,   2.97,      'NACA 63-218']

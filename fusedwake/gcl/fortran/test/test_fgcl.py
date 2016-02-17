@@ -3,6 +3,8 @@ import unittest
 from fusedwake.gcl.fortran import *
 import numpy as np
 
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
 class TestFortranGCL(unittest.TestCase):
     def setUp(self):
         pass

@@ -13,3 +13,5 @@ jupyter
 matplotlib
 pandas
 sphinx-fortran
+coverage
+watchdog
