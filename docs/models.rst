@@ -77,10 +77,10 @@ The present implementation aims at simulating the average power production of ea
 .. image:: ../fusedwake/sdwm/Figs/HAWC2DWMandFUSEDWINDDWM.png
    :scale: 50 %
 
-Further validation on different turbine and wind farm are currently being performed internally at DTU Wind Energy. 
+Further validation on different turbine and wind farm are currently being performed internally at DTU Wind Energy.
 
-Further development will include the integration of real atmospheric conditions from the Mann model. 
-This will ensure that the meandering paths are correlated with the turbulence box within the computational domain. This is a pre requisite for integrating load calculations in the present model. 
+Further development will include the integration of real atmospheric conditions from the Mann model.
+This will ensure that the meandering paths are correlated with the turbulence box within the computational domain. This is a pre requisite for integrating load calculations in the present model.
 
 Tutorial
 ^^^^^^^^
@@ -99,13 +99,10 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 fusedwake.sdwm package
-======================
-
-Submodules
-----------
+-----
 
 fusedwake.sdwm.DWM_GClarsenPicks module
----------------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_GClarsenPicks
     :members:
@@ -113,7 +110,7 @@ fusedwake.sdwm.DWM_GClarsenPicks module
     :show-inheritance:
 
 fusedwake.sdwm.DWM_calc_mixL module
------------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_calc_mixL
     :members:
@@ -121,7 +118,7 @@ fusedwake.sdwm.DWM_calc_mixL module
     :show-inheritance:
 
 fusedwake.sdwm.DWM_flowfield_farm module
-----------------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_flowfield_farm
     :members:
@@ -129,7 +126,7 @@ fusedwake.sdwm.DWM_flowfield_farm module
     :show-inheritance:
 
 fusedwake.sdwm.DWM_init_dict module
------------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_init_dict
     :members:
@@ -137,7 +134,7 @@ fusedwake.sdwm.DWM_init_dict module
     :show-inheritance:
 
 fusedwake.sdwm.DWM_main_BEM module
-----------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_main_BEM
     :members:
@@ -145,7 +142,7 @@ fusedwake.sdwm.DWM_main_BEM module
     :show-inheritance:
 
 fusedwake.sdwm.DWM_misc module
-------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.DWM_misc
     :members:
@@ -153,7 +150,7 @@ fusedwake.sdwm.DWM_misc module
     :show-inheritance:
 
 fusedwake.sdwm.RUN_sDWM module
-------------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.RUN_sDWM
     :members:
@@ -161,7 +158,7 @@ fusedwake.sdwm.RUN_sDWM module
     :show-inheritance:
 
 fusedwake.sdwm.cBEM module
---------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.cBEM
     :members:
@@ -169,7 +166,7 @@ fusedwake.sdwm.cBEM module
     :show-inheritance:
 
 fusedwake.sdwm.cDWM module
---------------------------
+^^^^^
 
 .. automodule:: fusedwake.sdwm.cDWM
     :members:

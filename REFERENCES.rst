@@ -11,6 +11,10 @@
 .. [Machefaux] Machefaux, E. et al, Engineering models for merging wakes in wind farm optimization applications.
 .. [Madsen_2009] Madsen, H. A. et al, Calibration and Validation of the Dynamic Wake Meandering Model for Implementation in an Aeroelastic Code. Journal of Solar Energy Engineering, 132(4), 041014. http://doi.org/10.1115/1.4002555
 .. [Madsen_2009] Madsen HA, Thomsen K, Larsen GC. A new method for prediction of detailed wake loads. In Proceedings of IEA Joint Action of Wind Turbines 16th Symposium, May 2003 at NREL, by Thor S-E (ed.). Boulder, USA, 2003; 171–188
-.. [Larsen_2007] Larsen TJ. Hansen AM. How to HAWC2, the users manual. Risø-R-1597(en) 2007.
-.. [Frandsen_2007] Frandsen ST. Turbulence and turbulence-generated structural loading in wind turbine clusters. Risø-R-1188(EN). Risø National Laboratory, Technical University of Denmark, Roskilde, Denmark, 2007.
-.. [NOJensen_1983]_ Jensen NO. A note on wind generator interaction. Risø M 2411. November 1983.
+.. [Larsen_2007] Larsen, T.J.; Hansen, AM. How to HAWC2, the users manual. Risø-R-1597(en) 2007.
+.. [Frandsen_2007] Frandsen, S.T. Turbulence and turbulence-generated structural loading in wind turbine clusters. Risø-R-1188(EN). Risø National Laboratory, Technical University of Denmark, Roskilde, Denmark, 2007.
+.. [NOJensen_1983] Jensen, N.O. A note on wind generator interaction. Risø M 2411. November 1983.
+.. [Ainslie_1988] Ainslie, J.F. Calculating the flowfiel in the wake of wind turbines. J. of Wind Eng. and Ind. Aero., 27, 213-224, 1988.
+.. [Bastankhah_Porte-Agel_2014] Bastankhah, M., & Porte'-Agel, F. (2014). A new analytical model for wind-turbine wakes. Renewable Energy, 70, 116-123.
+.. [Rethore_2013] Réthoré Pierre-Elouan, van der Laan P., Troldborg N., Zahle F., Sørensen N.N. Verification and validation of an actuator disc model. Wind Energy J. (17), 6, DOI:10.1002/we.1607. 2013
+.. [Ott_2011] Ott, S., Berg, J. and Nielsen, M. (2011), Linearized CFD Models for Wakes. DTU, Risø National laboratory, Report Risø-R 1772(EN)
