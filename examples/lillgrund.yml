@@ -167,6 +167,13 @@ metmasts:
       - [300.0, 0.10,  9.2, 1.88]
       - [330.0, 0.05,  9.5, 2.49]
 
+plant_data:
+  utm:
+    code: 33
+    letter: U
+  name: Lillgrund
+  owner: DONG Energy, Private
+
 turbine_types:
   - name: SWP2.3MW
     hub_height: 65.0
@@ -176,6 +183,7 @@ turbine_types:
     cut_out_wind_speed: 25.0
     rated_wind_speed: 14.0
     air_density: 1.225
+    c_t_idle: 0.053
     power_curve:
       - [3.0,     0.0]
       - [4.0,    65.0]

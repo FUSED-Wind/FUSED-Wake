@@ -83,7 +83,7 @@ def run_sdwm(WD, WS, TI, WTcoord, WTG, HH, R, stab, accum):
 
     # Load wind turbine and wind farm
     WT = wt.WindTurbine('Windturbine',current_dir+'/WT-data/'+WTG+'/'+WTG+'_PC.dat',HH,R)
-    WF = wf.WindFarm('Windfarm',WTcoord,WT)
+    WF = wf.WindFarm('Windfarm', coordFile=WTcoord, WT=WT)
 
     print '***** sDWM v'+ __version__+' // WF: '+str(WF.nWT)+' WT(s) / WD '+str(WD)+'deg / WS '+str(WS)+' m/s / TI '+str(TI)+' / accumulation: '+accum+'  ******************'
 

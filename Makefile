@@ -49,13 +49,13 @@ lint:
 	flake8 fusedwake tests
 
 test:
-	python setup.py test
+	py.test
 
 test-all:
 	tox
 
 coverage:
-	coverage run --source fusedwake setup.py test
+	coverage run --source fusedwake py.test
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html

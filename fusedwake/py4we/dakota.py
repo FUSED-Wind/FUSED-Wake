@@ -14,7 +14,12 @@ from __future__ import print_function
 import unittest
 
 from py4we.we_file_io import WEFileIO, TestWEFileIO
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+
 
 
 class DakotaTabFileIO(WEFileIO):

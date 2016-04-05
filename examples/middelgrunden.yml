@@ -79,6 +79,13 @@ metmasts:
       - [300.00, 0.08, 6.76, 2.42, 0.128]
       - [330.00, 0.04, 5.92, 2.05, 0.121]
 
+plant_data:
+  utm:
+    code: 33
+    letter: U
+  name: Middelgrunden
+  owner: DONG Energy
+
 turbine_types:
   # Sources:
   # [1] http://www.middelgrunden.dk/middelgrunden/sites/default/files/public/file/Location.pdf

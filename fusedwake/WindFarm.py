@@ -34,14 +34,14 @@ class WindTurbineList(list):
 
 
 class WindFarm(object):
-    def __init__(self, name, yml=None, coordFile=None, WT=None):
+    def __init__(self, name=None, yml=None, coordFile=None, WT=None):
         """Initializes a WindFarm object.
         The initialization can be done using a `windIO` yml file or using a
         coodFile + WindTurbine instance.
 
         Parameters
         ----------
-        name: str
+        name: str, optional
             WindFarm name
         yml: str, optional
             A WindIO `yml` file containing the description of the farm
@@ -50,16 +50,21 @@ class WindFarm(object):
         WindTurbine: WindTurbine, optional
             WindTurbine object (only one type per WindFarm)
         """
-        self.name = name
         if (coordFile):
             coordArray = np.loadtxt(coordFile)
             self.pos = coordArray.T  # np.array(2 x nWT)
+            self.nWT = self.pos.shape[1]
             self.WT = WindTurbineList([WT for i in range(self.nWT)])
+            if name:
+                self.name = name
+            else:
+                self.name = 'Unknown wind farm'
         elif (yml):
             self.wf = WTLayout(yml)
             self.pos = self.wf.positions.T
+            self.nWT = self.pos.shape[1]
             self.WT = WindTurbineList([WindTurbineDICT(wt, self.wf[wt['turbine_type']]) for wt in self.wf.wt_list])
-        self.nWT = len(self.pos[0, :])
+            self.name = self.wf.name
         # We generate a wind turbine list
 
         # XYZ position of the rotors
@@ -230,4 +235,6 @@ class WindFarm(object):
 
             [80.0, 80.0, 80.0, 80.0, 80.0, ..., 80.0]
         """
-        return [getattr(wt, key) for wt in self.WT]
+        # Detect the edge case if key is 'WT'
+        if not key in ['WT', 'nWT']:
+            return [getattr(wt, key) for wt in self.WT]

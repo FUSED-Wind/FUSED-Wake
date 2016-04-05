@@ -78,7 +78,7 @@ setup(
                 Extension('fusedwake.noj.fortran',
                            glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
                                                   'NOJ.f'))),
-                Extension('fusedwake.noj.fortran',
+                Extension('fusedwake.noj.mod_fortran',
                            glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
                                                   'Mod_NOJ.f'))),
                 Extension('fusedwake.bpa.fortran',

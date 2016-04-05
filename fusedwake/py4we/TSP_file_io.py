@@ -17,7 +17,13 @@ from py4we.we_file_io import WEFileIO, TestWEFileIO
 #Import useful libraries:
 import os, math, time
 import numpy as np
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+    
+
 
 #Definition of the TSPInputFile class, which inherit from WEFileI class.
 class TSPInputFile(WEFileIO):

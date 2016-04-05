@@ -16,7 +16,12 @@ import unittest
 import numpy as np
 
 from we_file_io import WEFileIO, TestWEFileIO
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+
 
 
 
@@ -243,10 +248,14 @@ class MyPlotFileIO(WEFileIO):
 # --------------------------------------------------------------------------------
 # ---
 # --------------------------------------------------------------------------------
-import MyUI.MyPlotMainWindowUI
-from QtGuiLoader import QtMainWindowLoader
-from matplotlibwidget import MatplotlibWidget
-from PyQt4 import QtGui
+try:
+    import MyUI.MyPlotMainWindowUI
+    from QtGuiLoader import QtMainWindowLoader
+    from matplotlibwidget import MatplotlibWidget
+    from PyQt4 import QtGui
+except Exception as e:
+    print('Warning: some libraries have not been installed properly', e)
+
 
 class MyPlotMainWindow(QtMainWindowLoader):
 

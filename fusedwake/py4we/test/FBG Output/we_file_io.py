@@ -10,7 +10,13 @@ License: Apache v2.0, http://www.apache.org/licenses/LICENSE-2.0
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+
+
 class WEFileIO(object):
     """Generic IO classe for file types classes."""
     figure = None
@@ -33,7 +39,7 @@ class WEFileIO(object):
             self.filename = filename
             ### If the filename is provided, read the file
             self.read()
-         
+
 
     def read(self, filename=None):
         """ Read the file

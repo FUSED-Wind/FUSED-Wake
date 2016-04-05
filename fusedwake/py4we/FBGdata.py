@@ -16,7 +16,11 @@ import unittest
 import numpy as np
 
 from we_file_io import WEFileIO, TestWEFileIO
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
 
 
 
@@ -29,7 +33,7 @@ import matplotlib.pyplot as plt
 
 class FBGdata(WEFileIO):
     """ FBGdata should read /write the wavelength-shift measurements given by
-    the hardware 
+    the hardware
     """
     def _write(self):
         """ Write a file (overrided)
@@ -235,11 +239,13 @@ class MyPlotFileIO(WEFileIO):
 # --------------------------------------------------------------------------------
 # ---
 # --------------------------------------------------------------------------------
-import MyUI.MyPlotMainWindowUI
-from QtGuiLoader import QtMainWindowLoader
-from matplotlibwidget import MatplotlibWidget
-from PyQt4 import QtGui
-
+try:
+    import MyUI.MyPlotMainWindowUI
+    from QtGuiLoader import QtMainWindowLoader
+    from matplotlibwidget import MatplotlibWidget
+    from PyQt4 import QtGui
+except Exception as e:
+    print('requirements not met', e)
 class MyPlotMainWindow(QtMainWindowLoader):
 
     def __init__(self):

@@ -15,7 +15,11 @@ from __future__ import print_function
 import numpy as np
 
 from py4we.we_file_io import WEFileIO
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
 
 
 ### Your class should look like this one ---------------------------------

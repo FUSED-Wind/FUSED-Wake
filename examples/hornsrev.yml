@@ -222,6 +222,7 @@ layout:
   - name: WT68
     row: 8
     position: [427812, 6147556]
+    turbine_type: V80
   - name: WT71
     row: 1
     position: [427894, 6151447]
@@ -313,6 +314,7 @@ layout:
   - name: WT97
     row: 7
     position: [429424, 6148112]
+    turbine_type: V80
   - name: WT98
     row: 8
     position: [429492, 6147556]
@@ -325,6 +327,13 @@ metmasts:
     position: [431255, 6149504]
   - name: M7
     position: [435252, 6149494]
+
+plant_data:
+  utm:
+    code: 32
+    letter: U
+  name: Horns Rev
+  owner: DONG Energy, Vattenfall
 
 turbine_types:
   # Sources:

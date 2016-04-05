@@ -19,7 +19,12 @@ from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import SubElement, dump
 import unittest
 
-from matplotlib import pylab as plt
+
+try:
+    from matplotlib import pylab as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+
 
 import numpy as np
 
@@ -74,8 +79,10 @@ class VectLine(object):
         self.n_end = 2+2*self.n
         self.points = arr_[2:self.n_end].reshape([-1,2])
 
-    def plot(self, scale=1000.0, colmap=plt.cm.jet, **kwargs):
+    def plot(self, scale=1000.0, colmap=None, **kwargs):
         """Plot the vectorline"""
+        if not colmap:
+            colmap = plt.cm.jet
         plt.plot(self.points[:,0], self.points[:,1], color=colmap(self.h/scale), **kwargs)
 
     def add_to_wasp(self, wasp_core):

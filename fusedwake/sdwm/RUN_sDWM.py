@@ -42,7 +42,12 @@ from DWM_GClarsenPicks import get_Rw
 from DWM_init_dict import init
 import sys, getopt
 import time
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print('Warning: Matplotlib has not been installed properly', e)
+    
 import os
 current_dir = os.path.dirname(os.path.realpath(__file__))
 

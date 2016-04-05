@@ -6,7 +6,7 @@ import unittest
 #     rosetta
 import fusedwake.WindFarm as wf
 import fusedwake.WindTurbine as wt
-import fusedwake.gcl as gcl
+import fusedwake.gcl.python as gcl
 import numpy as np
 from fusedwake.py4we.wasp import WWH
 
@@ -73,7 +73,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 class GCLarsen_v2_TestCase(unittest.TestCase):
     def setUp(self):
         self.v80 = wt.WindTurbine('Vestas v80 2MW offshore', script_dir+'/V80_2MW_offshore.dat', 70,40)
-        self.HR1 = wf.WindFarm('Horns Rev 1', script_dir+'/HR_coordinates.dat', self.v80)
+        self.HR1 = wf.WindFarm(name='Horns Rev 1', coordFile=script_dir+'/HR_coordinates.dat', WT=self.v80)
         self.inputs = dict(
             WS=8.0,
             z0=0.0001,
