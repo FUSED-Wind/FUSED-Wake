@@ -6,8 +6,8 @@ import numpy as np
 class GCL(object):
     # The different versions and their respective inputs
     inputs = {
-        'py0': ['WF', 'WS', 'WD', 'TI', 'z0', 'NG', 'sup', 'pars'],
-        'py1': ['WF', 'WS', 'WD', 'TI', 'z0', 'alpha', 'inflow', 'NG', 'sup', 'pars'],
+        'py_gcl_v0': ['WF', 'WS', 'WD', 'TI', 'z0', 'NG', 'sup', 'pars'],
+        'py_gcl_v1': ['WF', 'WS', 'WD', 'TI', 'z0', 'alpha', 'inflow', 'NG', 'sup', 'pars'],
         'fort_gcl_av': ['x_g', 'y_g', 'z_g', 'dt', 'p_c', 'ct_c', 'ws', 'wd', 'ti',
                   'av', 'a1', 'a2', 'a3', 'a4', 'b1', 'b2', 'ng', 'rho', 'ws_ci',
                   'ws_co', 'ct_idle'],
@@ -21,7 +21,7 @@ class GCL(object):
     # Default variables for running the wind farm flow model
     defaults = {
         'rho': 1.225,
-        'version': 'py1',
+        'version': 'py_gcl_v1',
         'z0': 0.0001,
         'sup': 'lin', # ['lin' | 'quad']
         'alpha': 0.101,
@@ -67,7 +67,7 @@ class GCL(object):
         Parameters
         ----------
         version: str
-            The version of the wind farm flow model to run ['py0' | 'py1' | 'fort0']
+            The version of the wind farm flow model to run ['py_gcl_v0' | 'py_gcl_v1' | 'fort0']
         """
         if 'py' in version:
             return {k:getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
@@ -159,9 +159,9 @@ class GCL(object):
     def __call__(self, **kwargs):
         self.set(kwargs)
         if hasattr(self, 'version'):
-            if   self.version == 'py0':
+            if   self.version == 'py_gcl_v0':
                 self.python_v0()
-            elif self.version == 'py1':
+            elif self.version == 'py_gcl_v1':
                 self.python_v1()
             elif self.version == 'fort_gcl_av':
                 self.fort_gcl_av()

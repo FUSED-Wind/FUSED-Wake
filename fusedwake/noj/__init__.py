@@ -1,6 +1,6 @@
 # import python.noj as noj
 import fortran as fnoj
-import mod_fortran as f_mod_noj
+import fortran_mod as fnoj_mod
 import numpy as np
 
 
@@ -103,7 +103,7 @@ class NOJ(object):
             self.u_wt = self.u_wt[0]
             self.c_t = self.c_t[0]
 
-    def fortran_noj(self):
+    def fort_noj(self):
         # Prepare the inputs
         if isinstance(self.WS, float) or isinstance(self.WS, int):
             self.ws = np.array([self.WS])
@@ -125,7 +125,7 @@ class NOJ(object):
             self.c_t = self.c_t[0]
 
 
-    def fortran_noj_s(self):
+    def fort_noj_s(self):
         self.kj = self.K
         try:
             self.p_wt, self.t_wt, self.u_wt = fnoj.noj_s(**self._get_kwargs(self.version))
@@ -153,7 +153,7 @@ class NOJ(object):
 
         # Run the fortran code
         try:
-            self.p_wt, self.t_wt, self.u_wt = f_mod_noj.noj_av(**self._get_kwargs(self.version))
+            self.p_wt, self.t_wt, self.u_wt = fnoj_mod.mod_noj_av(**self._get_kwargs(self.version))
         except Exception as e:
             raise Exception('The fortran version {} failed with the followind inputs: {}, and the error message: {}'.format(
                     self.version, self._get_kwargs(self.version), e))
@@ -165,7 +165,7 @@ class NOJ(object):
             self.u_wt = self.u_wt[0]
             self.c_t = self.c_t[0]
 
-    def fortran_mod_noj(self):
+    def fort_mod_noj(self):
         # Prepare the inputs
         if isinstance(self.WS, float) or isinstance(self.WS, int):
             self.ws = np.array([self.WS])
@@ -174,7 +174,7 @@ class NOJ(object):
 
         # Run the fortran code
         try:
-            self.p_wt, self.t_wt, self.u_wt = f_mod_noj.noj(**self._get_kwargs(self.version))
+            self.p_wt, self.t_wt, self.u_wt = fnoj_mod.mod_noj(**self._get_kwargs(self.version))
         except Exception as e:
             raise Exception('The fortran version {} failed with the followind inputs: {}, and the error message: {}'.format(
                     self.version, self._get_kwargs(self.version), e))
@@ -187,10 +187,10 @@ class NOJ(object):
             self.c_t = self.c_t[0]
 
 
-    def fortran_mod_noj_s(self):
+    def fort_mod_noj_s(self):
         self.kj = self.K
         try:
-            self.p_wt, self.t_wt, self.u_wt = f_mod_noj.noj_s(**self._get_kwargs(self.version))
+            self.p_wt, self.t_wt, self.u_wt = fnoj_mod.mod_noj_s(**self._get_kwargs(self.version))
         except Exception as e:
             raise Exception('The fortran version {} failed with the followind inputs: {}, and the error message: {}'.format(
                     self.version, self._get_kwargs(self.version), e))
@@ -208,23 +208,8 @@ class NOJ(object):
     def __call__(self, **kwargs):
         self.set(kwargs)
         if hasattr(self, 'version'):
-            # if   self.version == 'py0':
-            #     self.python_v0()
-            # elif self.version == 'py1':
-            #     self.python_v1()
-            if self.version == 'fort_noj_av':
-                self.fort_noj_av()
-            elif self.version == 'fort_noj_s':
-                self.fortran_noj_s()
-            elif self.version == 'fort_noj':
-                self.fortran_noj()
-            if self.version == 'fort_mod_noj_av':
-                self.fort_mod_noj_av()
-            elif self.version == 'fort_mod_noj_s':
-                self.fortran_mod_noj_s()
-            elif self.version == 'fort_mod_noj':
-                self.fortran_noj()
-            elif not self.version in self.versions:
+            getattr(self, self.version)()
+            if not self.version in self.versions:
                 raise Exception("Version %s is not valid: version=[%s]"%(self.version, '|'.join(self.versions)))
         else:
             raise Exception("Version hasn't been set: version=[%s]"%('|'.join(self.versions)))

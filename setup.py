@@ -31,6 +31,7 @@ requirements = [
     'pandas',
     'matplotlib',
     'PyYAML',
+    'utm'
 ]
 
 test_requirements = [
@@ -49,6 +50,15 @@ setup(
     url='https://github.com/DTUWindEnergy/FUSED-Wake',
     packages=[
         'fusedwake',
+        'fusedwake.gcl',
+        'fusedwake.gcl.python',
+        'fusedwake.noj',
+        # 'fusedwake.noj.python',
+        'fusedwake.gau',
+        # 'fusedwake.gau.python',
+        'fusedwake.ainslie',
+        # 'fusedwake.ainslie.python',
+        'fusedwake.sdwm',
     ],
     package_dir={'fusedwake':
                  'fusedwake'},
@@ -72,16 +82,17 @@ setup(
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    ext_modules=[Extension('fusedwake.gcl.fortran',
+    ext_package='fusedwake',
+    ext_modules=[Extension('gcl.fortran',
                            glob.glob(os.path.join('fusedwake', 'gcl', 'fortran',
                                                   'GCL.f'))),
-                Extension('fusedwake.noj.fortran',
+                Extension('noj.fortran',
                            glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
                                                   'NOJ.f'))),
-                Extension('fusedwake.noj.mod_fortran',
+                Extension('noj.fortran_mod',
                            glob.glob(os.path.join('fusedwake', 'noj', 'fortran',
                                                   'Mod_NOJ.f'))),
-                Extension('fusedwake.bpa.fortran',
-                           glob.glob(os.path.join('fusedwake', 'bpa', 'fortran',
-                                                  'BPA.f')))],
+                Extension('gau.fortran',
+                           glob.glob(os.path.join('fusedwake', 'gau', 'fortran',
+                                                  'GAU.f')))],
 )
