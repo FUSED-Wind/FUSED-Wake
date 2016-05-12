@@ -8,7 +8,7 @@ import fusedwake.WindFarm as wf
 import fusedwake.WindTurbine as wt
 import fusedwake.gcl.python as gcl
 import numpy as np
-from fusedwake.py4we.wasp import WWH
+#from fusedwake.py4we.wasp import WWH
 
 import os
 
