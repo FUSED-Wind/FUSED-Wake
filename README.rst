@@ -18,6 +18,10 @@ FUSED-Wake is a collection of wind farm flow models.
 * Free software: GNU Affero v3 license
 * Documentation: https://fused-wake.readthedocs.org/en/master/.
 
+Notice
+------
+This package is in development, everything is in alpha mode. Expect dragons.
+
 Features
 --------
 Currently FUSED-Wake has the following models implemented:
