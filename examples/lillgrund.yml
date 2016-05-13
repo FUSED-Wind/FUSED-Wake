@@ -1,0 +1,234 @@
+layout:
+  - name: A-01
+    position: [361469, 6154542]
+    turbine_type: SWP2.3MW
+  - name: A-02
+    position: [361202, 6154244]
+    turbine_type: SWP2.3MW
+  - name: A-03
+    position: [360936, 6153946]
+    turbine_type: SWP2.3MW
+  - name: A-04
+    position: [360670, 6153647]
+    turbine_type: SWP2.3MW
+  - name: A-05
+    position: [360403, 6153349]
+    turbine_type: SWP2.3MW
+  - name: A-06
+    position: [360137, 6153050]
+    turbine_type: SWP2.3MW
+  - name: A-07
+    position: [359870, 6152752]
+    turbine_type: SWP2.3MW
+  - name: B-01
+    position: [361202, 6154694]
+    turbine_type: SWP2.3MW
+  - name: B-02
+    position: [360936, 6154396]
+    turbine_type: SWP2.3MW
+  - name: B-03
+    position: [360670, 6154098]
+    turbine_type: SWP2.3MW
+  - name: B-04
+    position: [360403, 6153799]
+    turbine_type: SWP2.3MW
+  - name: B-05
+    position: [360137, 6153501]
+    turbine_type: SWP2.3MW
+  - name: B-06
+    position: [359870, 6153203]
+    turbine_type: SWP2.3MW
+  - name: B-07
+    position: [359604, 6152904]
+    turbine_type: SWP2.3MW
+  - name: B-08
+    position: [359337, 6152606]
+    turbine_type: SWP2.3MW
+  - name: C-01
+    position: [360936, 6154846]
+    turbine_type: SWP2.3MW
+  - name: C-02
+    position: [360670, 6154548]
+    turbine_type: SWP2.3MW
+  - name: C-03
+    position: [360403, 6154250]
+    turbine_type: SWP2.3MW
+  - name: C-04
+    position: [360137, 6153951]
+    turbine_type: SWP2.3MW
+  - name: C-05
+    position: [359870, 6153653]
+    turbine_type: SWP2.3MW
+  - name: C-06
+    position: [359604, 6153355]
+    turbine_type: SWP2.3MW
+  - name: C-07
+    position: [359337, 6153056]
+    turbine_type: SWP2.3MW
+  - name: C-08
+    position: [359071, 6152758]
+    turbine_type: SWP2.3MW
+  - name: D-01
+    position: [360670, 6154998]
+    turbine_type: SWP2.3MW
+  - name: D-02
+    position: [360403, 6154700]
+    turbine_type: SWP2.3MW
+  - name: D-03
+    position: [360137, 6154402]
+    turbine_type: SWP2.3MW
+  - name: D-04
+    position: [359870, 6154103]
+    turbine_type: SWP2.3MW
+  - name: D-06
+    position: [359337, 6153507]
+    turbine_type: SWP2.3MW
+  - name: D-07
+    position: [359071, 6153208]
+    turbine_type: SWP2.3MW
+  - name: D-08
+    position: [358805, 6152910]
+    turbine_type: SWP2.3MW
+  - name: E-01
+    position: [360390, 6155136]
+    turbine_type: SWP2.3MW
+  - name: E-02
+    position: [360137, 6154852]
+    turbine_type: SWP2.3MW
+  - name: E-03
+    position: [359870, 6154554]
+    turbine_type: SWP2.3MW
+  - name: E-04
+    position: [359604, 6154255]
+    turbine_type: SWP2.3MW
+  - name: E-06
+    position: [359071, 6153659]
+    turbine_type: SWP2.3MW
+  - name: E-07
+    position: [358805, 6153360]
+    turbine_type: SWP2.3MW
+  - name: F-02
+    position: [359870, 6155004]
+    turbine_type: SWP2.3MW
+  - name: F-03
+    position: [359604, 6154706]
+    turbine_type: SWP2.3MW
+  - name: F-04
+    position: [359337, 6154407]
+    turbine_type: SWP2.3MW
+  - name: F-05
+    position: [359071, 6154109]
+    turbine_type: SWP2.3MW
+  - name: F-06
+    position: [358805, 6153811]
+    turbine_type: SWP2.3MW
+  - name: G-02
+    position: [359604, 6155156]
+    turbine_type: SWP2.3MW
+  - name: G-03
+    position: [359337, 6154858]
+    turbine_type: SWP2.3MW
+  - name: G-04
+    position: [359071, 6154560]
+    turbine_type: SWP2.3MW
+  - name: G-05
+    position: [358805, 6154261]
+    turbine_type: SWP2.3MW
+  - name: H-02
+    position: [359337, 6155308]
+    turbine_type: SWP2.3MW
+  - name: H-03
+    position: [359071, 6155010]
+    turbine_type: SWP2.3MW
+  - name: H-04
+    position: [358805, 6154712]
+    turbine_type: SWP2.3MW
+
+transformers:
+  - name: W-01
+    position: [361735, 6154841]
+
+metmasts:
+  - name: Mast-p2
+    position: [358851, 6152678]
+    wind_rose:
+      # variables.yml/definitions/weibull_wind_rose
+      # [   wd, freq,    A,    k]
+      - [  0.0, 0.06,  7.9, 1.79]
+      - [ 30.0, 0.05,  7.4, 2.21]
+      - [ 60.0, 0.05,  8.3, 2.31]
+      - [ 90.0, 0.06,  9.1, 2.75]
+      - [120.0, 0.08,  9.9, 3.00]
+      - [150.0, 0.08,  9.4, 3.09]
+      - [180.0, 0.08,  9.2, 2.49]
+      - [210.0, 0.11,  9.9, 2.53]
+      - [240.0, 0.13, 10.6, 2.81]
+      - [270.0, 0.15, 10.4, 2.65]
+      - [300.0, 0.10,  9.2, 1.88]
+      - [330.0, 0.05,  9.5, 2.49]
+
+plant_data:
+  utm:
+    code: 33
+    letter: U
+  name: Lillgrund
+  owner: DONG Energy, Private
+
+turbine_types:
+  - name: SWP2.3MW
+    hub_height: 65.0
+    rotor_diameter: 92.6
+    rated_power: 2300.0
+    cut_in_wind_speed: 4.0
+    cut_out_wind_speed: 25.0
+    rated_wind_speed: 14.0
+    air_density: 1.225
+    c_t_idle: 0.053
+    power_curve:
+      - [3.0,     0.0]
+      - [4.0,    65.0]
+      - [5.0,   180.0]
+      - [6.0,   352.0]
+      - [7.0,   590.0]
+      - [8.0,   906.0]
+      - [9.0,  1308.0]
+      - [10.0, 1767.0]
+      - [11.0, 2085.0]
+      - [12.0, 2234.0]
+      - [13.0, 2283.0]
+      - [14.0, 2296.0]
+      - [15.0, 2299.0]
+      - [16.0, 2300.0]
+      - [17.0, 2300.0]
+      - [18.0, 2300.0]
+      - [19.0, 2300.0]
+      - [20.0, 2300.0]
+      - [21.0, 2300.0]
+      - [22.0, 2300.0]
+      - [23.0, 2300.0]
+      - [24.0, 2300.0]
+      - [25.0, 2300.0]
+    c_t_curve:
+      - [3.0,  0.00]
+      - [4.0,  0.81]
+      - [5.0,  0.84]
+      - [6.0,  0.83]
+      - [7.0,  0.85]
+      - [8.0,  0.86]
+      - [9.0,  0.87]
+      - [10.0, 0.79]
+      - [11.0, 0.67]
+      - [12.0, 0.45]
+      - [13.0, 0.34]
+      - [14.0, 0.26]
+      - [15.0, 0.21]
+      - [16.0, 0.17]
+      - [17.0, 0.14]
+      - [18.0, 0.12]
+      - [19.0, 0.10]
+      - [20.0, 0.09]
+      - [21.0, 0.07]
+      - [22.0, 0.07]
+      - [23.0, 0.06]
+      - [24.0, 0.05]
+      - [25.0, 0.05]
