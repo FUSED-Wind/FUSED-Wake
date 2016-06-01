@@ -328,7 +328,9 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
 
     kappa = 0.4  # Kappa: von karman constant
     us = WS * kappa/np.log(WF.WT[id0[0]].H/z0)  # friction velocity
-    WS_inf = gaussN(WF.WT[id0[0]].R, Ua, [WF.WT[id0[0]].H, us, z0]).sum()  # eq inflow ws
+
+    # eq inflow ws
+    WS_inf = [gaussN(WF.WT[i].R, Ua, [WF.WT[i].H, us, z0]).sum() for i in range(WF.nWT)]
 
     # Initialize arrays to NaN
     Ct = np.nan * np.ones([WF.nWT])
@@ -338,9 +340,9 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
     MaxDU = 0.0
 
     # Initialize first upstream turbine
-    Ct[id0[0]] = WF.WT[id0[0]].get_CT(WS_inf)
-    U_WT[id0[0]] = WS_inf
-    P_WT[id0[0]] = WF.WT[id0[0]].get_P(WS_inf)
+    Ct[id0[0]] = WF.WT[id0[0]].get_CT(WS_inf[id0[0]])
+    U_WT[id0[0]] = WS_inf[id0[0]]
+    P_WT[id0[0]] = WF.WT[id0[0]].get_P(WS_inf[id0[0]])
 
     for i in range(1, WF.nWT):
         cWT = id0[i]  # Current wind turbine
@@ -373,7 +375,7 @@ def GCLarsen_v0(WF, WS, WD, TI, z0, NG=4, sup='lin',
         elif sup == 'quad':
             DU = -np.sqrt(np.sum(LocalDU**2))
 
-        U_WT[cWT] = max(0, WS_inf + DU)
+        U_WT[cWT] = max(0, WS_inf[cWT] + DU)
         if U_WT[cWT] > WF.WT[cWT].u_cutin:
             Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
@@ -433,10 +435,12 @@ def GCLarsen(WF, WS, WD,TI,
         kappa = 0.4 # Kappa: von karman constant
         us = WS * kappa / np.log(WF.WT[0].H / z0)  # friction velocity
         #eq inflow ws
-        WS_inf = gaussN(WF.WT[0].R, Ua, [WF.WT[0].H,us,z0]).sum()
+        #WS_inf = gaussN(WF.WT[0].R, Ua, [WF.WT[0].H,us,z0]).sum()
+        WS_inf = [gaussN(WF.WT[i].R, Ua, [WF.WT[i].H, us, z0]).sum() for i in range(WF.nWT)]
     elif inflow == 'pow':
         #eq inflow ws
-        WS_inf = gaussN(WF.WT[0].R, Ua_shear, [WF.WT[0].H,WS,alpha]).sum()
+        #WS_inf = gaussN(WF.WT[0].R, Ua_shear, [WF.WT[0].H,WS,alpha]).sum()
+        WS_inf = [gaussN(WF.WT[i].R, Ua_shear, [WF.WT[i].H, WS, apha]).sum() for i in range(WF.nWT)]
 
     # Gauss quadrature points
     r_Gc,w_Gc = np.polynomial.legendre.leggauss(NG)
@@ -452,8 +456,8 @@ def GCLarsen(WF, WS, WD,TI,
     P_WT = np.nan*np.ones([WF.nWT])
 
     # Initialize velocity to undisturbed eq ws
-    U_WT  = WS_inf*np.ones([WF.nWT])
-    U_WT0 = WS_inf*np.ones([WF.nWT])
+    U_WT  = WS_inf
+    U_WT0 = WS_inf
     DU_sq = 0.*U_WT
 
     allR = np.array([WF.WT[i].R for i in range(WF.nWT)])
