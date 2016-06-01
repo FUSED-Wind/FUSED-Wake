@@ -67,8 +67,12 @@ class WindFarm(object):
             self.name = self.wf.name
         # We generate a wind turbine list
 
+        self.update_position(self.pos)
+
+
+    def update_position(self, pos):
         # XYZ position of the rotors
-        self.xyz = np.vstack([self.pos, self.H])
+        self.xyz = np.vstack([pos, self.H])
 
         # Vector from iWT to jWT: self.vectWTtoWT[:,i,j] [3, nWT, nWT]
         self.vectWTtoWT = np.swapaxes([self.xyz -
@@ -236,5 +240,10 @@ class WindFarm(object):
             [80.0, 80.0, 80.0, 80.0, 80.0, ..., 80.0]
         """
         # Detect the edge case if key is 'WT'
-        if not key in ['WT', 'nWT']:
-            return [getattr(wt, key) for wt in self.WT]
+        try:
+            super(WindFarm, self).__getattribute__(key)
+        except Exception as e1:
+            try:
+                return [getattr(wt, key) for wt in self.WT]
+            except Exception as e2:
+                raise e1
