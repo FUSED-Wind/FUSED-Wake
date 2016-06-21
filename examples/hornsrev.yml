@@ -365,7 +365,7 @@ turbine_types:
     hub:
       weight: 18000 # kg [3]
     tower: # [2]
-      weight: 198000.0 #kg [2], max 148000.0 kg according to [3]
+      weight: 198000.0 #kg [2], max 148000.0 kg according to [3]
       material: steel
       manufacturer: Welcon
     control: # [1]
