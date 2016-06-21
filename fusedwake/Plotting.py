@@ -72,4 +72,4 @@ def circles(x, y, s, c='b', vmin=None, vmax=None,**kwargs):
     ax.autoscale_view()
     if c is not None:
         plt.sci(collection)
-    return collection
+    return collection, patches

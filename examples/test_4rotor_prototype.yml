@@ -1,19 +1,36 @@
 layout:
-  - name: WT01
+  - name: WT0101
     row: 1
     position: [0, 0]
     turbine_type: V80
-  - name: WT02
-    row: 2
+  - name: WT0102
+    row: 1
     position: [84, 0]
     turbine_type: V80
-  - name: WT03
+  - name: WT0103
     row: 1
     position: [0, 0]
     turbine_type: V80-2
-  - name: WT04
-    row: 2
+  - name: WT0104
+    row: 1
     position: [84, 0]
+    turbine_type: V80-2
+
+  - name: WT0201
+    row: 1
+    position: [0, 480]
+    turbine_type: V80
+  - name: WT0202
+    row: 1
+    position: [84, 480]
+    turbine_type: V80
+  - name: WT0203
+    row: 1
+    position: [0, 480]
+    turbine_type: V80-2
+  - name: WT0204
+    row: 1
+    position: [84, 480]
     turbine_type: V80-2
 
 plant_data:
