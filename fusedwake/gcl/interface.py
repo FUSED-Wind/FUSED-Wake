@@ -39,6 +39,10 @@ class GCL(object):
         versions.sort()
         return versions
 
+    def update_position(self, pos):
+        self.WF.update_position(pos)
+        self.x_g, self.y_g, self.z_g = self.WF.get_T2T_gl_coord2()
+
     def set(self, dic):
         """ Set the attributes of a dictionary as instance variables. Prepares
         for the different versions of the wake model
