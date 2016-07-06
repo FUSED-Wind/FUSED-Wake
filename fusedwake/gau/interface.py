@@ -103,6 +103,10 @@ class GAU(object):
             self.ws = np.array([self.WS])
             self.wd = np.array([self.WD])
             self.ks = np.array([self.K])
+        else:
+            self.ws = self.WS
+            self.wd = self.WD
+            self.ks = self.K
 
         # Run the fortran code
         try:
@@ -121,6 +125,8 @@ class GAU(object):
 
     def fort_gau_s(self):
         self.ks = self.K
+        self.ws = self.WS
+        self.wd = self.WD
         try:
             self.p_wt, self.t_wt, self.u_wt = fgau.gau_s(**self._get_kwargs(self.version))
         except Exception as e:

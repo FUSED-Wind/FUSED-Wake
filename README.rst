@@ -18,19 +18,23 @@ FUSED-Wake is a collection of wind farm flow models.
 * Free software: GNU Affero v3 license
 * Documentation: https://fused-wake.readthedocs.org/en/master/.
 
+Notice
+------
+This package is in development, everything is in alpha mode. Expect dragons.
+
 Features
 --------
 Currently FUSED-Wake has the following models implemented:
 
 * G.C. Larsen model [Larsen_2009]_ (Python, Fortran)
 * N.O. Jensen model [Jensen1983]_ (Fortran)
-* Stand-alone Dynamic Wake Meandering model [Keck_2015]_ (Python)
 * Bastankhah & Porte-Agel model [Bastankhah_Porte-Agel_2014]_ (Fortran)
 
 Roadmap
 -------
 The following models are planned to be added to this library:
 
+* Stand-alone Dynamic Wake Meandering model [Keck_2015]_ (Python)
 * Stationary G.C. Larsen [Larsen_2009]_ (Matlab)
 * N.O. Jensen [NOJensen_1983]_ (Python, Matlab)
 * Ainslie [Ainslie_1988]_ (Python, Fortran)
@@ -38,6 +42,15 @@ The following models are planned to be added to this library:
 * Stand-alone Dynamic Wake Meandering model [Keck_2015]_ (Matlab)
 * EllipSys3D Actuator Disk [Rethore_2013]_ (through REST-API)
 * FUGA [Ott_2011]_ (through the Colonel module)
+
+Dependencies
+------------
+This package has the following dependencies
+* [windIO](https://github.com/rethore/windIO)
+* numpy & scipy
+* plotly (optional)
+* jupyter (optional)
+* pandas (optional)
 
 Docs
 ----

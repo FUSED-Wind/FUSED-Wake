@@ -186,17 +186,15 @@ c DT (array): Wake operating turbines diameter
 c D (float): Wake generating turbine diameter
 c TI (float): Ambient turbulence intensity [-]
 c CT (float): Outputs WindTurbine object's thrust coefficient
-c Ng (int): Polynomial order for Gauss-Legendre quadrature integration
-c           in both radial and angular positions
 c
 c Outputs
 c ----------
 c dUeq (float): Wake velocity deficit at a location normalized by
 c               inflow velocity
-      subroutine get_dUeq(n,x,y,z,DT,D,CT,TI,a1,a2,a3,a4,b1,b2,Ng,dUeq)
+      subroutine get_dUeq(n,x,y,z,DT,D,CT,TI,a1,a2,a3,a4,b1,b2,dUeq)
 
       implicit none
-      integer :: n,Ng
+      integer :: n
       real(kind=8) :: x(n),y(n),z(n),DT(n),D,CT,TI
       real(kind=8) :: a1,a2,a3,a4,b1,b2,dUeq(n)
 cf2py integer intent(hide),depend(x) :: n = len(x)
@@ -209,115 +207,190 @@ cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
 cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
 cf2py real(kind=8) optional,intent(in) :: b1=15.6298
 cf2py real(kind=8) optional,intent(in) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) intent(out),depend(n),dimension(n) :: dUeq
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0
-      integer :: i,j,k
-      real(kind=8) :: tm1,tm2,tm3,tm4
-      real(kind=8), dimension(Ng) :: root,weight,r_pr,th_pr
-      real(kind=8), dimension(1) :: x_e,r_e,dU
-      real(kind=8), dimension(n) :: RT,r_R,th_R
+      integer :: i,j
+      real(kind=8), dimension(40) :: r_node,th_node,weight
+      real(kind=8), dimension(1) :: x_e,y_e,z_e,r_e,dU
+      real(kind=8), dimension(n) :: RT
 
       RT = DT/2.0d0
-      ! Gauss-Legendre quadrature points and weights
-      select case (ng)
-       case ( 4 )
-          root(1) = -0.3399810435848563d0
-          root(2) = 0.3399810435848563d0
-          root(3) = -0.8611363115940526d0
-          root(4) = 0.8611363115940526d0
+      ! 2D Gauss quadrature nodes and weights for polar integration
+      ! int_(0,R) int_(0,2pi) f(r,theta) r dtheta dr =
+      ! sum weight f(r_node, theta_node)
+      r_node(1) = 0.26349922998554242692
+      th_node(1) = 4.79436403870179805864
+      weight(1) = 0.00579798753740115753
 
-          weight(1) = 0.6521451548625461d0
-          weight(2) = 0.6521451548625461d0
-          weight(3) = 0.3478548451374538d0
-          weight(4) = 0.3478548451374538d0
-       case (5)
-          root(1) = 0.0000000000000000d0
-          root(2) = -0.5384693101056831d0
-          root(3) = 0.5384693101056831d0
-          root(4) = -0.9061798459386640d0
-          root(5) = 0.9061798459386640d0
+      r_node(2) = 0.26349922998554242692
+      th_node(2) = 5.13630491629471475079
+      weight(2) = 0.01299684397858970851
 
-          weight(1) = 0.5688888888888889d0
-          weight(2) = 0.4786286704993665d0
-          weight(3) = 0.4786286704993665d0
-          weight(4) = 0.2369268850561891d0
-          weight(5) = 0.2369268850561891d0
-       case (6)
-          root(1) = 0.6612093864662645d0
-          root(2) = -0.6612093864662645d0
-          root(3) = -0.2386191860831969d0
-          root(4) = 0.2386191860831969d0
-          root(5) = -0.9324695142031521d0
-          root(6) = 0.9324695142031521d0
+      r_node(3) = 0.26349922998554242692
+      th_node(3) = 5.71955352542765460555
+      weight(3) = 0.01905256317618122044
 
-          weight(1) = 0.3607615730481386d0
-          weight(2) = 0.3607615730481386d0
-          weight(3) = 0.4679139345726910d0
-          weight(4) = 0.4679139345726910d0
-          weight(5) = 0.1713244923791704d0
-          weight(6) = 0.1713244923791704d0
-       case (7)
-          root(1) = 0.0000000000000000d0
-          root(2) = 0.4058451513773972d0
-          root(3) = -0.4058451513773972d0
-          root(4) = -0.7415311855993945d0
-          root(5) = 0.7415311855993945d0
-          root(6) = -0.9491079123427585d0
-          root(7) = 0.9491079123427585d0
+      r_node(4) = 0.26349922998554242692
+      th_node(4) = 0.20924454049880022999
+      weight(4) = 0.02341643323656225281
 
-          weight(1) = 0.4179591836734694d0
-          weight(2) = 0.3818300505051189d0
-          weight(3) = 0.3818300505051189d0
-          weight(4) = 0.2797053914892766d0
-          weight(5) = 0.2797053914892766d0
-          weight(6) = 0.1294849661688697d0
-          weight(7) = 0.1294849661688697d0
-        case ( 8 )
-          root(1) = -0.960289856497536d0
-          root(2) = -0.796666477413627d0
-          root(3) = -0.525532409916329d0
-          root(4) = -0.183434642495650d0
-          root(5) = 0.183434642495650d0
-          root(6) = 0.525532409916329d0
-          root(7) = 0.796666477413627d0
-          root(8) = 0.960289856497536d0
+      r_node(5) = 0.26349922998554242692
+      th_node(5) = 1.10309379714216659885
+      weight(5) = 0.02569988335562909190
 
-          weight(1) = 0.101228536290374d0
-          weight(2) = 0.222381034453375d0
-          weight(3) = 0.313706645877888d0
-          weight(4) = 0.362683783378363d0
-          weight(5) = 0.362683783378363d0
-          weight(6) = 0.313706645877888d0
-          weight(7) = 0.222381034453375d0
-          weight(8) = 0.101228536290374d0
-      end select
+      r_node(6) = 0.26349922998554242692
+      th_node(6) = 2.03849885644762496284
+      weight(6) = 0.02569988335562912660
 
-      ! Location of the turbines in wake coordinates
-      r_R  = (y**(2.0d0) + z**(2.0d0))**(0.5d0)
-      th_R = modulo(atan2(z,y),2.0d0*pi)
+      r_node(7) = 0.26349922998554242692
+      th_node(7) = 2.93234811309099407950
+      weight(7) = 0.02341643323656214179
+
+      r_node(8) = 0.26349922998554242692
+      th_node(8) = 3.70522443534172518653
+      weight(8) = 0.01905256317618119616
+
+      r_node(9) = 0.26349922998554242692
+      th_node(9) = 4.28847304447466459720
+      weight(9) = 0.01299684397858971198
+
+      r_node(10) = 0.26349922998554242692
+      th_node(10) = 4.63041392206758217753
+      weight(10) = 0.00579798753740114539
+
+      r_node(11) = 0.57446451431535072718
+      th_node(11) = 4.79436403870179805864
+      weight(11) = 0.01086984853977092380
+
+      r_node(12) = 0.57446451431535072718
+      th_node(12) = 5.13630491629471475079
+      weight(12) = 0.02436599330905551281
+
+      r_node(13) = 0.57446451431535072718
+      th_node(13) = 5.71955352542765460555
+      weight(13) = 0.03571902745281423097
+
+      r_node(14) = 0.57446451431535072718
+      th_node(14) = 0.20924454049880022999
+      weight(14) = 0.04390024659093685194
+
+      r_node(15) = 0.57446451431535072718
+      th_node(15) = 1.10309379714216659885
+      weight(15) = 0.04818117282305908744
+
+      r_node(16) = 0.57446451431535072718
+      th_node(16) = 2.03849885644762496284
+      weight(16) = 0.04818117282305915683
+
+      r_node(17) = 0.57446451431535072718
+      th_node(17) = 2.93234811309099407950
+      weight(17) = 0.04390024659093664378
+
+      r_node(18) = 0.57446451431535072718
+      th_node(18) = 3.70522443534172518653
+      weight(18) = 0.03571902745281418240
+
+      r_node(19) = 0.57446451431535072718
+      th_node(19) = 4.28847304447466459720
+      weight(19) = 0.02436599330905552321
+
+      r_node(20) = 0.57446451431535072718
+      th_node(20) = 4.63041392206758217753
+      weight(20) = 0.01086984853977089951
+
+      r_node(21) = 0.81852948743000586429
+      th_node(21) = 4.79436403870179805864
+      weight(21) = 0.01086984853977090992
+
+      r_node(22) = 0.81852948743000586429
+      th_node(22) = 5.13630491629471475079
+      weight(22) = 0.02436599330905548505
+
+      r_node(23) = 0.81852948743000586429
+      th_node(23) = 5.71955352542765460555
+      weight(23) = 0.03571902745281418934
+
+      r_node(24) = 0.81852948743000586429
+      th_node(24) = 0.20924454049880022999
+      weight(24) = 0.04390024659093679643
+
+      r_node(25) = 0.81852948743000586429
+      th_node(25) = 1.10309379714216659885
+      weight(25) = 0.04818117282305903193
+
+      r_node(26) = 0.81852948743000586429
+      th_node(26) = 2.03849885644762496284
+      weight(26) = 0.04818117282305909438
+
+      r_node(27) = 0.81852948743000586429
+      th_node(27) = 2.93234811309099407950
+      weight(27) = 0.04390024659093658826
+
+      r_node(28) = 0.81852948743000586429
+      th_node(28) = 3.70522443534172518653
+      weight(28) = 0.03571902745281413383
+
+      r_node(29) = 0.81852948743000586429
+      th_node(29) = 4.28847304447466459720
+      weight(29) = 0.02436599330905549199
+
+      r_node(30) = 0.81852948743000586429
+      th_node(30) = 4.63041392206758217753
+      weight(30) = 0.01086984853977088737
+
+      r_node(31) = 0.96465960618086743494
+      th_node(31) = 4.79436403870179805864
+      weight(31) = 0.00579798753740116100
+
+      r_node(32) = 0.96465960618086743494
+      th_node(32) = 5.13630491629471475079
+      weight(32) = 0.01299684397858971545
+
+      r_node(33) = 0.96465960618086743494
+      th_node(33) = 5.71955352542765460555
+      weight(33) = 0.01905256317618123432
+
+      r_node(34) = 0.96465960618086743494
+      th_node(34) = 0.20924454049880022999
+      weight(34) = 0.02341643323656226669
+
+      r_node(35) = 0.96465960618086743494
+      th_node(35) = 1.10309379714216659885
+      weight(35) = 0.02569988335562910925
+
+      r_node(36) = 0.96465960618086743494
+      th_node(36) = 2.03849885644762496284
+      weight(36) = 0.02569988335562914394
+
+      r_node(37) = 0.96465960618086743494
+      th_node(37) = 2.93234811309099407950
+      weight(37) = 0.02341643323656215567
+
+      r_node(38) = 0.96465960618086743494
+      th_node(38) = 3.70522443534172518653
+      weight(38) = 0.01905256317618120657
+
+      r_node(39) = 0.96465960618086743494
+      th_node(39) = 4.28847304447466459720
+      weight(39) = 0.01299684397858972065
+
+      r_node(40) = 0.96465960618086743494
+      th_node(40) = 4.63041392206758217753
+      weight(40) = 0.00579798753740114886
 
       do i = 1, n
         dUeq(i) = 0.0d0
         if (x(i) > 0.0) then
-          ! Location of evaluation points in the local rotor coordinates
-          r_pr  = RT(i)*(root+1d0)/2.0d0!uniform distribution in [0, RT]
-          !th_pr = pi*(root+1d0)        !uniform distribution in [0,2*pi]
-          th_pr = pi*(root+1d0)-pi/2.d0 !uniform distribution in [-pi/2,3/2*pi]
-          ! Location of evaluation points in wake coordinates
           ! Evaluation of wake and sum of quadrature
-          do j = 1, Ng
-            do k = 1, Ng
-              x_e = x(i)
-              tm1 = (r_R(i))**(2.0d0)
-              tm2 = (r_pr(k))**(2.0d0)
-              tm3 = 2d0*r_R(i)*r_pr(k)*cos(th_R(i) - th_pr(j))
-              r_e = sqrt( tm1+tm2+tm3)
-              call get_dU(1,x_e,r_e,D,CT,TI,a1,a2,a3,a4,b1,b2,dU)
-              tm4 = weight(j)*weight(k)*dU(1)*(root(k)+1d0)/4d0
-              dUeq(i)=dUeq(i)+tm4
-            end do
+          do j = 1, 40
+            ! Location of evaluation points in the local rotor coordinates
+            x_e = x(i)
+            y_e = y(i) + RT(i)*r_node(j)*cos(th_node(j))
+            z_e = z(i) + RT(i)*r_node(j)*sin(th_node(j))
+            r_e  = (y_e**(2.0d0) + z_e**(2.0d0))**(0.5d0)
+            call get_dU(1,x_e,r_e,D,CT,TI,a1,a2,a3,a4,b1,b2,dU)
+            dUeq(i)=dUeq(i)+dU(1)*weight(j)
           end do
         end if
       end do
@@ -359,10 +432,10 @@ c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
       subroutine gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,
-     &a1,a2,a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+     &a1,a2,a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
-      integer :: n,nP,nCT,Ng
+      integer :: n,nP,nCT
       real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
       real(kind=8) :: CT_c(n,nCT,2),WS,WD,TI,a1,a2,a3,a4,b1,b2
       real(kind=8) :: rho,WS_CI(n),WS_CO(n),CT_idle(n),P(n),T(n),U(n)
@@ -380,7 +453,6 @@ cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
 cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
 cf2py real(kind=8) optional,intent(in) :: b1=15.6298
 cf2py real(kind=8) optional,intent(in) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) optional,intent(in) :: rho=1.225
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
@@ -418,7 +490,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
         else
           CT = CT_idle(i)
         end if
-        call get_dUeq(n,x,y,z,DT,D,CT,TI,a1,a2,a3,a4,b1,b2,Ng,dUeq)
+        call get_dUeq(n,x,y,z,DT,D,CT,TI,a1,a2,a3,a4,b1,b2,dUeq)
         U = U + U(i)*dUeq
       end do
       ! Calculates the power and thrust
@@ -469,10 +541,10 @@ c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
       subroutine gcl(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,a1,a2,
-     &a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+     &a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
-      integer :: n,nP,nCT,nF,Ng
+      integer :: n,nP,nCT,nF
       real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
       real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
       real(kind=8),dimension(nF) :: WS,WD,TI,a1,a2,a3,a4,b1,b2
@@ -492,7 +564,6 @@ cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) optional,intent(in) :: rho=1.225
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
@@ -503,7 +574,7 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
 
       do i=1,nF
         call gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i),TI(i),
-     &       a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,WS_CI,WS_CO,
+     &       a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),rho,WS_CI,WS_CO,
      &       CT_idle,P(i,:),T(i,:),U(i,:))
       end do
 
@@ -544,10 +615,10 @@ c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
       subroutine gcl_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,AV,
-     &a1,a2,a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+     &a1,a2,a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
-      integer :: n,nP,nCT,nF,Ng,AV(nf,n)
+      integer :: n,nP,nCT,nF,AV(nf,n)
       real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
       real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
       real(kind=8),dimension(nF) :: WS,WD,TI,a1,a2,a3,a4,b1,b2
@@ -568,7 +639,6 @@ cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) optional,intent(in) :: rho=1.225
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
@@ -589,19 +659,24 @@ cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
           end if
         end do
         call gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i),WD(i),
-     &       TI(i),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,WS_CI,
+     &       TI(i),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),rho,WS_CI,
      &       WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
       end do
 
       end subroutine gcl_av
 
 c ----------------------------------------------------------------------
-c gcl_GA(x,y,z,DT,P_c,CT_c,WS,WD,TI,STD_WD,Nga)
+c New Multiple turbine types (height, P and CT curves) implementation
 c ----------------------------------------------------------------------
-c GAUSSIAN AVERAGE
-c Gauss-Hermite quadrature for normally distributed wind direction
-c uncertainty (inside Reynolds averaging time), for a global/unique wind
-c direction uncertainty
+
+
+c ----------------------------------------------------------------------
+c gclm_s(x,y,z,DT,P_c,CT_c,WS,TI)
+c ----------------------------------------------------------------------
+c SINGLE FLOW CASE
+c Computes the WindFarm flow and Power using G. C. Larsen model:
+c Larsen, G. C., and P. E. Re'thore'. A simple stationary semi-analytical
+c wake model. Technical Report Risoe, 2009.
 c
 c Inputs
 c ----------
@@ -612,12 +687,10 @@ c DT (array): Turbines diameter
 c P_c (array): Power curves
 c CT_c (array): Thrust coefficient curves
 c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
-c             height [m/s]
-c WD (array): Undisturbed wind direction at hub height [deg.]
-c             Meteorological coordinates (N=0,E=90,S=180,W=270)
-c TI (array): Ambient turbulence intensity [-]
-c STD_WD(array): Standard deviation of wind direction uncertainty
-c Nga (int): Number of quadrature points for Gaussian averaging
+c             height [m/s] for each wind turbine
+c WD (array): Undisturbed wind direction at hub height [deg.] for each
+c             turbine. Meteorological coordinates (N=0,E=90,S=180,W=270)
+c TI (array): Turbulence intensity [-] for each turbine
 c
 c rho (float): Air density at which the power curve is valid [kg/m^3]
 c WS_CI (array): Cut in wind speed [m/s] for each turbine
@@ -630,143 +703,89 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine gcl_GA(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
-     &TI,STD_WD,Nga,a1,a2,a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+      subroutine gclm_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,
+     &a1,a2,a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
-      integer :: n,nP,nCT,nF,Ng,Nga
+      integer :: n,nP,nCT
       real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
-      real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
-      real(kind=8),dimension(nF) :: WS,WD,TI,STD_WD,a1,a2,a3,a4,b1,b2
-      real(kind=8) :: P(nF,n),T(nF,n),U(nF,n)
+      real(kind=8) :: CT_c(n,nCT,2),WS(n),WD(n),TI(n),a1,a2,a3,a4,b1,b2
+      real(kind=8) :: rho,WS_CI(n),WS_CO(n),CT_idle(n),P(n),T(n),U(n)
 cf2py integer intent(hide),depend(DT) :: n = len(DT)
 cf2py integer intent(hide),depend(P_c) :: nP = size(P_c,2)
 cf2py integer intent(hide),depend(CT_c) :: nCT = size(CT_c,2)
-cf2py integer intent(hide),depend(WS) :: nF = len(WS)
 cf2py real(kind=8) intent(in),dimension(n) :: DT
 cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
 cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
 cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
-cf2py real(kind=8) intent(in),dimension(nF) :: WS,TI,WD,STD_WD
-cf2py integer optional,intent(in) :: Nga = 4
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
-cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
+cf2py real(kind=8) intent(in),dimension(n) :: WS,WD,TI
+cf2py real(kind=8) optional,intent(in) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in) :: b2=1.0
 cf2py real(kind=8) optional,intent(in) :: rho=1.225
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
-cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
+cf2py real(kind=8) intent(out),depend(n),dimension(n) :: P,T,U
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0
-      integer :: i,j
-      real(kind=8) :: WD_aux
-      real(kind=8), dimension(n) :: P_aux,T_aux,U_aux
-      real(kind=8), dimension(Nga) :: root,weight
+      integer :: i,j,k,nDownstream(n),idT(n)
+      real(kind=8) :: x(n),y(n),z(n),D,CT,dUeq(n),angle
+      real(kind=8) :: x_l(n,n),y_l(n,n)
 
-      ! Gauss-Hermite quadrature points and weights
-      select case (Nga)
-        case ( 1 )
-          root(1) = 0.0d0
-          weight(1) = sqrt(pi)
-        case ( 4 )
-          root(1) = -1.650680123885785d0
-          root(2) = -0.524647623275290d0
-          root(3) = 0.524647623275290d0
-          root(4) = 1.650680123885785d0
-
-          weight(1) = 0.081312835447245d0
-          weight(2) = 0.804914090005513d0
-          weight(3) = 0.804914090005513d0
-          weight(4) = 0.081312835447245d0
-        case ( 5 )
-          root(1) = -2.020182870456086d0
-          root(2) = -0.958572464613819d0
-          root(3) = 0.000000000000000d0
-          root(4) = 0.958572464613819d0
-          root(5) = 2.020182870456086d0
-
-          weight(1) = 0.019953242059046d0
-          weight(2) = 0.393619323152241d0
-          weight(3) = 0.945308720482942d0
-          weight(4) = 0.393619323152241d0
-          weight(5) = 0.019953242059046d0
-        case ( 6 )
-          root(1) = -2.350604973674492d0
-          root(2) = -1.335849074013697d0
-          root(3) = -0.436077411927617d0
-          root(4) = 0.436077411927617d0
-          root(5) = 1.335849074013697d0
-          root(6) = 2.350604973674492d0
-
-          weight(1) = 0.004530009905509d0
-          weight(2) = 0.157067320322856d0
-          weight(3) = 0.724629595224392d0
-          weight(4) = 0.724629595224392d0
-          weight(5) = 0.157067320322856d0
-          weight(6) = 0.004530009905509d0
-        case ( 7 )
-          root(1) = -2.651961356835233d0
-          root(2) = -1.673551628767471d0
-          root(3) = -0.816287882858965d0
-          root(4) = 0.000000000000000d0
-          root(5) = 0.816287882858965d0
-          root(6) = 1.673551628767471d0
-          root(7) = 2.651961356835233d0
-
-          weight(1) = 0.000971781245100d0
-          weight(2) = 0.054515582819127d0
-          weight(3) = 0.425607252610128d0
-          weight(4) = 0.810264617556807d0
-          weight(5) = 0.425607252610128d0
-          weight(6) = 0.054515582819127d0
-          weight(7) = 0.000971781245100d0
-        case ( 8 )
-          root(1) = -2.930637420257244d0
-          root(2) = -1.981656756695843d0
-          root(3) = -1.157193712446780d0
-          root(4) = -0.381186990207322d0
-          root(5) = 0.381186990207322d0
-          root(6) = 1.157193712446780d0
-          root(7) = 1.981656756695843d0
-          root(8) = 2.930637420257244d0
-
-          weight(1) = 0.000199604072211d0
-          weight(2) = 0.017077983007413d0
-          weight(3) = 0.207802325814892d0
-          weight(4) = 0.661147012558241d0
-          weight(5) = 0.661147012558241d0
-          weight(6) = 0.207802325814892d0
-          weight(7) = 0.017077983007413d0
-          weight(8) = 0.000199604072211d0
-      end select
-
-      do i=1,nF
-        P(i,:)=0.0d0
-        T(i,:)=0.0d0
-        U(i,:)=0.0d0
-        do j=1,Nga
-          WD_aux = WD(i)+sqrt(2.0d0)*STD_WD(i)*root(j)
-          call gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD_aux,
-     &     TI(i),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,WS_CI,WS_CO,
-     &     CT_idle,P_aux,T_aux,U_aux)
-          P(i,:)=P(i,:)+weight(j)*P_aux*(1.0d0/sqrt(pi))
-          T(i,:)=T(i,:)+weight(j)*T_aux*(1.0d0/sqrt(pi))
-          U(i,:)=U(i,:)+weight(j)*U_aux*(1.0d0/sqrt(pi))
+      ! Rotates the global coordinates to local flow coordinates
+      do i=1,n
+        angle = pi*(270.0d0-WD(i))/180.0d0
+        do j=1,n
+          x_l(i,j) = cos(angle)*x_g(i,j)+sin(angle)*y_g(i,j)
+          y_l(i,j) = -sin(angle)*x_g(i,j)+cos(angle)*y_g(i,j)
         end do
+        ! counts the number of turbines in front of turbine
+        nDownstream(i) = count(x_l(i,:).lt.0)
+      end do
+      ! Indexes of ordered turbines from most upstream turbine
+      call order_id(n,nDownstream,idT)
+      ! Initializes the rotor averaged (equivalent) velocity
+      U = WS
+      ! Computes the rotor averaged (equivalent) velocity deficit
+      do j=1,n
+        i=idT(j)
+        x = x_l(i,:)
+        y = y_l(i,:)
+        z = z_g(i,:)
+        D = DT(i)
+        if ((U(i) >= WS_CI(i)).and.(U(i) <= WS_CO(i))) then
+          call interp_l(CT_c(i,:,1),CT_c(i,:,2),nCT,U(i),CT)
+        else
+          CT = CT_idle(i)
+        end if
+        call get_dUeq(n,x,y,z,DT,D,CT,TI(i),a1,a2,a3,a4,b1,b2,dUeq)
+        U = U + U(i)*dUeq
+      end do
+      ! Calculates the power and thrust
+      do k=1,n
+        if ((U(k) >= WS_CI(k)).and.(U(k) <= WS_CO(k))) then
+          call interp_l(P_c(k,:,1),P_c(k,:,2),nP,U(k),P(k))
+          call interp_l(CT_c(k,:,1),CT_c(k,:,2),nCT,U(k),CT)
+        else
+          P(k)=0.0d0
+          CT = CT_idle(k)
+        end if
+        T(k) = CT*0.5d0*rho*U(k)*U(k)*pi*DT(k)*DT(k)/4.0d0
       end do
 
-      end subroutine gcl_GA
+      end subroutine gclm_s
 
 c ----------------------------------------------------------------------
-c gcl_mult_wd(x,y,z,DT,P_c,CT_c,WS,WD,TI)
+c gclm(x,y,z,DT,P_c,CT_c,WS,WD,TI)
 c ----------------------------------------------------------------------
-c MULTIPLE FLOW CASES with individual wind direction for each turbine
-c and optional individual Gaussian averaging
+c MULTIPLE FLOW CASES
+c Computes the WindFarm flow and Power using G. C. Larsen model:
+c Larsen, G. C., and P. E. Re'thore'. A simple stationary semi-analytical
+c wake model. Technical Report Risoe, 2009.
 c
 c Inputs
 c ----------
@@ -777,10 +796,11 @@ c DT (array): Turbines diameter
 c P_c (array): Power curves
 c CT_c (array): Thrust coefficient curves
 c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
-c             height [m/s]
-c WD (array): Undisturbed wind direction at hub height [deg.]
+c             height [m/s] for each wind turbine x flow [nF,n]
+c WD (array): Undisturbed wind direction at hub height [deg.] for each
+c             turbine x flow [nF,n]
 c             Meteorological coordinates (N=0,E=90,S=180,W=270)
-c TI (array): Ambient turbulence intensity [-]
+c TI (array): Turbulence intensity [-] for each turbine x flow [nF,n]
 c
 c rho (float): Air density at which the power curve is valid [kg/m^3]
 c WS_CI (array): Cut in wind speed [m/s] for each turbine
@@ -793,59 +813,132 @@ c P (array): Power production of the wind turbines (nWT,1) [W]
 c T (array): Thrust force of the wind turbines (nWT,1) [N]
 c U (array): Rotor averaged (equivalent) Wind speed at hub height
 c            (nWT,1) [m/s]
-      subroutine gcl_mult_wd(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,
-     &TI,STD_WD,Nga,a1,a2,a3,a4,b1,b2,Ng,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+      subroutine gclm(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,a1,
+     &a2,a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
 
       implicit none
-      integer :: n,nP,nCT,nF,Ng,Nga
+      integer :: n,nP,nCT,nF
       real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
       real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
-      real(kind=8),dimension(nF) :: WS,TI,a1,a2,a3,a4,b1,b2
-      real(kind=8),dimension(nF,n) :: WD,STD_WD
-      real(kind=8) :: P(nF,n),T(nF,n),U(nF,n)
+      real(kind=8),dimension(nF) :: a1,a2,a3,a4,b1,b2
+      real(kind=8) :: WS(nF,n),WD(nF,n),TI(nF,n),P(nF,n),T(nF,n),U(nF,n)
 cf2py integer intent(hide),depend(DT) :: n = len(DT)
 cf2py integer intent(hide),depend(P_c) :: nP = size(P_c,2)
 cf2py integer intent(hide),depend(CT_c) :: nCT = size(CT_c,2)
-cf2py integer intent(hide),depend(WS) :: nF = len(WS)
+cf2py integer intent(hide),depend(WS) :: nF = size(WS,1)
 cf2py real(kind=8) intent(in),dimension(n) :: DT
 cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
 cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
 cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
-cf2py real(kind=8) intent(in),dimension(nF) :: WS,TI
-cf2py real(kind=8) intent(in),dimension(nF,n) :: WD
-cf2py real(kind=8) optional,intent(in),dimension(nF,n) :: STD_WD = 0.0
-cf2py integer optional intent(in) :: Nga = 1
+cf2py real(kind=8) intent(in),dimension(nF,n) :: WS,WD,TI
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
 cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
-cf2py integer optional intent(in) :: Ng = 4
 cf2py real(kind=8) optional,intent(in) :: rho=1.225
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
 cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
-cf2py real(kind=8) intent(out),depend(n),dimension(nF,n) :: P,T,U
+cf2py real(kind=8) intent(out),depend(nF,nF,n),dimension(nF,n) :: P,T,U
       ! internal variables
-      integer :: i,j
-      real(kind=8), dimension(n) :: P_aux,T_aux,U_aux
+      integer :: i
 
-      do j=1,n
-        do i=1,nF
-          call gcl_GA(n,nP,nCT,1,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i,j),
-     &TI(i),STD_WD(i,j),Nga,a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,
-     &WS_CI,WS_CO,CT_idle,P_aux,T_aux,U_aux)
-!          call gcl_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i),WD(i,j),
-!     &     TI(i),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),Ng,rho,WS_CI,WS_CO,
-!     &     CT_idle,P_aux,T_aux,U_aux)
-          P(i,j)=P_aux(j)
-          T(i,j)=T_aux(j)
-          U(i,j)=U_aux(j)
-        end do
+      do i=1,nF
+        call gclm_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c,CT_c,WS(i,:),WD(i,:),
+     &       TI(i,:),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),rho,WS_CI,
+     &       WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
       end do
 
-      end subroutine gcl_mult_wd
+      end subroutine gclm
+
+c ----------------------------------------------------------------------
+c gclm_av(x,y,z,DT,P_c,CT_c,WS,WD,TI,AV)
+c ----------------------------------------------------------------------
+c MULTIPLE FLOW CASES with wt available
+c Computes the WindFarm flow and Power using G. C. Larsen model:
+c Larsen, G. C., and P. E. Re'thore'. A simple stationary semi-analytical
+c wake model. Technical Report Risoe, 2009.
+c
+c Inputs
+c ----------
+c x_g (array): Distance between turbines in the global coordinates
+c y_g (array): Distance between turbines in the global coordinates
+c z_g (array): Distance between turbines in the global coordinates
+c DT (array): Turbines diameter
+c P_c (array): Power curves
+c CT_c (array): Thrust coefficient curves
+c WS (array): Undisturbed rotor averaged (equivalent) wind speed at hub
+c             height [m/s] for each wind turbine x flow [nF,n]
+c WD (array): Undisturbed wind direction at hub height [deg.] for each
+c             turbine x flow [nF,n]
+c             Meteorological coordinates (N=0,E=90,S=180,W=270)
+c TI (array): Turbulence intensity [-] for each turbine x flow [nF,n]
+c AV (array): Wind turbine available per flow [nF,n]
+c
+c rho (float): Air density at which the power curve is valid [kg/m^3]
+c WS_CI (array): Cut in wind speed [m/s] for each turbine
+c WS_CO (array): Cut out wind speed [m/s] for each turbine
+c CT_idle (array): Thrust coefficient at rest [-] for each turbine
+c
+c Outputs
+c ----------
+c P (array): Power production of the wind turbines (nWT,1) [W]
+c T (array): Thrust force of the wind turbines (nWT,1) [N]
+c U (array): Rotor averaged (equivalent) Wind speed at hub height
+c            (nWT,1) [m/s]
+      subroutine gclm_av(n,nP,nCT,nF,x_g,y_g,z_g,DT,P_c,CT_c,WS,WD,TI,
+     &AV,a1,a2,a3,a4,b1,b2,rho,WS_CI,WS_CO,CT_idle,P,T,U)
+
+      implicit none
+      integer :: n,nP,nCT,nF,AV(nf,n)
+      real(kind=8) :: x_g(n,n),y_g(n,n),z_g(n,n),DT(n),P_c(n,nP,2)
+      real(kind=8) :: CT_c(n,nCT,2),rho,WS_CI(n),WS_CO(n),CT_idle(n)
+      real(kind=8),dimension(nF) :: a1,a2,a3,a4,b1,b2
+      real(kind=8) :: WS(nF,n),WD(nF,n),TI(nF,n),P(nF,n),T(nF,n),U(nF,n)
+cf2py integer intent(hide),depend(DT) :: n = len(DT)
+cf2py integer intent(hide),depend(P_c) :: nP = size(P_c,2)
+cf2py integer intent(hide),depend(CT_c) :: nCT = size(CT_c,2)
+cf2py integer intent(hide),depend(WS) :: nF = size(WS,1)
+cf2py real(kind=8) intent(in),dimension(n) :: DT
+cf2py real(kind=8) intent(in),depend(n),dimension(n,n) :: x_g,y_g,z_g
+cf2py real(kind=8) intent(in),dimension(n,nP,2) :: P_c
+cf2py real(kind=8) intent(in),dimension(n,nCT,2) :: CT_c
+cf2py real(kind=8) intent(in),dimension(nF,n) :: WS,WD,TI
+cf2py integer intent(in),dimension(nF,n) :: AV
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a1=0.435449861
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a2=0.797853685
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a3=-0.124807893
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: a4=0.136821858
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b1=15.6298
+cf2py real(kind=8) optional,intent(in),dimension(nF) :: b2=1.0
+cf2py real(kind=8) optional,intent(in) :: rho=1.225
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CI=4.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: WS_CO=25.0
+cf2py real(kind=8) optional,intent(in),dimension(n) :: CT_idle=0.053
+cf2py real(kind=8) intent(out),depend(nF,n),dimension(nF,n) :: P,T,U
+      ! internal variables
+      integer :: i,j
+      real(kind=8) :: CT_c_AV(n,nCT,2), P_c_AV(n,nCT,2)
+
+      do i=1,nF
+        CT_c_AV = CT_c
+        P_c_AV  = P_c
+        ! Re-defines the trust curve for non available turbines
+        do j=1,n
+          if (AV(i,j)==0) then
+            CT_c_AV(j,:,2) = CT_idle(j)
+            P_c_AV(j,:,2) = 0.0d0
+          end if
+        end do
+        call gclm_s(n,nP,nCT,x_g,y_g,z_g,DT,P_c_AV,CT_c_AV,WS(i,:),
+     &       WD(i,:),TI(i,:),a1(i),a2(i),a3(i),a4(i),b1(i),b2(i),rho,
+     &       WS_CI,WS_CO,CT_idle,P(i,:),T(i,:),U(i,:))
+      end do
+
+      end subroutine gclm_av
+
 
 c ----------------------------------------------------------------------
 c Additional routines
