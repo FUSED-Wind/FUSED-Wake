@@ -85,3 +85,20 @@ install: clean
 
 develop: clean
 	python setup.py develop
+
+docker_build_2:
+	docker build -f docker/anaconda/Dockerfile -t fusedwake:2.7 .
+
+docker_build_3:
+	docker build -f docker/anaconda3/Dockerfile -t fusedwake:3.5 .
+
+docker_build_all: docker_build_2 docker_build_3
+
+docker_run:
+	docker run -it -p 8898:8898 -v $$(pwd):/opt/notebooks/home fusedwake:2.7
+
+docker_exec:
+	docker exec -it $$(docker ps|grep fusedwake|head -n 1|awk {'print $$1'}) /bin/bash
+
+docker_clean:
+	docker ps -a |grep fusedwake|grep Exited|awk {'print $$1'}|xargs docker rm
