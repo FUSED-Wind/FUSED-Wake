@@ -265,6 +265,7 @@ def get_dUeq(x,y,z,RT,R,CT,TI,
     re = np.sqrt( ye**2. + ze**2. )
 
     dU_msh = get_dU(xe,re,R,CT,TI,order=1,pars=pars)
+
     dUeq = np.sum(weight_msh*dU_msh,axis=0)
 
     return dUeq
@@ -337,7 +338,7 @@ def GCLarsen_v0(WF, WS, WD, TI,
         DU = LocalDU.sum()
 
         U_WT[cWT] = U_WT[cWT] + DU
-        if  U_WT[cWT] > WF.WT[cWT].u_cutin:
+        if  U_WT[cWT] >= WF.WT[cWT].u_cutin:
             Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
         else:
@@ -399,7 +400,7 @@ def GCLarsen(WF, WS, WD,TI,
         cR = WF.WT[cWT].R
         # Current wind speed
         cU = U_WT[cWT]
-        if cU>WF.WT[cWT].u_cutin:
+        if cU >= WF.WT[cWT].u_cutin:
             Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
         else:
@@ -423,7 +424,7 @@ def GCLarsen(WF, WS, WD,TI,
 
         # Update Power and CT
         cU = U_WT[cWT]
-        if cU>WF.WT[cWT].u_cutin:
+        if cU >= WF.WT[cWT].u_cutin:
             Ct[cWT] = WF.WT[cWT].get_CT(U_WT[cWT])
             P_WT[cWT] = WF.WT[cWT].get_P(U_WT[cWT])
         else:
