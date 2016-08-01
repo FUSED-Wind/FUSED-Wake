@@ -136,11 +136,6 @@ class TestGCLImplementations(unittest.TestCase):
 
             out = gcl(WF=wf, WS=WS*np.ones([wf.nWT]),
                   WD=wd*np.ones([wf.nWT]),
-                  TI=TI*np.ones([wf.nWT]), version='fort_gclm_s')
-            P_rat_fgclm_s = np.append(P_rat_fgclm_s,out.p_wt[1]/out.p_wt[0])
-
-            out = gcl(WF=wf, WS=WS*np.ones([wf.nWT]),
-                  WD=wd*np.ones([wf.nWT]),
                   TI=TI*np.ones([wf.nWT]),version='py_gcl_v1')
             P_rat_py_v1 = np.append(P_rat_py_v1,out.p_wt[1]/out.p_wt[0])
 
@@ -154,14 +149,8 @@ class TestGCLImplementations(unittest.TestCase):
                   TI=0.1*np.ones_like(WDm), version='fort_gclm')
         P_rat_fgclm = out.p_wt[:,1]/out.p_wt[:,0]
 
-        out = gcl(WF=wf, WS=WS*np.ones_like(WDm), WD=WDm,
-                  TI=0.1*np.ones_like(WDm), version='fort_gclm_av')
-        P_rat_fgclm_av = out.p_wt[:,1]/out.p_wt[:,0]
-
-        self.assertTrue(np.allclose(P_rat_fgclm_s, P_rat_py_v0)&\
-        np.allclose(P_rat_fgclm_s, P_rat_py_v1)&\
-        np.allclose(P_rat_fgclm_s, P_rat_fgclm)&\
-        np.allclose(P_rat_fgclm_s, P_rat_fgclm_av))
+        self.assertTrue(np.allclose(P_rat_fgclm, P_rat_py_v0)&\
+        np.allclose(P_rat_fgclm, P_rat_py_v1))
 
 if __name__ == "__main__":
     unittest.main()
