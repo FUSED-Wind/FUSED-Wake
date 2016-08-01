@@ -167,7 +167,7 @@ class GCL(object):
         except Exception as e:
             raise Exception('The fortran version {} failed with the following inputs: {}, and the error message: {}'.format(
                     self.version, self._get_kwargs(self.version), e))
-        A = 0.25 * self.WF.WT.rotor_diameter**2.0
+        A = 0.25 * np.pi * self.WF.WT.rotor_diameter**2.0
         self.c_t = self.t_wt / (0.5 * A * self.rho * self.u_wt**2.0)
         self.p_wt *= 1.0E3  # Scaling the power back to Watt
         if len(self.ws) == 1: # We are only returning a 1D array
@@ -210,7 +210,7 @@ class GCL(object):
         except Exception as e:
             raise Exception('The fortran version {} failed with the following inputs: {}, and the error message: {}'.format(
                     self.version, self._get_kwargs(self.version), e))
-        A = 0.25 * self.WF.WT.rotor_diameter**2.0
+        A = 0.25 * np.pi * self.WF.WT.rotor_diameter**2.0
         self.c_t = self.t_wt / (0.5 * A * self.rho * self.u_wt**2.0)
         self.p_wt *= 1.0E3  # Scaling the power back to Watt
         if len(self.ws) == 1: # We are only returning a 1D array
