@@ -178,10 +178,11 @@ class WindTurbineDICT(WindTurbine):
         self.H = wt_type['hub_height']
         self.R = wt_type['rotor_diameter'] / 2.0
 
-        if 'c_t_idle' in wt:
+        if  'c_t_idle' in wt_type:
             self.CT_idle = wt_type['c_t_idle']
         else:
-            self.CT_idle = 0.056
+            self.CT_idle = 0.05
+            print "Guessed CT_idle: 0.05 for turbine " + wt_type['name']
 
         self.power_factor = 1000.0 # <- Juan Pablo is using W as a basis to define power
 
