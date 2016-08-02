@@ -1,0 +1,139 @@
+layout:
+  - name: WT01
+    row: 1
+    position: [0, 0]
+    turbine_type: V80
+  - name: WT02
+    row: 2
+    position: [800, 0]
+    turbine_type: V80
+  - name: WT03
+    row: 1
+    position: [200, 200]
+    turbine_type: V80
+  - name: WT04
+    row: 2
+    position: [200, -200]
+    turbine_type: V80
+
+plant_data:
+  utm:
+    code: 32
+    letter: U
+  name: Test WF
+  owner: DTU
+
+turbine_types:
+  # Sources:
+  # [1] https://windbench.net/system/files/hornsrev_v80_0.pdf
+  # [2] http://www.thewindpower.net/turbine_en_30_vestas_2000.php
+  # [3] http://en.wind-turbine-models.com/turbines/668-vestas-v-80-offshore
+  # [4] WAsP wind turbine library (distributed as part of the WAsP software)
+  - name: V80
+    hub_height: 70.0          # [1]
+    rotor_diameter: 80.0      # [1]
+    rated_power: 2000.0       # [1]
+    cut_in_wind_speed: 4.0    # [1]
+    cut_out_wind_speed: 25.0  # [1]
+    rated_wind_speed: 16.0    # [1]
+    wind_class: IEC Ia (DIBt III) # [2]
+    air_density: 1.225        # guess
+    gear_box:
+      speed_number: 3
+      ratio: 1:100,5 # [2]
+      type: spur/planetary # [3]
+    nacelle: # [2]
+      weight: 68000.0 # kg     [2], 69000.0 kg according to [3]
+    rotor: # [2, 3]
+      weight: 37000.0 # kg     [2]
+      tip_speed: 80.0 # m/s    [3]
+      min_speed: 9 # rd/min [2]
+      max_speed: 19 # rd/min [2]
+      manufacturer: Vestas
+    hub:
+      weight: 18000 # kg [3]
+    tower: # [2]
+      weight: 198000.0 #kg [2], max 148000.0 kg according to [3]
+      material: steel
+      manufacturer: Welcon
+    control: # [1]
+      type: Active Pitch, Variable Speed
+    generator: # [2]
+      type: ASYNC
+      number: 1
+      max_output_speed: 1909 #rounds/minute
+      output_voltage: 690 #V
+      grid_frequency: 50/60 # Hz
+    power_curve: # [1]
+      - [3.0,   0.0]
+      - [4.0,   66.6]
+      - [5.0,   154.0]
+      - [6.0,   282.0]
+      - [7.0,   460.0]
+      - [8.0,   696.0]
+      - [9.0,   996.0]
+      - [10.0,  1341.0]
+      - [11.0,  1661.0]
+      - [12.0,  1866.0]
+      - [13.0,  1958.0]
+      - [14.0,  1988.0]
+      - [15.0,  1997.0]
+      - [16.0,  1999.0]
+      - [17.0,  2000.0]
+      - [18.0,  2000.0]
+      - [19.0,  2000.0]
+      - [20.0,  2000.0]
+      - [21.0,  2000.0]
+      - [22.0,  2000.0]
+      - [23.0,  2000.0]
+      - [24.0,  2000.0]
+      - [25.0,  2000.0]
+    c_t_curve:
+      - [3.0,  0.00]
+      - [4.0,  0.818]
+      - [5.0,  0.806]
+      - [6.0,  0.804]
+      - [7.0,  0.805]
+      - [8.0,  0.806]
+      - [9.0,  0.807]
+      - [10.0, 0.793]
+      - [11.0, 0.739]
+      - [12.0, 0.709]
+      - [13.0, 0.409]
+      - [14.0, 0.314]
+      - [15.0, 0.249]
+      - [16.0, 0.202]
+      - [17.0, 0.167]
+      - [18.0, 0.140]
+      - [19.0, 0.119]
+      - [20.0, 0.102]
+      - [21.0, 0.088]
+      - [22.0, 0.077]
+      - [23.0, 0.067]
+      - [24.0, 0.060]
+      - [25.0, 0.053]
+    c_t_idle: 0.053 # [4]
+    blade:
+      geometry: # [1]
+        # [radius [m], c [m], twist [deg],   airfoil   ]
+        - [2.563,      2.004,   9.50,      'Cylinder 1']
+        - [4.389,      2.523,   9.50,      'Cylinder 1']
+        - [6.216,      3.015,   9.50,      'FFA W3-301']
+        - [8.042,      3.278,   9.50,      'FFA W3-301']
+        - [9.868,      3.309,   9.50,      'FFA W3-301']
+        - [11.694,     3.195,   9.50,      'FFA W3-301']
+        - [13.520,     3.039,   9.22,      'FFA W3-241']
+        - [15.346,     2.863,   7.81,      'FFA W3-211']
+        - [17.173,     2.687,   6.40,      'FFA W3-211']
+        - [18.999,     2.511,   5.11,      'FFA W3-211']
+        - [20.825,     2.334,   3.83,      'FFA W3-211']
+        - [22.651,     2.158,   2.61,      'NACA 63-221']
+        - [24.477,     1.982,   1.48,      'NACA 63-221']
+        - [26.304,     1.806,   0.42,      'NACA 63-221']
+        - [28.130,     1.630,   0.49,      'NACA 63-221']
+        - [29.956,     1.454,   1.23,      'NACA 63-218']
+        - [31.782,     1.278,   1.79,      'NACA 63-218']
+        - [33.608,     1.102,   2.24,      'NACA 63-218']
+        - [35.435,     0.926,   2.61,      'NACA 63-218']
+        - [37.261,     0.749,   2.84,      'NACA 63-218']
+        - [39.087,     0.573,   2.97,      'NACA 63-218']

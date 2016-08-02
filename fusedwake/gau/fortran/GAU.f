@@ -32,7 +32,7 @@ c Rw (float): Wake radius at a location
 cf2py integer intent(hide),depend(x) :: n=len(x)
 cf2py real(kind=8) intent(in),dimension(n) :: x
 cf2py real(kind=8) intent(in) :: D,CT
-cf2py real(kind=8) optional,intent(in) :: ks = 0.030 !Neutral ABL
+cf2py real(kind=8) optional,intent(in) :: ks = 0.030 
 cf2py real(kind=8) intent(out), depend(n),dimension(n) :: RW
       ! internal variables
       real(kind=8), parameter :: pi=3.1415926535897932384626433832795d0

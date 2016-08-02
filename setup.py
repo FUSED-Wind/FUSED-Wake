@@ -56,9 +56,9 @@ setup(
         # 'fusedwake.noj.python',
         'fusedwake.gau',
         # 'fusedwake.gau.python',
-        'fusedwake.ainslie',
+        #'fusedwake.ainslie',
         # 'fusedwake.ainslie.python',
-        'fusedwake.sdwm',
+        #'fusedwake.sdwm',
     ],
     package_dir={'fusedwake':
                  'fusedwake'},

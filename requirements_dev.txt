@@ -15,3 +15,4 @@ pandas
 sphinx-fortran
 watchdog
 plotly
+-e git+https://github.com/FUSED-Wind/windIO#egg=windIO
