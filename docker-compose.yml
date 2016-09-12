@@ -1,0 +1,9 @@
+version: "2"
+services:
+  notebook:
+    build: .
+    ports: ["8898:8898"]
+    working_dir: /notebooks
+    volumes:
+      - ./examples:/notebooks
+    command: jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8898 --no-browser
