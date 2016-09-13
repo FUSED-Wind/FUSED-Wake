@@ -2,7 +2,7 @@ version: "2"
 services:
   notebook:
     build: .
-    ports: ["8898:8898"]
+    ports: ["8899:8898"]
     working_dir: /notebooks
     volumes:
       - ./examples:/notebooks
