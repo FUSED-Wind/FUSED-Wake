@@ -177,7 +177,9 @@ class WindTurbineDICT(WindTurbine):
         self.type = wt_type['name']
         self.H = wt_type['hub_height']
         self.R = wt_type['rotor_diameter'] / 2.0
+        self.rho = wt_type['air_density']
 
+        
         if 'c_t_idle' in wt:
             self.CT_idle = wt_type['c_t_idle']
         else:

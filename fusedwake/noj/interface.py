@@ -59,7 +59,9 @@ class NOJ(object):
             self.ws_ci = self.WF.cut_in_wind_speed
             self.ws_co = self.WF.cut_out_wind_speed
             self.ct_idle = self.WF.c_t_idle
+            self.rho     = self.WF.rho
 
+            
     def _get_kwargs(self, version):
         """Prepare a dictionary of inputs to be passed to the wind farm flow model
 
