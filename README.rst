@@ -64,6 +64,76 @@ Contribute
 ----------
 See CONTRIBUTING_
 
+Installation
+------------
+
+FUSED-Wake contains Fortran extensions that require a correctly configured Fortran compiler.
+
+Windows compiler installation instructions
+""""""""""""""""""""""""""""""""""""""""""
+
+* Intel Fortran compiler (your actual installation directory might be different):
+
+    $ "C:\Program Files (x86)\Intel\Composer XE\bin\ifortvars.bat" intel64
+
+or
+
+* MinGW (instruction derived from `here <https://www.scivision.co/f2py-running-fortran-code-in-python-on-windows/>`_)
+
+    1. Install numpy
+    2. Install mingw-64 to ``c:\mingw with x86_64``, chose ``posix``, ``seh`` options
+    3. Add MinGW bin folder (``C:\mingw\mingw64\bin``) to path variable
+    4. Verify you can use gcc by typing gcc into Anaconda prompt
+    5. Update your distutils configuration file to indicate you are using MinGW::
+
+        [build]
+        compiler=mingw32
+    6. ...into eitherone of the following configuration files:
+        * ``c:\Anaconda\Lib\distutils\distutils.cfg``
+        * ``<user_folder>\AppData\Local\Continuum\Miniconda3\Lib\distutils\distutils.cfg``
+
+Installing dependencies in a conda environment
+""""""""""""""""""""""""""""""""""""""""""""""
+
+Avoid conda and pip taking over packages from each other at random moments::
+
+    conda install numpy scipy pandas jupyter plotly
+    conda install -c conda-forge utm --no-deps
+    pip install sphinx-fortran --no-deps
+
+And the windIO dependency::
+
+    git clone https://github.com/rethore/windIO.git
+    cd windIO
+    pip install -e ./ --no-deps
+
+Finally, build and install FUSED-Wake::
+
+    git clone https://github.com/DTUWindEnergy/FUSED-Wake.git
+    cd FUSED-Wake
+    pip install -e ./ --no-deps
+
+
+Installing simply using pip
+"""""""""""""""""""""""""""
+
+::
+
+    pip install numpy scipy pandas jupyter plotly utm sphinx-fortran
+
+And the windIO dependency::
+
+    git clone https://github.com/rethore/windIO.git
+    cd windIO
+    pip install -e ./
+
+Finally, build and install FUSED-Wake::
+
+    git clone https://github.com/DTUWindEnergy/FUSED-Wake.git
+    cd FUSED-Wake
+    pip install -e ./
+
+
 Tests
 -----
 Local tests
