@@ -72,9 +72,9 @@ FUSED-Wake contains Fortran extensions that require a correctly configured Fortr
 Windows compiler installation instructions
 """"""""""""""""""""""""""""""""""""""""""
 
-* Intel Fortran compiler (your actual installation directory might be different):
+* Install Intel Fortran compiler, and activate as follows:
 
-    $ "C:\Program Files (x86)\Intel\Composer XE\bin\ifortvars.bat" intel64
+    $ "C:\\Program Files (x86)\\Intel\\Composer XE\\bin\\ifortvars.bat" intel64
 
 or
 
@@ -88,7 +88,8 @@ or
 
         [build]
         compiler=mingw32
-    6. ...into eitherone of the following configuration files:
+
+    6. into either one of the following configuration files:
         * ``c:\Anaconda\Lib\distutils\distutils.cfg``
         * ``<user_folder>\AppData\Local\Continuum\Miniconda3\Lib\distutils\distutils.cfg``
 
