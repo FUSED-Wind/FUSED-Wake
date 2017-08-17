@@ -90,6 +90,7 @@ or
         compiler=mingw32
 
     6. into either one of the following configuration files:
+
         * ``c:\Anaconda\Lib\distutils\distutils.cfg``
         * ``<user_folder>\AppData\Local\Continuum\Miniconda3\Lib\distutils\distutils.cfg``
 
