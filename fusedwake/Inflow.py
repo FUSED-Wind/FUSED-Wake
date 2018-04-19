@@ -60,12 +60,12 @@ def get_ABL_U(z,Ur,zr,type='Log',**kwargs):
         2012.
 
     """
-    if  type=='log':
-        kappa = 0.4 # Kappa: Von Karman constant
+    if type == 'log':
+        kappa = 0.4  # Kappa: Von Karman constant
 
-        if  kwargs is not None and 'z0' in kwargs.keys():
+        if kwargs is not None and 'z0' in kwargs.keys():
             z0 = kwargs['z0']
-        else: # Default
+        else:  # Default
             print("Using default LogLaw characteristic roughness ",
                   "length of the terrain: z0 = 0.0002 (Offshore)")
             z0 = 0.0002
