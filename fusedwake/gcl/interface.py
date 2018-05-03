@@ -143,9 +143,55 @@ class GCL(object):
             # fortran only get lowercase inputs
             return {(k).lower():getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
 
+    def cal_wake(self, x, y, H, D, ws, wd, Ct, TI, k):
+        """Interface to Topfarm-wind AEP calculator
+
+        Parameters
+        ----------
+        x: list-like, len=n_wt
+            x_position of the turbines
+        y: list-like, len=n_wt
+            y_position of the turbines
+        z: list-like, len=n_wt
+            z_position of the turbines (unused here, as the models are offshore)
+        H: list-like, len=n_wt
+            HubHeight
+        D: list-like, len=n_wt
+            Rotor diameter
+        ws: ndarray(n_wt, n_ws, n_wd)
+        wd: ndarray(n_wt, n_ws, n_wd)
+        Ct: ndarray(n_wt, n_ws, n_wd): not used here
+        TI:  ndarray(n_wt, n_ws, n_wd)
+        k: not used
+
+        Returns
+        -------
+        local_ws_real_ikl: ndarray(n_wt, n_ws, n_wd)
+            local wind speeds
+        dummy_variable
+        """
+        wt_positions = np.array([x, y, H]).T
+        self.update_position(wt_positions)
+        self.dt = D
+        self.ws = ws.reshape(self.WF.nWT, -1).T
+        self.wd = wd.reshape(self.WF.nWT, -1).T
+        self.ti = TI.reshape(self.WF.nWT, -1).T
+        self.a1 = self.pars[0] * np.ones_like(self.ws)
+        self.a2 = self.pars[1] * np.ones_like(self.ws)
+        self.a3 = self.pars[2] * np.ones_like(self.ws)
+        self.a4 = self.pars[3] * np.ones_like(self.ws)
+        self.b1 = self.pars[4] * np.ones_like(self.ws)
+        self.b2 = self.pars[5] * np.ones_like(self.ws)
+        self.wt_available = np.ones([len(self.ws), self.WF.nWT])
+        self.av = self.wt_available
+        # Right now it only works for the fort_gclm. More versions supported later on
+        self.p_wt, self.t_wt, self.u_wt = fgcl.gclm_av(**self._get_kwargs('fort_gclm'))
+        return self.u_wt, np.ones_like(self.u_wt)
+
+
     def fortran_gcl(self):
         # Prepare the inputs
-        if isinstance(self.WS, float) or isinstance(self.WS, int):
+        if not isinstance(self.WS, np.ndarray):
             self.ws = np.array([self.WS])
             self.wd = np.array([self.WD])
             self.ti = np.array([self.TI])
@@ -184,7 +230,7 @@ class GCL(object):
 
     def fortran_gclm(self):
         # Prepare the inputs
-        if isinstance(self.WS, float) or isinstance(self.WS, int):
+        if not isinstance(self.WS, np.ndarray):
             self.ws = self.WS*np.ones([1,self.WF.nWT])
             self.wd = self.WD*np.ones([1,self.WF.nWT])
             self.ti = self.TI*np.ones([1,self.WF.nWT])
@@ -227,11 +273,11 @@ class GCL(object):
 
     def python_v0(self):
         # Prepare the inputs
-        if isinstance(self.WS, float) or isinstance(self.WS, int):
+        if not isinstance(self.WS, np.ndarray):
             self.WS = self.WS*np.ones([self.WF.nWT])
             self.WD = self.WD*np.ones([self.WF.nWT])
             self.TI = self.TI*np.ones([self.WF.nWT])
-        else:
+        else: #Assuming the WS and WD are the same size as wf.n_wt
             self.WS = self.WS
             self.WD = self.WD
             self.TI = self.TI
@@ -240,11 +286,11 @@ class GCL(object):
 
     def python_v1(self):
         # Prepare the inputs
-        if isinstance(self.WS, float) or isinstance(self.WS, int):
+        if not isinstance(self.WS, np.ndarray):
             self.WS = self.WS*np.ones([self.WF.nWT])
             self.WD = self.WD*np.ones([self.WF.nWT])
             self.TI = self.TI*np.ones([self.WF.nWT])
-        else:
+        else: #Assuming the WS and WD are the same size as wf.n_wt
             self.WS = self.WS
             self.WD = self.WD
             self.TI = self.TI

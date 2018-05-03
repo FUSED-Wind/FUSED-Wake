@@ -185,8 +185,16 @@ class WindTurbineDICT(WindTurbine):
 
         self.power_factor = 1000.0 # <- Juan Pablo is using W as a basis to define power
 
-        self.pc = np.array(wt_type['power_curve'])
-        self.ctc = np.array(wt_type['c_t_curve'])
+        if 'power_curve' in wt_type:
+            self.pc = np.array(wt_type['power_curve'])
+            self.ctc = np.array(wt_type['c_t_curve'])
+        elif 'power_curves' in wt_type: #TODO fix this??
+            wt_type['power_curve'] = wt_type['power_curves']
+            wt_type['c_t_curve'] = wt_type['c_t_curves']            
+            self.pc = np.array(wt_type['power_curves'])
+            self.ctc = np.array(wt_type['c_t_curves'])
+        else:
+            raise Exception('No power curve found')
 
         self.u_cutin = wt_type['cut_in_wind_speed']
         self.u_cutout = wt_type['cut_out_wind_speed']

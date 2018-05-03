@@ -72,7 +72,12 @@ class WindFarm(object):
 
     def update_position(self, pos):
         # XYZ position of the rotors
-        self.xyz = np.vstack([pos, self.H])
+        if pos.shape[1] == 2:
+            self.xyz = np.vstack([pos, self.H])
+        elif pos.shape[1] == 3:
+            self.xyz = pos
+        else:
+            raise Exception('Strange position array', pos.shape)
 
         # Vector from iWT to jWT: self.vectWTtoWT[:,i,j] [3, nWT, nWT]
         self.vectWTtoWT = np.swapaxes([self.xyz -

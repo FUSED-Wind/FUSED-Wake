@@ -15,7 +15,7 @@ FUSED-Wake
 
 FUSED-Wake is a collection of wind farm flow models.
 
-* Free software: GNU Affero v3 license
+* Free software: MIT
 * Documentation: https://fused-wake.readthedocs.org/en/master/.
 
 Notice
@@ -34,6 +34,7 @@ Roadmap
 -------
 The following models are planned to be added to this library:
 
+* FarmFlow interface (Python)
 * Stand-alone Dynamic Wake Meandering model [Keck_2015]_ (Python)
 * Stationary G.C. Larsen [Larsen_2009]_ (Matlab)
 * N.O. Jensen [NOJensen_1983]_ (Python, Matlab)

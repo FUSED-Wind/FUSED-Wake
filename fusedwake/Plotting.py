@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 from matplotlib.collections import PatchCollection
 
-def circles(x, y, s, c='b', vmin=None, vmax=None,**kwargs):
+
+def circles(x, y, s, c='b', vmin=None, vmax=None, **kwargs):
     """
     Make a scatter of circles plot of x vs y, where x and y are sequence
     like objects of the same lengths. The size of circles are in data scale.
