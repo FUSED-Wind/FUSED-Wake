@@ -46,16 +46,16 @@ The following models are planned to be added to this library:
 
 Dependencies
 ------------
-This package has the following dependencies
-* [windIO](https://github.com/rethore/windIO)
-* numpy & scipy
-* plotly (optional)
-* jupyter (optional)
+This package has the following dependencies  
+* [windIO](https://github.com/rethore/windIO)  
+* numpy & scipy  
+* plotly (optional)  
+* jupyter (optional)  
 * pandas (optional)
 
 Docs
 ----
-Documentation is available online at https://fused-wake.readthedocs.org
+Documentation is available online at https://fused-wake.readthedocs.org  
 
 You can build your own docs locally using the command
 
@@ -112,7 +112,7 @@ And the windIO dependency::
 
 Finally, build and install FUSED-Wake::
 
-    git clone https://github.com/DTUWindEnergy/FUSED-Wake.git
+    git clone https://github.com/FUSED-Wind/FUSED-Wake.git
     cd FUSED-Wake
     pip install -e ./ --no-deps
 
@@ -132,7 +132,7 @@ And the windIO dependency::
 
 Finally, build and install FUSED-Wake::
 
-    git clone https://github.com/DTUWindEnergy/FUSED-Wake.git
+    git clone https://github.com/FUSED-Wind/FUSED-Wake.git
     cd FUSED-Wake
     pip install -e ./
 
