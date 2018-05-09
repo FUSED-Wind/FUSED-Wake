@@ -128,7 +128,9 @@ class GCL(object):
             self.ws_ci = np.array(self.WF.cut_in_wind_speed)
             self.ws_co = np.array(self.WF.cut_out_wind_speed)
             self.ct_idle = np.array(self.WF.c_t_idle)
+            self.rho     = np.array(self.WF.rho)
 
+            
     def _get_kwargs(self, version):
         """Prepare a dictionary of inputs to be passed to the wind farm flow model
 
