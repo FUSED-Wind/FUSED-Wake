@@ -76,6 +76,11 @@ class WindFarm(object):
             self.xyz = np.vstack([pos, self.H])
         elif pos.shape[1] == 3:
             self.xyz = pos
+        elif pos.shape[0] == 2:
+            new_pos = pos.T
+            self.xyz = np.vstack([pos, self.H])
+        elif pos.shape[0] == 3:
+            self.xyz = pos.T
         else:
             raise Exception('Strange position array', pos.shape)
 
