@@ -14,6 +14,8 @@ except Exception as e:
 from .WindTurbine import WindTurbineDICT
 from windIO.Plant import WTLayout
 
+import warnings
+
 class WindTurbineList(list):
     """A simple list class that can also act as a single element when needed.
     Accessing one of the attribute of this list will get the first element of the
@@ -74,7 +76,7 @@ class WindFarm(object):
         """
         if pos.shape[1] == 2 or pos.shape[1] == 3:
             if pos.shape[0] >1 and pos.shape[0] <4:
-                print('warning, make sure that this position array is oriented in ndarray([n_wt, 2]) or ndarray([n_wt, 3])', pos)
+                warnings.warn('warning, make sure that this position array is oriented in ndarray([n_wt, 2]) or ndarray([n_wt, 3])\n%s' % pos)
             return pos
         elif pos.shape[0] == 2 or pos.shape[0] == 3:
             return pos.T
