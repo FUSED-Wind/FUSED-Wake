@@ -14,6 +14,8 @@ except Exception as e:
 from .WindTurbine import WindTurbineDICT
 from windIO.Plant import WTLayout
 
+import warnings
+
 class WindTurbineList(list):
     """A simple list class that can also act as a single element when needed.
     Accessing one of the attribute of this list will get the first element of the
@@ -52,8 +54,8 @@ class WindFarm(object):
         """
         if (coordFile):
             coordArray = np.loadtxt(coordFile)
-            self.pos = coordArray.T  # np.array(2 x nWT)
-            self.nWT = self.pos.shape[1]
+            self.pos = self.sanitize_position(coordArray)  # np.array(nWT, 2)
+            self.nWT = self.pos.shape[0]
             self.WT = WindTurbineList([WT for i in range(self.nWT)])
             if name:
                 self.name = name
@@ -61,29 +63,36 @@ class WindFarm(object):
                 self.name = 'Unknown wind farm'
         elif (yml):
             self.wf = WTLayout(yml)
-            self.pos = self.wf.positions.T
-            self.nWT = self.pos.shape[1]
+            self.pos = self.sanitize_position(self.wf.positions)
+            self.nWT = self.pos.shape[0]
             self.WT = WindTurbineList([WindTurbineDICT(wt, self.wf[wt['turbine_type']]) for wt in self.wf.wt_list])
             self.name = self.wf.name
         # We generate a wind turbine list
 
         self.update_position(self.pos)
 
-
-    def update_position(self, pos):
-        # XYZ position of the rotors
-        if pos.shape[1] == 2:
-            self.xyz = np.vstack([pos, self.H])
-        elif pos.shape[1] == 3:
-            self.xyz = pos
+    def sanitize_position(self, pos):
+        """Position array should be ndarray([n_wt, 2]) or ndarray([n_wt, 3])
+        """
+        if pos.shape[1] == 2 or pos.shape[1] == 3:
+            if pos.shape[0] >1 and pos.shape[0] <4:
+                warnings.warn('warning, make sure that this position array is oriented in ndarray([n_wt, 2]) or ndarray([n_wt, 3])\n%s' % pos)
+            return pos
+        elif pos.shape[0] == 2 or pos.shape[0] == 3:
+            return pos.T
         else:
             raise Exception('Strange position array', pos.shape)
 
-        # Vector from iWT to jWT: self.vectWTtoWT[:,i,j] [3, nWT, nWT]
-        self.vectWTtoWT = np.swapaxes([self.xyz -
-            np.repeat(np.atleast_2d(self.xyz[:, i]).T, self.nWT, axis=1)
-            for i in range(self.nWT)], 0, 1)
+    def update_position(self, pos):
+        pos = self.sanitize_position(pos)
+        # XYZ position of the rotors
+        if pos.shape[1] == 2:
+            self.xyz = np.vstack([pos.T, self.H]).T # xyz is ndarray([nWT, 3])
 
+        # Vector from iWT to jWT: self.vectWTtoWT[:,i,j] [3, nWT, nWT]
+        self.vectWTtoWT = np.swapaxes([self.xyz.T -
+            np.repeat(np.atleast_2d(self.xyz[i,:]).T, self.nWT, axis=1)
+            for i in range(self.nWT)], 0, 1)
 
     def rep_str(self):
         return "%s has %s %s wind turbines, with a total capacity of %4.1f MW"%(
@@ -163,9 +172,9 @@ class WindFarm(object):
         z_g = np.zeros([self.nWT, self.nWT])
         for i in range(self.nWT):
             for j in range(self.nWT):
-                x_g[i,j] = self.xyz[0,j] - self.xyz[0,i]
-                y_g[i,j] = self.xyz[1,j] - self.xyz[1,i]
-                z_g[i,j] = self.xyz[2,j] - self.xyz[2,i]
+                x_g[i,j] = self.xyz[j,0] - self.xyz[i,0]
+                y_g[i,j] = self.xyz[j,1] - self.xyz[i,1]
+                z_g[i,j] = self.xyz[j,2] - self.xyz[i,2]
 
         return x_g,y_g,z_g
 
@@ -193,8 +202,8 @@ class WindFarm(object):
         """ # TODO
         """
         if MATPLOTLIB:
-            x = (self.pos[0, :] - min(self.pos[0, :])) / (2. * self.WT.R)
-            y = (self.pos[1, :] - min(self.pos[1, :])) / (2. * self.WT.R)
+            x = (self.pos[:, 0] - min(self.pos[:, 0])) / (2. * self.WT.R)
+            y = (self.pos[:, 1] - min(self.pos[:, 1])) / (2. * self.WT.R)
             fig, ax = plt.subplots()
             ax.scatter(x, y, c='black')
             if WT_num:
