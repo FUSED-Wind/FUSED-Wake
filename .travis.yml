@@ -10,9 +10,8 @@ before_install:
 
 install:
   - pip install --upgrade pip
-  - pip install -r requirements.txt
+  - pip install -r requirements_dev.txt
   - pip install -e .
-#  - python setup.py build_ext --inplace
 
 script:
   - pytest
