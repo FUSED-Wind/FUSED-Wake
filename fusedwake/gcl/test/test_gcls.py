@@ -117,8 +117,10 @@ class TestGCLImplementations(unittest.TestCase):
         b1 = 15.6298
         b2 = 1.0
 
+        current_dir = os.path.dirname(os.path.realpath(__file__))
         filename = 'test_WF_4Turbines.yml'
-        wf = WindFarm(yml=filename)
+        yml_path = os.path.join(current_dir,filename)
+        wf = WindFarm(yml=yml_path)
         gcl = GCL(WF=wf)
 
         # Inputs
