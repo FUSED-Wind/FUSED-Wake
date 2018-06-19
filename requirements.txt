@@ -1,0 +1,18 @@
+bumpversion
+wheel
+watchdog
+flake8
+tox
+coverage
+Sphinx
+cryptography
+PyYAML
+numpy
+scipy
+jupyter
+matplotlib
+pandas
+sphinx-fortran
+watchdog
+plotly
+-e git+https://github.com/FUSED-Wind/windIO#egg=windIO
