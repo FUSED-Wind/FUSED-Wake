@@ -38,21 +38,27 @@ class WindTurbine(object):
         self.name = name
         self.H = H
         self.R = R
+        self.rotor_diameter = 2*R
 
         refCurvesArray=np.loadtxt(refCurvesFile,delimiter=', ',skiprows=5)
 
         self.refCurvesArray = refCurvesArray
 
         self.CT_idle = CT_idle
+        self.c_t_idle = self.CT_idle
 
         self.wt_init()
 
     def wt_init(self):
         self.ref_u = self.refCurvesArray[:,0]
         self.ref_P = self.refCurvesArray[:,1]
+        self.power_curve = self.ref_P
         self.ref_CT = self.refCurvesArray[:,2]
+        self.c_t_curve = self.ref_CT
         self.u_cutin = self.ref_u[0]
+        self.cut_in_wind_speed = self.u_cutin
         self.u_cutout = self.ref_u[-1]
+        self.cut_out_wind_speed = self.u_cutout
         self.P_rated = np.max(self.ref_P)
 
         self.PCI = interpolator(self.ref_u, self.ref_P)
