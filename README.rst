@@ -6,7 +6,7 @@ FUSED-Wake
         :target: https://pypi.python.org/pypi/fusedwake
 
 .. image:: https://img.shields.io/travis/mifm/FUSED-Wake.svg
-        :target: https://travis-ci.org/mifm/FUSED-Wake
+        :target: https://travis-ci.com/mifm/FUSED-Wake
 
 .. image:: https://readthedocs.org/projects/fused-wake/badge/?version=master
         :target: https://fused-wake.readthedocs.org/en/latest/?badge=master
