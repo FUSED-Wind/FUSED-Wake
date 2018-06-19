@@ -28,7 +28,7 @@ class TestFusedwake(unittest.TestCase):
         import fusedwake.WindTurbine as wt
         import fusedwake.WindFarm as wf
         #import fusedwake.fused as fused_gcl
-        from fusedwake.gcl.python import GCLarsen_v0
+        from fusedwake.gcl.python.gcl import GCLarsen_v0
 
 
 if __name__ == '__main__':
