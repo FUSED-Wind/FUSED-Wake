@@ -5,9 +5,9 @@ FUSED-Wake
 .. image:: https://img.shields.io/pypi/v/fusedwake.svg
         :target: https://pypi.python.org/pypi/fusedwake
 
-.. image:: https://img.shields.io/travis/mifm/FUSED-Wake.svg
-        :target: https://travis-ci.com/mifm/FUSED-Wake
-
+.. image:: https://travis-ci.com/mifm/FUSED-Wake.svg?branch=update_ci
+    :target: https://travis-ci.com/mifm/FUSED-Wake
+    
 .. image:: https://readthedocs.org/projects/fused-wake/badge/?version=master
         :target: https://fused-wake.readthedocs.org/en/latest/?badge=master
         :alt: Documentation Status
