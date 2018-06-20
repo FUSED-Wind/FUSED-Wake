@@ -95,4 +95,7 @@ setup(
                 Extension('gau.fortran',
                            glob.glob(os.path.join('fusedwake', 'gau', 'fortran',
                                                   'GAU.f')))],
+	dependency_links=[
+        "git+https://github.com/FUSED-Wind/windIO#egg=windIO"
+    ],
 )
