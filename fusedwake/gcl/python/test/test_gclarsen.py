@@ -93,10 +93,8 @@ class GCLarsen_v2_TestCase(unittest.TestCase):
        """#
 
 
-       GCL0 = GCL(version='py_gcl_v0',**self.inputs)
-       GCL1 = GCL(version='py_gcl_v1',**self.inputs)
-       GCL0.python_v0()
-       GCL1.python_v1()
+       GCL0 = GCL(version='py_gcl_v0',**self.inputs)()
+       GCL1 = GCL(version='py_gcl_v1',**self.inputs)()
        P_WT, U_WT, Ct = GCL0.p_wt,GCL0.u_wt,GCL0.c_t
        P_WT2, U_WT2, Ct2 = GCL1.p_wt,GCL1.u_wt,GCL1.c_t
 

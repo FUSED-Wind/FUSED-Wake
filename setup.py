@@ -31,7 +31,7 @@ requirements = [
     'pandas',
     'matplotlib',
     'PyYAML',
-    'utm'
+    'utm',
 ]
 
 test_requirements = [
