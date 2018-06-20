@@ -10,6 +10,7 @@ before_install:
 
 install:
   - pip install --upgrade pip
+  - pip install --no-cache-dir git+https://github.com/FUSED-Wind/windIO#egg=windIO
   - pip install -e .
 
 script:
