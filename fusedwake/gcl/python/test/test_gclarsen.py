@@ -6,9 +6,9 @@ import unittest
 #     rosetta
 import fusedwake.WindFarm as wf
 import fusedwake.WindTurbine as wt
-import fusedwake.gcl.python as gcl
+from fusedwake.gcl.interface import GCL
 import numpy as np
-from fusedwake.py4we.wasp import WWH
+#from fusedwake.py4we.wasp import WWH
 
 import os
 
@@ -93,8 +93,10 @@ class GCLarsen_v2_TestCase(unittest.TestCase):
        """#
 
 
-       P_WT, U_WT, Ct = gcl.GCLarsen_v0(**self.inputs)
-       P_WT2, U_WT2, Ct2 = gcl.GCLarsen(**self.inputs)
+       GCL0 = GCL(version='py_gcl_v0',**self.inputs)()
+       GCL1 = GCL(version='py_gcl_v1',**self.inputs)()
+       P_WT, U_WT, Ct = GCL0.p_wt,GCL0.u_wt,GCL0.c_t
+       P_WT2, U_WT2, Ct2 = GCL1.p_wt,GCL1.u_wt,GCL1.c_t
 
        np.testing.assert_almost_equal(P_WT, P_WT2)
        np.testing.assert_almost_equal(U_WT, U_WT2)

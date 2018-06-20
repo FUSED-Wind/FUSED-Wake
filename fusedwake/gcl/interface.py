@@ -200,7 +200,7 @@ class GCL(object):
             self.wd = self.WD
             self.ti = self.TI
         if not hasattr(self, 'wt_available'):
-            self.wt_available = np.ones([len(self.ws), self.WF.nWT])
+            self.wt_available = np.ones([len(self.ws), self.WF.nWT], dtype=int)
             self.av = self.wt_available
         elif self.wt_available.shape == (len(self.ws), self.WF.nWT):
             self.av = self.wt_available
