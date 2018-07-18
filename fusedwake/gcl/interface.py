@@ -1,9 +1,10 @@
 import fusedwake.gcl.python.gcl as gcl
 import fusedwake.gcl.fortran as fgcl
 import numpy as np
+from fusedwake.interface import BaseInterface
 
 
-class GCL(object):
+class GCL(BaseInterface):
     """GC Larsen wake model applied to flat terrain/offshore wind farms [1].
 
     GCL(WF, WS, WD, TI, version, pars)
@@ -91,58 +92,9 @@ class GCL(object):
         'pars': [0.435449861, 0.797853685, -0.124807893, 0.136821858, 15.6298, 1.0],
         'inflow': 'log',
     }
-    def __init__(self, **kwargs):
-        self.set(self.defaults)
-        self.set(kwargs)
+   
 
-    @property
-    def versions(self):
-        versions = list(self.inputs.keys())
-        versions.sort()
-        return versions
-
-
-    def update_position(self, pos):
-        self.WF.update_position(pos)
-        self.x_g, self.y_g, self.z_g = self.WF.get_T2T_gl_coord2()
-
-
-    def set(self, dic):
-        """ Set the attributes of a dictionary as instance variables.
-        Prepares for the different versions of the wake model
-
-        Parameters
-        ----------
-        dic: dict
-            An input dictionary
-        """
-        for k, v in dic.items():
-            setattr(self, k, v)
-
-        # Preparing for the inputs for the fortran version
-        if 'WF' in dic:
-            self.x_g, self.y_g, self.z_g = self.WF.get_T2T_gl_coord2()
-            self.dt = np.array(self.WF.rotor_diameter)
-            self.p_c = np.array(self.WF.power_curve)
-            self.ct_c = np.array(self.WF.c_t_curve)
-            self.ws_ci = np.array(self.WF.cut_in_wind_speed)
-            self.ws_co = np.array(self.WF.cut_out_wind_speed)
-            self.ct_idle = np.array(self.WF.c_t_idle)
-
-    def _get_kwargs(self, version):
-        """Prepare a dictionary of inputs to be passed to the wind farm flow model
-
-        Parameters
-        ----------
-        version: str
-            The version of the wind farm flow model to run ['py_gcl_v0' | 'py_gcl_v1' | 'fort0']
-        """
-        if 'py' in version:
-            return {k:getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
-        if 'fort' in version:
-            # fortran only get lowercase inputs
-            return {(k).lower():getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
-
+  
     def cal_wake(self, x, y, H, D, ws, wd, Ct, TI, k):
         """Interface to Topfarm-wind AEP calculator
 
@@ -189,7 +141,7 @@ class GCL(object):
         return self.u_wt, np.ones_like(self.u_wt)
 
 
-    def fortran_gcl(self):
+    def fort_gcl(self):
         # Prepare the inputs
         if not isinstance(self.WS, np.ndarray):
             self.ws = np.array([self.WS])
@@ -228,7 +180,7 @@ class GCL(object):
             self.u_wt = self.u_wt[0]
             self.c_t = self.c_t[0]
 
-    def fortran_gclm(self):
+    def fort_gclm(self):
         # Prepare the inputs
         if not isinstance(self.WS, np.ndarray):
             self.ws = self.WS*np.ones([1,self.WF.nWT])
@@ -271,7 +223,7 @@ class GCL(object):
             self.u_wt = self.u_wt[0]
             self.c_t = self.c_t[0]
 
-    def python_v0(self):
+    def py_gcl_v0(self):
         # Prepare the inputs
         if not isinstance(self.WS, np.ndarray):
             self.WS = self.WS*np.ones([self.WF.nWT])
@@ -284,7 +236,7 @@ class GCL(object):
         self.p_wt, self.u_wt, self.c_t = gcl.GCLarsen_v0(**self._get_kwargs(self.version))
 
 
-    def python_v1(self):
+    def py_gcl_v1(self):
         # Prepare the inputs
         if not isinstance(self.WS, np.ndarray):
             self.WS = self.WS*np.ones([self.WF.nWT])
@@ -296,23 +248,7 @@ class GCL(object):
             self.TI = self.TI
         self.p_wt, self.u_wt, self.c_t = gcl.GCLarsen(**self._get_kwargs(self.version))
 
-    def __call__(self, **kwargs):
-        self.set(kwargs)
-        if hasattr(self, 'version'):
-            if   self.version == 'py_gcl_v0':
-                self.python_v0()
-            elif self.version == 'py_gcl_v1':
-                self.python_v1()
-            elif self.version == 'fort_gcl':
-                self.fortran_gcl()
-            elif self.version == 'fort_gclm':
-                self.fortran_gclm()
-            elif not self.version in self.versions:
-                raise Exception("Version %s is not valid: version=[%s]"%(self.version, '|'.join(self.versions)))
-        else:
-            raise Exception("Version hasn't been set: version=[%s]"%('|'.join(self.versions)))
-        return self
-
+    
 #
 # -----original
 #

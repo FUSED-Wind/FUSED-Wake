@@ -1,9 +1,10 @@
 # import python.gau as gau
 import fusedwake.gau.fortran as fgau
 import numpy as np
+from fusedwake.interface import BaseInterface
 
 
-class GAU(object):
+class GAU(BaseInterface):
     # The different versions and their respective inputs
     inputs = {
         # 'py0': ['WF', 'WS', 'WD', 'K'],
@@ -22,51 +23,9 @@ class GAU(object):
         'sup': 'quad', # ['lin' | 'quad']
         'NG': 4,
     }
-    def __init__(self, **kwargs):
-        self.set(self.defaults)
-        self.set(kwargs)
 
-    @property
-    def versions(self):
-        versions = list(self.inputs.keys())
-        versions.sort()
-        return versions
 
-    def set(self, dic):
-        """ Set the attributes of a dictionary as instance variables. Prepares
-        for the different versions of the wake model
 
-        Parameters
-        ----------
-        dic: dict
-            An input dictionary
-        """
-        for k, v in dic.items():
-            setattr(self, k, v)
-
-        # Preparing for the inputs for the fortran version
-        if 'WF' in dic:
-            self.x_g, self.y_g, self.z_g = self.WF.get_T2T_gl_coord2()
-            self.dt = self.WF.rotor_diameter
-            self.p_c = self.WF.power_curve
-            self.ct_c = self.WF.c_t_curve
-            self.ws_ci = self.WF.cut_in_wind_speed
-            self.ws_co = self.WF.cut_out_wind_speed
-            self.ct_idle = self.WF.c_t_idle
-
-    def _get_kwargs(self, version):
-        """Prepare a dictionary of inputs to be passed to the wind farm flow model
-
-        Parameters
-        ----------
-        version: str
-            The version of the wind farm flow model to run ['py0' | 'py1' | 'fort0']
-        """
-        if 'py' in version:
-            return {k:getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
-        if 'fort' in version:
-            # fortran only get lowercase inputs
-            return {(k).lower():getattr(self, k) for k in self.inputs[version] if hasattr(self, k)}
 
     def fort_gau_av(self):
         # Prepare the inputs
@@ -142,12 +101,4 @@ class GAU(object):
     # def python_v1(self):
     #     self.p_wt, self.u_wt, self.c_t = gau.gauarsen(**self._get_kwargs(self.version))
 
-    def __call__(self, **kwargs):
-        self.set(kwargs)
-        if hasattr(self, 'version'):
-            getattr(self, self.version)()
-            if not self.version in self.versions:
-                raise Exception("Version %s is not valid: version=[%s]"%(self.version, '|'.join(self.versions)))
-        else:
-            raise Exception("Version hasn't been set: version=[%s]"%('|'.join(self.versions)))
-        return self
+
